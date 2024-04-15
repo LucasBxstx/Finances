@@ -1,0 +1,18 @@
+<div *transloco="let t; read: 'createAccount'" class="container">
+    <div class="limitation">
+        <div class="title">{{t("myFinances")}}</div>
+        <span class="center">{{t("hint")}}</span>
+
+        <input type="text" [formControl]="emailFormControl" [placeholder]="t('email')">
+        <span *ngIf="showErrorEmail" class="center red" >{{t("emailError")}}</span>
+        <input type="text" (keyup.enter)="createAccount()" [formControl]="passwordFormControl"
+            [placeholder]="t('password')">
+        <span class="center space" [ngClass]="{'red': showErrorPassword}">{{t("passwordError")}}</span>
+
+        <button (click)="createAccount()" [disabled]="emailFormControl.invalid || passwordFormControl.invalid">
+            <span *ngIf="!showSpinner">{{t('createAccount')}}</span>
+            <app-spinner *ngIf="showSpinner" class="spinner"></app-spinner>
+        </button>
+    </div>
+
+</div>

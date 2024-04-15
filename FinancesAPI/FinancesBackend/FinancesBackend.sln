@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancesBackend", "FinancesBackend.csproj", "{5880564D-AB16-496D-A05A-7603538F49FD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinancesBackend.Persistence", "..\FinancesBackend.Persistence\FinancesBackend.Persistence.csproj", "{CFB97726-D5B3-4C4C-803C-2F01D5909A15}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5880564D-AB16-496D-A05A-7603538F49FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5880564D-AB16-496D-A05A-7603538F49FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5880564D-AB16-496D-A05A-7603538F49FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5880564D-AB16-496D-A05A-7603538F49FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFB97726-D5B3-4C4C-803C-2F01D5909A15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFB97726-D5B3-4C4C-803C-2F01D5909A15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFB97726-D5B3-4C4C-803C-2F01D5909A15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFB97726-D5B3-4C4C-803C-2F01D5909A15}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {66AC52F2-9D6A-4577-AB2B-F70EF3416317}
+	EndGlobalSection
+EndGlobal

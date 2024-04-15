@@ -1,0 +1,26 @@
+:host {
+    display: block;
+    margin: 0 15vw;
+  }
+
+.heading {
+    font-weight: bold;
+    font-size: 4rem;
+    text-align: center;
+    margin: 2rem;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+
+    .selector {
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: rgb(255, 255, 255);
+
+        &.selected {
+            color: rgb(184, 223, 255);
+        }
+    }
+}

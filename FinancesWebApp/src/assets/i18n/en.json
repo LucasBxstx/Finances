@@ -1,0 +1,20 @@
+{
+    "login": {
+        "myFinances": "My Finances",
+        "login": "Sign in with email and password",
+        "email": "Email",
+        "password": "Passwort",
+        "loginButton": "Sign In",
+        "createAccount": "Create Account",
+        "error": "Email or password are incorrect"
+    },
+    "createAccount": {
+        "myFinances": "My Finances",
+        "email": "Email",
+        "password": "Password",
+        "createAccount": "Create Account",
+        "hint": "Enter your e-mail address and your own password to create a new account",
+        "emailError": "There is already an account with this email address",
+        "passwordError": "The password must be at least 6 characters long and contain at least one non-alphabetic character, one number and one capital letter"
+    }
+}

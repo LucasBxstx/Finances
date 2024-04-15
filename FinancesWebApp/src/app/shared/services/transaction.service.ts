@@ -1,0 +1,26 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable, inject } from '@angular/core';
+import { Transaction, TransactionView } from '../models/transaction';
+import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class TransactionService {
+  private readonly http = inject(HttpClient);
+
+  public getTransaction(transactionId: number): Observable<Transaction> {
+    return this.http.get<Transaction>(`${environment.apiUrl}/api/Transaction?id=${transactionId}`);
+  }
+
+  public getTransactions(userId: string, startDate: Date | null = null, endDate: Date | null = null): Observable<TransactionView> {
+    if (startDate && endDate) {
+      return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all?userId=${userId}&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+    }
+    else {
+      return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all?userId=${userId}`);
+    }
+    
+  }
+}
