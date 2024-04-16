@@ -1,25 +1,34 @@
 <div class="heading">My Finances</div>
-<hr>
+
+<div class="division"></div>
 
 <div class="navbar">
     <div class="selector" [ngClass]="'selected'" (click)="navigateTo('transactions')">Transactions</div>
     <div class="selector" (click)="navigateTo('statistics')">Statistics</div>
 </div>
 
-<hr>
+<div class="division space"></div>
 
-<app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async" [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
+<app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
+    [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
 
-<app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)"></app-drop-menu>
+<app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async"
+    (valueChanged)="changeMonth($event)"></app-drop-menu>
 
-<app-monthly-overview [currentMonth]="selectedMonth$ | async" [keyMetricData]="monthlyKeyMetrics$ |async"></app-monthly-overview>
+<app-monthly-overview [currentMonth]="selectedMonth$ | async"
+    [keyMetricData]="monthlyKeyMetrics$ |async"></app-monthly-overview>
 
-<div *ngIf="transactions$ | async">
-    <div *ngFor="let transaction of transactions$ | async">
-        <span>{{transaction.id}}</span>
-        <span>{{transaction.title}}</span>
-        <span>{{transaction.price}}</span>
-        <span>{{transaction.label}}</span>
-        <span>{{transaction.transactionType}}</span>
+<div *ngIf="transactions$">
+    <div *ngFor="let groupedTransaction of transactions$ | async" class="date-group">
+        <div class="date">{{groupedTransaction.date | getDate }}</div>
+        <div *ngFor="let transaction of groupedTransaction.transactions" class="transaction">
+            <span class="title">{{transaction.title}}</span>
+            <div class="label">
+                <span class="chip">{{transaction.label}}</span>
+            </div>
+            <span [ngClass]="transaction.transactionType === TransactionType.Expense? 'red': 'green'"
+                class="price">{{transaction.transactionType === TransactionType.Expense ? '-' : '+'}}
+                {{transaction.price | getPriceDecimal}}</span>
+        </div>
     </div>
 </div>

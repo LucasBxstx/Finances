@@ -12,12 +12,12 @@
         </div>
 
         <div class="values">
-            <span class="blue">{{keyMetricData.total | getRoundedNumber}}</span>
-            <span [ngClass]="keyMetricData.bilanz >= 0 ? 'green' : 'red'">{{keyMetricData.bilanz >= 0 ? '+' : '-'}} {{ keyMetricData.bilanz | getRoundedNumber}}</span>
-            <span class="green">+ {{keyMetricData.income | getRoundedNumber}}</span>
-            <span class="red">- {{(keyMetricData.expense | getRoundedNumber) * -1}}</span>
+            <span class="blue">{{keyMetricData.total | getPriceDecimal}}</span>
+            <span [ngClass]="keyMetricData.bilanz >= 0 ? 'green' : 'red'">{{keyMetricData.bilanz >= 0 ? '+' : '-'}} {{ keyMetricData.bilanz | getPriceDecimal}}</span>
+            <span class="green">+ {{keyMetricData.income | getPriceDecimal}}</span>
+            <span class="red">- {{(keyMetricData.expense * -1 | getPriceDecimal)}}</span>
         </div>
     </div>
 
-    <div class="right-container">hi</div>
+    <div class="right-container"></div>
 </div>

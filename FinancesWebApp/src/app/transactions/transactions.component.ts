@@ -1,23 +1,27 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { Observable, Subject, combineLatest, map, switchMap, takeUntil } from 'rxjs';
 import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
-import { Transaction, TransactionType, TransactionView, keyMetricData } from '../shared/models/transaction';
-import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
+import { GroupedTransaction, TransactionType, TransactionView, keyMetricData } from '../shared/models/transaction';
+import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, compareDates, getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
 import { MonthlyOverviewComponent } from './monthly-overview/monthly-overview.component';
+import { GetDatePipe } from '../shared/pipes/getDate.pipe';
+import { GetPriceDecimalPipe } from '../shared/pipes/getPriceDecimal.pipe';
 
 export type pageType = 'transactions' | 'statistics';
 
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent],
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, GetDatePipe, GetPriceDecimalPipe],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss'
 })
 export class TransactionsComponent implements OnDestroy {
+  public TransactionType = TransactionType;
+
   private unsubscribe = new Subject<void>();
   private readonly transactionService = inject(TransactionService);
   private readonly router = inject(Router);
@@ -34,8 +38,24 @@ export class TransactionsComponent implements OnDestroy {
       return this.transactionService.getTransactions('6104cf02-6adf-45da-8e0b-f32946e3cf13', firstDayOfMonth, lastDayOfMonth);
     }));
 
-  public readonly transactions$: Observable<Transaction[]> = this.transactionData$.pipe(
-    map((transactionData) => transactionData.transactions));
+  public readonly transactions$: Observable<GroupedTransaction[]> = this.transactionData$.pipe(
+    map(({ transactions }) => {
+      const groupedTransactions: GroupedTransaction[] = []
+
+      transactions.forEach((transaction) => {
+        const existingGroup = groupedTransactions.find((group) => compareDates(group.date, transaction.date))
+
+        if (existingGroup) existingGroup.transactions.push(transaction);
+        else {
+          groupedTransactions.push({
+            date: transaction.date,
+            transactions: [transaction],
+          });
+        }
+      });
+
+      return groupedTransactions;
+    }));
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData.oldestTransactionDate));

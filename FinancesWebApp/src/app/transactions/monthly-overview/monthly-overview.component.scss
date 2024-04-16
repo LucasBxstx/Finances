@@ -34,6 +34,7 @@
 
         .values {
             margin-left: 20px;
+            text-align: end;
 
             .blue {
                 color: rgb(43, 164, 194);
@@ -52,5 +53,9 @@
 
     .right-container {
         flex-grow: 3;
+    }
+
+    @media screen and (max-width: 500px) {
+        flex-direction: column;
     }
 }

@@ -59,3 +59,14 @@ export function calculateFirstAndLastDayOfMonth(year: number, month: number) {
 
   return { firstDayOfMonth, lastDayOfMonth };
 }
+
+export function compareDates(date1: Date, date2: Date): boolean {
+  const dateA = new Date(date1);
+  const dateB = new Date(date2);
+
+  return (
+    dateA.getDate() ===  dateB.getDate() &&
+    dateA.getMonth() === dateB.getMonth() &&
+    dateA.getFullYear() === dateB.getFullYear()
+  );
+}

@@ -9,6 +9,11 @@ export interface Transaction {
     rowVersion: string | null;
 }
 
+export interface GroupedTransaction {
+    date: Date;
+    transactions: Transaction[];
+}
+
 export enum TransactionType {
     Income = 0,
     Expense = 1

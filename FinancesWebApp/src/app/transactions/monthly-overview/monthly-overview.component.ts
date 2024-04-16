@@ -1,13 +1,13 @@
 import { NgClass, NgIf } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { GetMonthPipe } from '../../shared/pipes/getMonth.pipe';
-import { TransactionView, keyMetricData } from '../../shared/models/transaction';
-import { GetRoundedNumber } from '../../shared/pipes/getRoundedNumber';
+import { keyMetricData } from '../../shared/models/transaction';
+import { GetPriceDecimalPipe } from '../../shared/pipes/getPriceDecimal.pipe';
 
 @Component({
   selector: 'app-monthly-overview',
   standalone: true,
-  imports: [NgIf, GetMonthPipe, NgClass, GetRoundedNumber],
+  imports: [NgIf, GetMonthPipe, NgClass, GetPriceDecimalPipe],
   templateUrl: './monthly-overview.component.html',
   styleUrl: './monthly-overview.component.scss'
 })
