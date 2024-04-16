@@ -19,3 +19,10 @@ export interface TransactionView {
     oldestTransactionDate: Date | null;
     transactions: Transaction[];
 }
+
+export interface keyMetricData {
+    total: number;
+    bilanz: number;
+    income: number;
+    expense: number;
+}

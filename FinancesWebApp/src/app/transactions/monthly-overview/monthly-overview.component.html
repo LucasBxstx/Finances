@@ -1,0 +1,23 @@
+<div *ngIf="currentMonth" class="header">
+    <span class="title">Overview {{currentMonth | getMonth}}</span>
+</div>
+
+<div *ngIf="keyMetricData" class="container">
+    <div class="left-container">
+        <div class="key-metrics">
+            <span>Account Balance</span>
+            <span>Monthly Balance</span>
+            <span>Income</span>
+            <span>Expense</span>
+        </div>
+
+        <div class="values">
+            <span class="blue">{{keyMetricData.total | getRoundedNumber}}</span>
+            <span [ngClass]="keyMetricData.bilanz >= 0 ? 'green' : 'red'">{{keyMetricData.bilanz >= 0 ? '+' : '-'}} {{ keyMetricData.bilanz | getRoundedNumber}}</span>
+            <span class="green">+ {{keyMetricData.income | getRoundedNumber}}</span>
+            <span class="red">- {{(keyMetricData.expense | getRoundedNumber) * -1}}</span>
+        </div>
+    </div>
+
+    <div class="right-container">hi</div>
+</div>

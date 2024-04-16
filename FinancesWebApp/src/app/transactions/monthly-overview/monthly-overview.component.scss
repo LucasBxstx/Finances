@@ -1,0 +1,56 @@
+:host {
+    display: block;
+    background-color: rgb(24, 24, 24);
+    border: 1px solid rgb(64, 64, 64);
+    border-radius: 5px;
+}
+
+.header {
+    border-bottom: 1px solid rgb(64, 64, 64);
+    font-size: 1.5rem;
+    font-weight: bold;
+
+    .title{
+        display: flex;
+        margin: 5px 30px;
+        color: rgb(60, 172, 84);
+    }
+}
+
+.container {
+    display: flex;
+    margin: 5px 30px;
+    font-size: 1rem;
+
+    .left-container {
+        flex-grow: 1;
+        display: flex;
+
+        .key-metrics,
+        .values {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .values {
+            margin-left: 20px;
+
+            .blue {
+                color: rgb(43, 164, 194);
+                padding-left: 0.85rem;
+            }
+
+            .red{
+                color: rgb(129, 13, 13);
+            }
+
+            .green {
+                color: rgb(13, 163, 13);
+            }
+        }
+    }
+
+    .right-container {
+        flex-grow: 3;
+    }
+}

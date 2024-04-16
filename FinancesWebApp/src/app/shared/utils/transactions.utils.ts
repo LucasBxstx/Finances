@@ -1,3 +1,5 @@
+import { Transaction, TransactionType, keyMetricData } from "../models/transaction";
+
 export function getListOfAvailableYears(oldestDate: Date | null): number[] {
     const currentYear = new Date().getFullYear();
 
@@ -27,4 +29,33 @@ export function getListOfAvailableMonthsPerYear(selectedYear: number, oldestDate
       for(let month = endMonth; month >= startMonth; month --) allMonths.push(month);
       
       return allMonths;
+}
+
+export function calculateMonthlyKeyMetricData(transactions: Transaction[], priorBalance: number | null): keyMetricData {
+  let income = 0;
+  let expense = 0;
+
+  transactions.forEach((transaction) => {
+    if (transaction.transactionType === TransactionType.Income) income += transaction.price;
+    else if (transaction.transactionType == TransactionType.Expense) expense -= transaction.price;
+  })
+
+  const bilanz = income + expense;
+  const total = bilanz + (priorBalance ?? 0);
+
+  return { total, bilanz, income, expense };
+}
+
+export function calculateFirstAndLastDayOfMonth(year: number, month: number) {
+  const daysPerMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+  const startDateString = `${year}-${month}-02`; // Despite the 2 it is the first day of month, maybe because of offset
+  const endDateString = `${year}-${month}-${daysPerMonth[month - 1]}`;
+  const firstDayOfMonth = new Date(startDateString);
+  const lastDayOfMonth = new Date(endDateString);
+
+  lastDayOfMonth.setHours(23);
+  lastDayOfMonth.setMinutes(59);
+
+  return { firstDayOfMonth, lastDayOfMonth };
 }

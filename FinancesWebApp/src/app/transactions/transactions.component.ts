@@ -4,15 +4,16 @@ import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
-import { Transaction, TransactionView } from '../shared/models/transaction';
-import { getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
+import { Transaction, TransactionType, TransactionView, keyMetricData } from '../shared/models/transaction';
+import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
+import { MonthlyOverviewComponent } from './monthly-overview/monthly-overview.component';
 
 export type pageType = 'transactions' | 'statistics';
 
 @Component({
   selector: 'app-transactions',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf],
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent],
   templateUrl: './transactions.component.html',
   styleUrl: './transactions.component.scss'
 })
@@ -22,43 +23,32 @@ export class TransactionsComponent implements OnDestroy {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  public readonly availableMonths = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  private readonly daysPerMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-
   public readonly selectedYear$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['year']));
   public readonly selectedMonth$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['month']));
 
   private readonly selectedMonthStartAndEndDate$ = combineLatest([this.selectedYear$, this.selectedMonth$])
-    .pipe(map(([year, month]) => {
-      const startDateString = `${year}-${month}-02`;
-      const endDateString = `${year}-${month}-${this.daysPerMonth[month - 1]}`;
-      const firstDayOfMonth = new Date(startDateString);
-      const lastDayOfMonth = new Date(endDateString);
+    .pipe(map(([year, month]) => calculateFirstAndLastDayOfMonth(year, month)));
 
-      lastDayOfMonth.setHours(23);
-      lastDayOfMonth.setMinutes(59);
-
-      return { firstDayOfMonth, lastDayOfMonth };
-    }
-    ));
-
-  public readonly transactionData$: Observable<TransactionView> = this.selectedMonthStartAndEndDate$.pipe(
+  private readonly transactionData$: Observable<TransactionView> = this.selectedMonthStartAndEndDate$.pipe(
     switchMap(({ firstDayOfMonth, lastDayOfMonth }) => {
       return this.transactionService.getTransactions('6104cf02-6adf-45da-8e0b-f32946e3cf13', firstDayOfMonth, lastDayOfMonth);
-    }
-    ));
+    }));
 
-  public readonly transactions$: Observable<Transaction[]> = this.transactionData$.pipe(map((transactionData) => transactionData.transactions));
+  public readonly transactions$: Observable<Transaction[]> = this.transactionData$.pipe(
+    map((transactionData) => transactionData.transactions));
 
-  public readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(map((transactionData) => transactionData.oldestTransactionDate));
+  private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
+    map((transactionData) => transactionData.oldestTransactionDate));
 
   public readonly availableYears$: Observable<number[]> = this.oldestTransactionDate$.pipe(
-    map(getListOfAvailableYears)
-  );
+    map(getListOfAvailableYears));
 
   public readonly availableMonths$: Observable<number[]> = combineLatest([this.selectedYear$, this.oldestTransactionDate$]).pipe(
     map(([selectedYear, oldestDate]) => getListOfAvailableMonthsPerYear(selectedYear, oldestDate))
   );
+
+  public readonly monthlyKeyMetrics$: Observable<keyMetricData> = this.transactionData$.pipe(
+    map(({ transactions, priorBalance }) => calculateMonthlyKeyMetricData(transactions, priorBalance)));
 
   public ngOnDestroy(): void {
     this.unsubscribe.next();

@@ -12,6 +12,8 @@
 
 <app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)"></app-drop-menu>
 
+<app-monthly-overview [currentMonth]="selectedMonth$ | async" [keyMetricData]="monthlyKeyMetrics$ |async"></app-monthly-overview>
+
 <div *ngIf="transactions$ | async">
     <div *ngFor="let transaction of transactions$ | async">
         <span>{{transaction.id}}</span>
