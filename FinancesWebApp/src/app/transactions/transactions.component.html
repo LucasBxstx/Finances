@@ -10,7 +10,7 @@
 
 <app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async" [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
 
-<app-drop-menu [description]="'Month'" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)"></app-drop-menu>
+<app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)"></app-drop-menu>
 
 <div *ngIf="transactions$ | async">
     <div *ngFor="let transaction of transactions$ | async">
