@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{5880564D-AB16-496D-A05A-7603538F49FD}|FinancesBackend.csproj|solutionrelative:transaction\\queries\\gettransactionsqueryhandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{5880564D-AB16-496D-A05A-7603538F49FD}|FinancesBackend.csproj|d:\\coding projects\\repositories lucasbeste8@gmail.com\\finances app\\finances\\financesapi\\financesbackend\\transaction\\models\\transactionview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5880564D-AB16-496D-A05A-7603538F49FD}|FinancesBackend.csproj|solutionrelative:transaction\\models\\transactionview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{5880564D-AB16-496D-A05A-7603538F49FD}|FinancesBackend.csproj|d:\\coding projects\\repositories lucasbeste8@gmail.com\\finances app\\finances\\financesapi\\financesbackend\\transaction\\requests\\createorupdatetransactionrequesthandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5880564D-AB16-496D-A05A-7603538F49FD}|FinancesBackend.csproj|solutionrelative:transaction\\requests\\createorupdatetransactionrequesthandler.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -23,10 +27,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{5880564D-AB16-496D-A05A-7603538F49FD}|FinancesBackend.csproj|d:\\coding projects\\repositories lucasbeste8@gmail.com\\finances app\\finances\\financesapi\\financesbackend\\transaction\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5880564D-AB16-496D-A05A-7603538F49FD}|FinancesBackend.csproj|solutionrelative:transaction\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5880564D-AB16-496D-A05A-7603538F49FD}|FinancesBackend.csproj|d:\\coding projects\\repositories lucasbeste8@gmail.com\\finances app\\finances\\financesapi\\financesbackend\\transaction\\models\\transactionview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5880564D-AB16-496D-A05A-7603538F49FD}|FinancesBackend.csproj|solutionrelative:transaction\\models\\transactionview.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{5880564D-AB16-496D-A05A-7603538F49FD}|FinancesBackend.csproj|d:\\coding projects\\repositories lucasbeste8@gmail.com\\finances app\\finances\\financesapi\\financesbackend\\transaction\\models\\transaction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -139,24 +139,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CreateOrUpdateTransactionRequestHandler.cs",
-              "DocumentMoniker": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Requests\\CreateOrUpdateTransactionRequestHandler.cs",
-              "RelativeDocumentMoniker": "Transaction\\Requests\\CreateOrUpdateTransactionRequestHandler.cs",
-              "ToolTip": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Requests\\CreateOrUpdateTransactionRequestHandler.cs",
-              "RelativeToolTip": "Transaction\\Requests\\CreateOrUpdateTransactionRequestHandler.cs",
-              "ViewState": "AQIAADMAAAAAAAAAAAAowDQAAAAoAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-07T10:39:39.125Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "GetTransactionsQuery.cs",
               "DocumentMoniker": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Queries\\GetTransactionsQuery.cs",
               "RelativeDocumentMoniker": "Transaction\\Queries\\GetTransactionsQuery.cs",
@@ -180,13 +167,12 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "dbo.Transactions [Daten]",
               "DocumentMoniker": "ViewDataWindow_MSSQL__/DESKTOP_KSU19G0_SQLEXPRESS/FinancesDB/True/SqlTable/dbo.Transactions.sql",
               "ToolTip": "dbo.Transactions [Daten]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-03-07T11:52:38.242Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-07T11:52:38.242Z"
             },
             {
               "$type": "Document",
@@ -196,20 +182,43 @@
               "RelativeDocumentMoniker": "Transaction\\Queries\\GetTransactionsQueryHandler.cs",
               "ToolTip": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Queries\\GetTransactionsQueryHandler.cs",
               "RelativeToolTip": "Transaction\\Queries\\GetTransactionsQueryHandler.cs",
-              "ViewState": "AQIAABsAAAAAAAAAAAAowDcAAAApAAAA",
+              "ViewState": "AQIAACcAAAAAAAAAAAAowD8AAAARAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-03-07T12:08:03.435Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "dbo.AspNetUsers [Daten]",
               "DocumentMoniker": "ViewDataWindow_MSSQL__/DESKTOP_KSU19G0_SQLEXPRESS/FinancesDB/True/SqlTable/dbo.AspNetUsers.sql",
               "ToolTip": "dbo.AspNetUsers [Daten]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2024-03-07T11:49:58.298Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-03-07T11:49:58.298Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TransactionView.cs",
+              "DocumentMoniker": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Models\\TransactionView.cs",
+              "RelativeDocumentMoniker": "Transaction\\Models\\TransactionView.cs",
+              "ToolTip": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Models\\TransactionView.cs",
+              "RelativeToolTip": "Transaction\\Models\\TransactionView.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAABWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-07T12:25:14.869Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CreateOrUpdateTransactionRequestHandler.cs",
+              "DocumentMoniker": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Requests\\CreateOrUpdateTransactionRequestHandler.cs",
+              "RelativeDocumentMoniker": "Transaction\\Requests\\CreateOrUpdateTransactionRequestHandler.cs",
+              "ToolTip": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Requests\\CreateOrUpdateTransactionRequestHandler.cs",
+              "RelativeToolTip": "Transaction\\Requests\\CreateOrUpdateTransactionRequestHandler.cs",
+              "ViewState": "AQIAADMAAAAAAAAAAAAowDQAAAAoAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-03-07T10:39:39.125Z"
             },
             {
               "$type": "Document",
@@ -226,18 +235,6 @@
             {
               "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "TransactionView.cs",
-              "DocumentMoniker": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Models\\TransactionView.cs",
-              "RelativeDocumentMoniker": "Transaction\\Models\\TransactionView.cs",
-              "ToolTip": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Models\\TransactionView.cs",
-              "RelativeToolTip": "Transaction\\Models\\TransactionView.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAQAAAAxAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-03-07T12:25:14.869Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
               "Title": "TransactionController.cs",
               "DocumentMoniker": "D:\\CODING PROJECTS\\REPOSITORIES lucasbeste8@gmail.com\\Finances App\\Finances\\FinancesAPI\\FinancesBackend\\Transaction\\Controllers\\TransactionController.cs",
               "RelativeDocumentMoniker": "Transaction\\Controllers\\TransactionController.cs",

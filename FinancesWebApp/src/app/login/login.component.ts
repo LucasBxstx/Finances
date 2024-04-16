@@ -53,7 +53,10 @@ export class LoginComponent implements OnDestroy {
           console.log('login successful', tokenResult);
           this.showSpinner = false;
           this.showError = false;
-          this.router.navigate(['/transactions']);
+
+          this.router.navigate(['/transactions'],{
+            queryParams: {year: new Date().getFullYear(), month: new Date().getMonth() + 1}
+          });
         },
         (error: HttpErrorResponse) => {
           console.log(error.error);

@@ -8,3 +8,16 @@
 
 <hr>
 
+<app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async" [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
+
+<app-drop-menu [description]="'Month'" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)"></app-drop-menu>
+
+<div *ngIf="transactions$ | async">
+    <div *ngFor="let transaction of transactions$ | async">
+        <span>{{transaction.id}}</span>
+        <span>{{transaction.title}}</span>
+        <span>{{transaction.price}}</span>
+        <span>{{transaction.label}}</span>
+        <span>{{transaction.transactionType}}</span>
+    </div>
+</div>

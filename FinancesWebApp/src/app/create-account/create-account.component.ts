@@ -75,7 +75,9 @@ export class CreateAccountComponent implements OnDestroy{
         (tokenResult: TokenResult) => {
           console.log('login successful', tokenResult);
           this.showSpinner = false;
-          this.router.navigate(['/transactions']);
+          this.router.navigate(['/transactions'],{
+            queryParams: {year: new Date().getFullYear(), month: new Date().getMonth() + 1}
+          });
         },
         (error: HttpErrorResponse) => {
           if (error.status === 401) {

@@ -29,7 +29,7 @@ namespace FinancesBackend.Transaction.Queries
 
             var transactions = new List<Models.Transaction>();
 
-            if (request.StartDate == null && request.EndDate == null)
+            if (request.StartDate == null || request.EndDate == null)
             {
                 transactions = await _financesContext.Transactions
                     .Where(t => t.UserId == request.UserId)
@@ -58,10 +58,18 @@ namespace FinancesBackend.Transaction.Queries
                     .ToListAsync(cancellationToken);
 
                 var priorBalance = transactionsPriorDate.Sum(t => t.TransactionType == TransactionType.Income ? t.Price : -t.Price);
-                var oldestTransactionDate = transactionsPriorDate.Min(t => t.Date);
+
+   
+                if (transactionsPriorDate.Count == 0 && transactions.Count != 0)
+                {
+                    transactionView.OldestTransactionDate = transactions.Min(t => t.Date);
+                }
+                else if (transactionsPriorDate.Count != 0)
+                {
+                    transactionView.OldestTransactionDate = transactionsPriorDate.Min(t => t.Date);
+                }
 
                 transactionView.PriorBalance = priorBalance;
-                transactionView.OldestTransactionDate = oldestTransactionDate;
             }
 
             return transactionView;
