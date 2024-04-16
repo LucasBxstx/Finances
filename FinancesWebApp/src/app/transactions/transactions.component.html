@@ -26,9 +26,14 @@
             <div class="label">
                 <span class="chip">{{transaction.label}}</span>
             </div>
-            <span [ngClass]="transaction.transactionType === TransactionType.Expense? 'red': 'green'"
-                class="price">{{transaction.transactionType === TransactionType.Expense ? '-' : '+'}}
-                {{transaction.price | getPriceDecimal}}</span>
+            <span [ngClass]="transaction.transactionType === TransactionType.Expense? 'red': 'green'"class="price">
+                {{transaction.transactionType === TransactionType.Expense ? '-' : '+'}}
+                {{transaction.price | getPriceDecimal}}
+            </span>
+            <div class="edit-container">
+                <img class="delete" src="assets/icons/delete.svg">
+               <img clasS="edit" src="assets/icons/edit.svg">
+            </div>
         </div>
     </div>
 </div>

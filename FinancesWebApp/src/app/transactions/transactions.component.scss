@@ -64,7 +64,7 @@ app-monthly-overview {
         border: 1px solid rgb(64, 64, 64);
         border-radius: 5px;
         margin: 0.5rem 0;
-        padding: 5px 30px;
+        padding: 5px 30px 5px 20px;
 
         .title{
             flex: 40%;
@@ -97,6 +97,52 @@ app-monthly-overview {
 
             &.red {
                 color: rgb(129, 13, 13);
+            }
+        }
+
+        .edit-container {
+            margin-left: 10px;
+            flex: 0%;
+            transition: flex 1s;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+
+            .edit {
+                cursor: pointer;
+                transition: width 1s;
+                width: 0rem;
+                height: 0rem;
+                background-color: rgb(17, 56, 161);
+                border-radius: 2px;
+            }
+
+            .delete {
+                cursor: pointer;
+                transition: width 1s;
+                width: 0rem;
+                height: 0rem;
+                background-color: rgb(150, 39, 39);
+                border-radius: 2px;
+            }
+        }
+    }
+
+    .transaction:hover {
+        .edit-container {
+            flex: 10%;
+
+            .edit {
+                width: 1.3rem;
+                height: 1.3rem;
+
+                
+            }
+
+            .delete {
+                width: 1.3rem;
+                height: 1.3rem;
             }
         }
     }
