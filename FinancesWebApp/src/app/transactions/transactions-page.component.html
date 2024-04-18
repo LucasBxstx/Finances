@@ -21,19 +21,7 @@
 <div *ngIf="transactions$">
     <div *ngFor="let groupedTransaction of transactions$ | async" class="date-group">
         <div class="date">{{groupedTransaction.date | getDate }}</div>
-        <div *ngFor="let transaction of groupedTransaction.transactions" class="transaction">
-            <span class="title">{{transaction.title}}</span>
-            <div class="label">
-                <span class="chip">{{transaction.label}}</span>
-            </div>
-            <span [ngClass]="transaction.transactionType === TransactionType.Expense? 'red': 'green'"class="price">
-                {{transaction.transactionType === TransactionType.Expense ? '-' : '+'}}
-                {{transaction.price | getPriceDecimal}}
-            </span>
-            <div class="edit-container">
-                <img class="delete" src="assets/icons/delete.svg">
-               <img clasS="edit" src="assets/icons/edit.svg">
-            </div>
-        </div>
+        <app-transaction *ngFor="let transaction of groupedTransaction.transactions" [transaction]="transaction">
+        </app-transaction>
     </div>
 </div>

@@ -9,17 +9,18 @@ import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, compare
 import { MonthlyOverviewComponent } from './monthly-overview/monthly-overview.component';
 import { GetDatePipe } from '../shared/pipes/getDate.pipe';
 import { GetPriceDecimalPipe } from '../shared/pipes/getPriceDecimal.pipe';
+import { TransactionComponent } from './transaction/transaction.component';
 
 export type pageType = 'transactions' | 'statistics';
 
 @Component({
-  selector: 'app-transactions',
+  selector: 'app-transactions-page',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, GetDatePipe, GetPriceDecimalPipe],
-  templateUrl: './transactions.component.html',
-  styleUrl: './transactions.component.scss'
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, GetDatePipe, GetPriceDecimalPipe, TransactionComponent],
+  templateUrl: './transactions-page.component.html',
+  styleUrl: './transactions-page.component.scss'
 })
-export class TransactionsComponent implements OnDestroy {
+export class TransactionsPageComponent implements OnDestroy {
   public TransactionType = TransactionType;
 
   private unsubscribe = new Subject<void>();
