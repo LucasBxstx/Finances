@@ -51,6 +51,11 @@ app-monthly-overview {
     margin: 2rem 0;
 }
 
+.button-bar {
+    display: flex;
+    gap: 0.5rem;
+}
+
 .date-group{
     margin: 2rem 0;
 
@@ -60,3 +65,7 @@ app-monthly-overview {
 
 
 }    
+
+app-add-or-edit-transaction {
+    margin: 2rem 0;
+}

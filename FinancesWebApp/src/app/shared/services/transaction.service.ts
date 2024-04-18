@@ -21,6 +21,9 @@ export class TransactionService {
     else {
       return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all?userId=${userId}`);
     }
-    
+  }
+
+  public createOrUpdateTransaction(transaction: Transaction): Observable<Transaction> {
+    return this.http.put<Transaction>(`${environment.apiUrl}/api/Transaction`, transaction)
   }
 }

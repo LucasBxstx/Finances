@@ -1,4 +1,4 @@
-<div *ngIf="currentValue" (click)="menuOpen = !menuOpen">{{description}} {{ translateMonth ? (currentValue | getMonth) : currentValue }}</div>
+<button *ngIf="currentValue" (click)="menuOpen = !menuOpen" class="top">{{description}} {{ translateMonth ? (currentValue | getMonth) : currentValue }}</button>
 <div *ngIf="menuOpen && valueList" (click)="menuOpen = false" (mouseleave)="menuOpen = false" class="menu">
     <span *ngFor="let value of valueList" (click)="valueChanged.emit(value)">
         {{ translateMonth ? (value | getMonth) : value }}

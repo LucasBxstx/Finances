@@ -13,9 +13,9 @@
 
         <div class="values">
             <span class="blue">{{keyMetricData.total | getPriceDecimal}}</span>
-            <span [ngClass]="keyMetricData.bilanz >= 0 ? 'green' : 'red'">{{keyMetricData.bilanz >= 0 ? '+' : '-'}} {{ keyMetricData.bilanz | getPriceDecimal}}</span>
-            <span class="green">+ {{keyMetricData.income | getPriceDecimal}}</span>
-            <span class="red">- {{(keyMetricData.expense * -1 | getPriceDecimal)}}</span>
+            <span [ngClass]="keyMetricData.bilanz >= 0 ? 'green' : 'red'">{{ keyMetricData.bilanz | getPriceDecimal}}</span>
+            <span class="green">+{{keyMetricData.income | getPriceDecimal}}</span>
+            <span class="red">-{{(keyMetricData.expense * -1 | getPriceDecimal)}}</span>
         </div>
     </div>
 

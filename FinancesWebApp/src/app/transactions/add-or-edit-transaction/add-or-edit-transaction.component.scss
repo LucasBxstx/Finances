@@ -1,0 +1,122 @@
+:host {
+    position: fixed;
+    top: -32px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.80);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.window {
+    position: relative;
+    width: min(95%, 1000px);
+    height: min(95%, 500px);
+    background-color: rgb(24, 24, 24);
+    border-radius: 5px;
+    color: rgb(255, 255, 255);
+    border: 1px solid rgb(64, 64, 64);
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+
+    .close {
+        position: absolute;
+        top: 0;
+        right: 0;
+        margin: 0.5rem;
+        width: 1.5rem;
+        cursor: pointer;
+    }
+
+    .title {
+        font-weight: bold;
+        font-size: 1.5rem;
+
+    }
+
+
+    .division {
+        height: 1px;
+        background-color: rgb(64, 64, 64);
+    }
+
+    .container {
+        margin: 0 2rem;
+    }
+
+    .transaction-type {
+        display: flex;
+        align-items: center;
+        margin: 2rem 0;
+
+        span {
+            cursor: pointer;
+            background-color: rgb(34, 34, 34);
+            border: 1px solid black;
+            border-radius: 10px;
+            padding: 0.2rem 1.5rem;
+            margin-right: 0.5rem;
+            color: rgb(224, 224, 224);
+            transition: font-size 0.5s;
+
+            &.selected {
+                font-size: 1.1rem;
+                font-weight: bold;
+                background-color: rgb(235, 235, 235);
+                color: black;
+            }
+        }
+    }
+
+    .transaction-date {
+        display: flex;
+        align-items: center;
+        margin: 2rem 0;
+
+        button {
+            width: 100px;
+            margin-left: 2rem;
+        }
+    }
+
+    .transaction-title,
+    .transaction-label {
+        display: flex;
+        align-items: center;
+        margin: 1rem 0;
+    }
+
+
+    .transaction-price {
+        display: flex;
+        align-items: center;
+        margin: 1rem 0;
+
+        input {
+            width: 100px;
+        }
+    }
+
+    .save {
+        height: 2rem;
+
+        app-spinner {
+            transform: scale(0.3);
+            max-width: 1rem;
+        }
+    }
+
+}
+
+.bold {
+    font-weight: bold;
+    margin-right: 2rem;
+    width: 60px !important;
+}
+
+input::placeholder {
+    color: grey;
+}

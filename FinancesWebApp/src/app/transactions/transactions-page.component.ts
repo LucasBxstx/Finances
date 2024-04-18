@@ -1,22 +1,23 @@
 import { Component, OnDestroy, inject } from '@angular/core';
-import { Observable, Subject, combineLatest, map, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, map, switchMap, takeUntil } from 'rxjs';
 import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
-import { GroupedTransaction, TransactionType, TransactionView, keyMetricData } from '../shared/models/transaction';
+import { AddOrEditTransaction, GroupedTransaction, TransactionType, TransactionView, keyMetricData } from '../shared/models/transaction';
 import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, compareDates, getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
 import { MonthlyOverviewComponent } from './monthly-overview/monthly-overview.component';
 import { GetDatePipe } from '../shared/pipes/getDate.pipe';
 import { GetPriceDecimalPipe } from '../shared/pipes/getPriceDecimal.pipe';
 import { TransactionComponent } from './transaction/transaction.component';
+import { AddOrEditTransactionComponent } from './add-or-edit-transaction/add-or-edit-transaction.component';
 
 export type pageType = 'transactions' | 'statistics';
 
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, GetDatePipe, GetPriceDecimalPipe, TransactionComponent],
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, GetDatePipe, GetPriceDecimalPipe, TransactionComponent, AddOrEditTransactionComponent],
   templateUrl: './transactions-page.component.html',
   styleUrl: './transactions-page.component.scss'
 })
@@ -27,6 +28,8 @@ export class TransactionsPageComponent implements OnDestroy {
   private readonly transactionService = inject(TransactionService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+
+  public currentAddedOrEditedTransaction = new BehaviorSubject<AddOrEditTransaction | null>(null);
 
   public readonly selectedYear$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['year']));
   public readonly selectedMonth$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['month']));
@@ -98,5 +101,21 @@ export class TransactionsPageComponent implements OnDestroy {
         }
       });
     })
+  }
+
+  public addTransaction(type: TransactionType): void {
+    this.currentAddedOrEditedTransaction.next({
+      useCase: 'add',
+      transactionId: null,
+      transactionType: type,
+    });
+  }
+
+  public editTransaction(editData: AddOrEditTransaction) {
+    this.currentAddedOrEditedTransaction.next(editData);
+  }
+
+  public closeAddOrEditWindow(): void {
+    this.currentAddedOrEditedTransaction.next(null);
   }
 }

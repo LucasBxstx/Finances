@@ -31,3 +31,9 @@ export interface keyMetricData {
     income: number;
     expense: number;
 }
+
+export interface AddOrEditTransaction {
+    useCase: 'add' | 'edit';
+    transactionId: number | null; // Is null if useCase = 'add'
+    transactionType: TransactionType;
+}
