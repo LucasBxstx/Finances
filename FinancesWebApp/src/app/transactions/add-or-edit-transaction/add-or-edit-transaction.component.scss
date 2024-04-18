@@ -95,6 +95,10 @@
         align-items: center;
         margin: 1rem 0;
 
+        .euro {
+            margin-left: 0.5rem;
+        }
+
         input {
             width: 100px;
         }
@@ -102,6 +106,7 @@
 
     .save {
         height: 2rem;
+        margin-top:  2rem;
 
         app-spinner {
             transform: scale(0.3);

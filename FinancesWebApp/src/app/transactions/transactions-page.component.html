@@ -26,7 +26,7 @@
 
 <app-add-or-edit-transaction *ngIf="(currentAddedOrEditedTransaction | async) !== null" [addOrEditData]="(currentAddedOrEditedTransaction |async)!" (closedWindow)="closeAddOrEditWindow()"></app-add-or-edit-transaction>
 
-<div *ngIf="transactions$">
+<div *ngIf="(transactions$ |async)">
     <div *ngFor="let groupedTransaction of transactions$ | async" class="date-group">
         <div class="date">{{groupedTransaction.date | getDate }}</div>
         <app-transaction *ngFor="let transaction of groupedTransaction.transactions" [transaction]="transaction" (transactionEdited)="editTransaction($event)">

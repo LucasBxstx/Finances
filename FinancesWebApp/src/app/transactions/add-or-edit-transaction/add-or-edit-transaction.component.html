@@ -28,7 +28,8 @@
 
         <div class="transaction-price">
             <div class="bold">Price:</div>
-            <input type="number" placeholder="10.00" [(ngModel)]="editingPrice">
+            <input type="number" placeholder="10.00" [(ngModel)]="editingPrice" (click)="saveTransaction()">
+            <span class="euro">€</span>
         </div>
 
         <button class="save" (click)="saveTransaction()">
