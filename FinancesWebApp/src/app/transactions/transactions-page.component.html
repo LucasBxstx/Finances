@@ -36,6 +36,8 @@
     </div>
 </div>
 
+<div *ngIf="(transactions$ |async)?.length === 0" class="no-transactions">No transactions in this month</div>
+
 <div class="spinner" *ngIf="showSpinner"><app-spinner [color]="'white'"></app-spinner></div>
 
 <div class="bottom"></div>
