@@ -51,9 +51,7 @@ export class TransactionsPageComponent implements OnDestroy {
 
   public readonly transactions$: Observable<GroupedTransaction[]> = this.transactionData$.pipe(
     map(({ transactions }) => mapTrasactionsToDateGroups(transactions)),
-    tap(() => {
-    this.showSpinner = false;
-    }))
+    tap(() => this.showSpinner = false));
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData.oldestTransactionDate));
