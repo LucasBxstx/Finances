@@ -27,7 +27,7 @@
     [addOrEditData]="(currentAddedOrEditedTransaction |async)!"
     (closedWindow)="closeAddOrEditWindow()"></app-add-or-edit-transaction>
 
-<div *ngIf="(transactions$ |async)">
+<div *ngIf="(transactions$ |async) && !showSpinner">
     <div *ngFor="let groupedTransaction of transactions$ | async" class="date-group">
         <div class="date">{{groupedTransaction.date | getDate }}</div>
         <app-transaction *ngFor="let transaction of groupedTransaction.transactions" [transaction]="transaction"
@@ -35,5 +35,7 @@
         </app-transaction>
     </div>
 </div>
+
+<div class="spinner" *ngIf="showSpinner"><app-spinner [color]="'white'"></app-spinner></div>
 
 <div class="bottom"></div>

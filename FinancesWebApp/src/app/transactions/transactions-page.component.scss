@@ -66,16 +66,15 @@ app-monthly-overview {
     .date {
         font-size: 1rem;
     }
-
-
 }    
 
 app-add-or-edit-transaction {
     margin: 2rem 0;
 }
 
-.center {
+.spinner {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 2rem;
 }

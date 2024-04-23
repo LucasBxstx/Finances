@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, combineLatest, filter, map, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, filter, map, switchMap, takeUntil, tap } from 'rxjs';
 import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
@@ -28,6 +28,7 @@ export class TransactionsPageComponent implements OnDestroy {
   private unsubscribe = new Subject<void>();
   public refreshTransactions = new BehaviorSubject<null>(null);
   public currentAddedOrEditedTransaction = new BehaviorSubject<AddOrEditTransaction | null>(null);
+  public showSpinner = true;
 
   private readonly transactionService = inject(TransactionService);
   private readonly router = inject(Router);
@@ -49,7 +50,10 @@ export class TransactionsPageComponent implements OnDestroy {
   );
 
   public readonly transactions$: Observable<GroupedTransaction[]> = this.transactionData$.pipe(
-    map(({ transactions }) => mapTrasactionsToDateGroups(transactions)));
+    map(({ transactions }) => mapTrasactionsToDateGroups(transactions)),
+    tap(() => {
+    this.showSpinner = false;
+    }))
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData.oldestTransactionDate));
@@ -108,5 +112,6 @@ export class TransactionsPageComponent implements OnDestroy {
   public closeAddOrEditWindow(): void {
     this.currentAddedOrEditedTransaction.next(null);
     this.refreshTransactions.next(null);
+    this.showSpinner = true;
   }
 }
