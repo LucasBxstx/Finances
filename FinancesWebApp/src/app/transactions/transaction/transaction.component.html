@@ -8,7 +8,7 @@
         {{transaction.price | getPriceDecimal}}
     </span>
     <div class="edit-container">
-        <img clasS="edit" (click)="edit()" src="assets/icons/edit.svg">
-        <img class="delete" src="assets/icons/delete.svg">
+        <img clasS="edit" (click)="editTransaction()" src="assets/icons/edit.svg">
+        <img class="delete" (click)="deleteTransaction()" src="assets/icons/delete.svg">
     </div>
 </div>

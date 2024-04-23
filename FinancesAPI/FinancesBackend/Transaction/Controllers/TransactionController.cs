@@ -78,6 +78,28 @@ namespace FinancesBackend.Transaction.Controllers
             {
                 return Conflict();
             }
-        }   
+        }
+
+        [HttpDelete]
+        [SwaggerOperation("Deletes the transaction")]
+        [SwaggerResponse(StatusCodes.Status204NoContent, "The transaction was deleted")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The transaction was not found", typeof(ProblemDetails))]
+        public async Task<IActionResult> DeleteTransaction([FromQuery] DeleteTransactionRequest request)
+        {
+            try
+            {
+                await Mediator.Send(request, HttpContext.RequestAborted);
+
+                return NoContent();
+            }
+            catch (TransactionNotFoundException exception)
+            {
+                return exception.ToActionResult(this);
+            }
+            catch (WrappedDbUpdateConcurrencyException)
+            {
+                return Conflict();
+            }
+        }
     }
 }

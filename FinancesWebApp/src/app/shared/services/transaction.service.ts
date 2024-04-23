@@ -26,4 +26,8 @@ export class TransactionService {
   public createOrUpdateTransaction(transaction: Transaction): Observable<Transaction> {
     return this.http.put<Transaction>(`${environment.apiUrl}/api/Transaction`, transaction)
   }
+
+  public deleteTransaction(transactionId: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/api/Transaction?Id=${transactionId}`);
+  }
 }

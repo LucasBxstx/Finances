@@ -15,8 +15,7 @@
 <app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async"
     (valueChanged)="changeMonth($event)"></app-drop-menu>
 
-<app-monthly-overview [currentMonth]="selectedMonth$ | async"
-    [keyMetricData]="monthlyKeyMetrics$ |async">
+<app-monthly-overview [currentMonth]="selectedMonth$ | async" [keyMetricData]="monthlyKeyMetrics$ |async">
 </app-monthly-overview>
 
 <div class="button-bar">
@@ -24,12 +23,15 @@
     <button (click)="addTransaction(TransactionType.Expense)">Add Expense</button>
 </div>
 
-<app-add-or-edit-transaction *ngIf="(currentAddedOrEditedTransaction | async) !== null" [addOrEditData]="(currentAddedOrEditedTransaction |async)!" (closedWindow)="closeAddOrEditWindow()"></app-add-or-edit-transaction>
+<app-add-or-edit-transaction *ngIf="(currentAddedOrEditedTransaction | async) !== null"
+    [addOrEditData]="(currentAddedOrEditedTransaction |async)!"
+    (closedWindow)="closeAddOrEditWindow()"></app-add-or-edit-transaction>
 
 <div *ngIf="(transactions$ |async)">
     <div *ngFor="let groupedTransaction of transactions$ | async" class="date-group">
         <div class="date">{{groupedTransaction.date | getDate }}</div>
-        <app-transaction *ngFor="let transaction of groupedTransaction.transactions" [transaction]="transaction" (transactionEdited)="editTransaction($event)">
+        <app-transaction *ngFor="let transaction of groupedTransaction.transactions" [transaction]="transaction"
+            (transactionEdited)="editTransaction($event)" (transactionDeleted)="refreshTransactions.next(null)">
         </app-transaction>
     </div>
 </div>
