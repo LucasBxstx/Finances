@@ -8,6 +8,7 @@ import { HTTP_INTERCEPTORS, provideHttpClient, withFetch } from '@angular/common
 import { TranslocoHttpLoader } from './transloco-loader';
 import { BackendInterceptor } from './shared/services/backendInterceptor';
 import { AuthGuardService } from './shared/services/authGuardService';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -29,6 +30,6 @@ export const appConfig: ApplicationConfig = {
       provide: HTTP_INTERCEPTORS,
       useClass: BackendInterceptor,
       multi: true,
-    }
+    }, provideAnimationsAsync()
   ]
 };

@@ -12,8 +12,9 @@
 
         <div class="transaction-date">
             <div class="bold">Date:</div>
-            <span class="date">{{ editingDate ? (editingDate | getDate) : ''}}</span>
-            <button>Change</button>
+            <input class="date-input" matInput [matDatepicker]="datepicker" placeholder="Choose a date" (dateChange)="editingDate = $event.value" [(ngModel)]="editingDate">
+            <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
+            <mat-datepicker #datepicker></mat-datepicker>
         </div>
 
         <div class="transaction-title">
@@ -28,7 +29,7 @@
 
         <div class="transaction-price">
             <div class="bold">Price:</div>
-            <input type="number" placeholder="10.00" [(ngModel)]="editingPrice" (click)="saveTransaction()">
+            <input type="number" placeholder="10.00" [(ngModel)]="editingPrice" (keyup.enter)="saveTransaction()">
             <span class="euro">€</span>
         </div>
 

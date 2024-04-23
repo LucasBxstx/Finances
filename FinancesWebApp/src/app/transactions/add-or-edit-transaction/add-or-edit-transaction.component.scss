@@ -76,9 +76,19 @@
         align-items: center;
         margin: 2rem 0;
 
+        .date-input {
+            width: 120px;
+        }
+
         button {
             width: 100px;
             margin-left: 2rem;
+        }
+
+        mat-datepicker-toggle{
+            background-color: white;
+            border-radius: 5px;
+            margin-left: 1rem;
         }
     }
 

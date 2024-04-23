@@ -47,7 +47,7 @@ export function calculateMonthlyKeyMetricData(transactions: Transaction[], prior
 }
 
 export function calculateFirstAndLastDayOfMonth(year: number, month: number) {
-  const daysPerMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const daysPerMonth = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
   const startDateString = `${year}-${month}-02`; // Despite the 2 it is the first day of month, maybe because of offset
   const endDateString = `${year}-${month}-${daysPerMonth[month - 1]}`;
