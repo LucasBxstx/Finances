@@ -33,12 +33,14 @@ namespace FinancesBackend.Transaction.Queries
             {
                 transactions = await _financesContext.Transactions
                     .Where(t => t.UserId == request.UserId)
+                    .OrderBy(t => t.Date)
                     .ToListAsync(cancellationToken);
             }
             else
             {
                 transactions =  await _financesContext.Transactions
                     .Where(t => t.UserId == request.UserId && t.Date >= request.StartDate && t.Date <= request.EndDate)
+                    .OrderBy(t => t.Date)
                     .ToListAsync(cancellationToken);
             }
 

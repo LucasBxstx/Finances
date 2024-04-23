@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
 import { AddOrEditTransaction, GroupedTransaction, TransactionType, TransactionView, keyMetricData } from '../shared/models/transaction';
-import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, compareDates, getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
+import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, compareDates, getListOfAvailableMonthsPerYear, getListOfAvailableYears, mapTrasactionsToDateGroups } from '../shared/utils/transactions.utils';
 import { MonthlyOverviewComponent } from './monthly-overview/monthly-overview.component';
 import { GetDatePipe } from '../shared/pipes/getDate.pipe';
 import { GetPriceDecimalPipe } from '../shared/pipes/getPriceDecimal.pipe';
@@ -49,23 +49,7 @@ export class TransactionsPageComponent implements OnDestroy {
   );
 
   public readonly transactions$: Observable<GroupedTransaction[]> = this.transactionData$.pipe(
-    map(({ transactions }) => {
-      const groupedTransactions: GroupedTransaction[] = []
-
-      transactions.forEach((transaction) => {
-        const existingGroup = groupedTransactions.find((group) => compareDates(group.date, transaction.date))
-
-        if (existingGroup) existingGroup.transactions.push(transaction);
-        else {
-          groupedTransactions.push({
-            date: transaction.date,
-            transactions: [transaction],
-          });
-        }
-      });
-
-      return groupedTransactions;
-    }));
+    map(({ transactions }) => mapTrasactionsToDateGroups(transactions)));
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData.oldestTransactionDate));
