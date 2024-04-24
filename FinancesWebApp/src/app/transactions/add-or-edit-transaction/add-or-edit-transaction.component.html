@@ -24,7 +24,12 @@
 
         <div class="transaction-label">
             <div class="bold">Label:</div>
-            <input type="text" placeholder="e.g. Food" [(ngModel)]="editingLabel">
+            <!-- <input type="text" placeholder="e.g. Food" [(ngModel)]="editingLabelId"> -->
+            <div class="labels-list">
+                <button>Add Label</button>
+                <div *ngFor="let label of (labels$ | async)" class="label" [ngStyle]="{'background-color': label.color}" (click)="editingLabelId = label.id" [ngClass]="{selected: label.id === editingLabelId}">{{label.name}}</div>
+            </div>
+            
         </div>
 
         <div class="transaction-price">

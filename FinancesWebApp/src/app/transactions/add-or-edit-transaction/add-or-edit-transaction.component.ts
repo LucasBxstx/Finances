@@ -1,22 +1,24 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
 import { AddOrEditTransaction, TransactionType } from '../../shared/models/transaction';
-import { NgClass, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../../shared/services/transaction.service';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, map, takeUntil } from 'rxjs';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NativeDateAdapter } from '@angular/material/core';
 import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
 import { GetDatePipe } from '../../shared/pipes/getDate.pipe';
+import { LabelService } from '../../shared/services/label.service';
+import { Label } from '../../shared/models/label';
 
 export type UseCase = 'add' | 'edit';
 
 @Component({
   selector: 'app-add-or-edit-transaction',
   standalone: true,
-  imports: [NgClass, FormsModule, SpinnerComponent, NgIf, MatDatepickerModule, MatNativeDateModule, GetDatePipe],
+  imports: [NgClass, FormsModule, SpinnerComponent, NgIf, NgFor, AsyncPipe, MatDatepickerModule, MatNativeDateModule, GetDatePipe, NgStyle],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
@@ -30,23 +32,23 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
 
   private unsubscribe: Subject<void> = new Subject();
 
-  private readonly transactionService = inject(TransactionService);
-  private dateAdapter: DateAdapter<Date> = inject(DateAdapter);
-
   @Input({ required: true }) public addOrEditData!: AddOrEditTransaction;
-
   @Output() public closedWindow: EventEmitter<void> = new EventEmitter();
-
   @ViewChild(MatDatepicker, { static: false }) datepicker?: MatDatepicker<Date>;
 
   public editingTransactionType!: TransactionType;
   public editingDate: Date = new Date();
   public editingTitle: string | null = null;
-  public editingLabel: string | null = null;
+  public editingLabelId: number | null = null;
   public editingPrice: number | null = null;
   private rowVersion: string | null = null;
 
   public showSpinner = false;
+
+  private readonly transactionService = inject(TransactionService);
+  private readonly labelService = inject(LabelService);
+
+  public readonly labels$ = this.labelService.getLabels('6104cf02-6adf-45da-8e0b-f32946e3cf13');
 
   public ngOnInit(): void {
     if (this.addOrEditData.useCase === 'add' || !this.addOrEditData.transactionId) return;
@@ -57,7 +59,7 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
         this.editingTransactionType = transaction.transactionType;
         this.editingDate = transaction.date;
         this.editingTitle = transaction.title;
-        this.editingLabel = transaction.label;
+        this.editingLabelId = transaction.labelId;
         this.editingPrice = transaction.price;
         this.rowVersion = transaction.rowVersion;
       });
@@ -89,7 +91,7 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
       transactionType: this.editingTransactionType,
       date: this.editingDate,
       title: this.editingTitle,
-      label: this.editingLabel,
+      labelId: this.editingLabelId,
       price: this.editingPrice ?? 0,
       rowVersion: this.rowVersion,
     }).pipe(takeUntil(this.unsubscribe)).subscribe((transaction)=> {

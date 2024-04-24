@@ -21,7 +21,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Labels\Exceptions\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

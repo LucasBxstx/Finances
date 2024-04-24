@@ -4,7 +4,7 @@ export interface Transaction {
     transactionType: TransactionType;
     date: Date;
     title: string | null;
-    label: string | null;
+    labelId: number | null;
     price: number;
     rowVersion: string | null;
 }

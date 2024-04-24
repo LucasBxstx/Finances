@@ -1,13 +1,13 @@
 export interface Login {
-    email: string;
-    password: string;
-    twoFactorCode: string;
-    twoFactorRecoveryCode: string;
+    email: string,
+    password: string,
+    twoFactorCode: string,
+    twoFactorRecoveryCode: string,
 }
 
 export interface Register {
-    email: string;
-    password: string;
+    email: string,
+    password: string,
 }
 
 export interface TokenResult {

@@ -1,7 +1,9 @@
 ﻿using FinancesBackend.Common.Exceptions;
+using FinancesBackend.Labels.Exceptions;
 using FinancesBackend.Labels.Queries;
 using FinancesBackend.Labels.Requests;
 using FinancesBackend.Transaction.Exceptions;
+using FinancesBackend.Transaction.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -15,6 +17,24 @@ namespace FinancesBackend.Labels.Controllers
 
     public class LabelController(IMediator mediator) : ControllerBase(mediator)
     {
+        [HttpGet]
+        [SwaggerOperation("Gets the desired label")]
+        [SwaggerResponse(StatusCodes.Status200OK, "The label data", typeof(Models.Label))]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The label was not found", typeof(ProblemDetails))]
+        public async Task<ActionResult<Models.Label>> GetLabel([FromQuery] GetLabelQuery query)
+        {
+            try
+            {
+                var result = await Mediator.Send(query, HttpContext.RequestAborted);
+
+                return Ok(result);
+            }
+            catch (LabelNotFoundException exception)
+            {
+                return exception.ToActionResult<Models.Label>(this);
+            }
+        }
+
         [HttpGet("all")]
         [SwaggerOperation("Gets all Labels for the user")]
         [SwaggerResponse(StatusCodes.Status200OK, "The labels", typeof(List<Models.Label>))]
