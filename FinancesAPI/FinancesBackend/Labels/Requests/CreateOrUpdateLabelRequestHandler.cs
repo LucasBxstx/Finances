@@ -3,14 +3,14 @@ using FinancesBackend.Transaction.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace FinancesBackend.Transaction.Requests
+namespace FinancesBackend.Labels.Requests
 {
-    internal sealed class CreateOrUpdateTransactionRequestHandler : IRequestHandler<CreateOrUpdateTransactionRequest, Models.Transaction>
+    internal sealed class CreateOrUpdateLabelRequestHandler : IRequestHandler<CreateOrUpdateLabelRequest, Models.Label>
     {
         private readonly FinancesContext _financesContext;
         private readonly WrappedDbUpdateConcurrencyExceptionFactory _wrappedDbUpdateConcurrencyExceptionFactory;
 
-        public CreateOrUpdateTransactionRequestHandler(
+        public CreateOrUpdateLabelRequestHandler(
             FinancesContext financesContext, 
             WrappedDbUpdateConcurrencyExceptionFactory wrappedDbUpdateConcurrencyExceptionFactory)
         {
@@ -18,7 +18,7 @@ namespace FinancesBackend.Transaction.Requests
             _wrappedDbUpdateConcurrencyExceptionFactory = wrappedDbUpdateConcurrencyExceptionFactory;
         }
 
-        public async Task<Models.Transaction> Handle(CreateOrUpdateTransactionRequest request, CancellationToken cancellationToken)
+        public async Task<Models.Label> Handle(CreateOrUpdateLabelRequest request, CancellationToken cancellationToken)
         {
             var user = await _financesContext.Users.SingleOrDefaultAsync(u => u.Id == request.UserId.ToString(), cancellationToken);
 
@@ -27,36 +27,30 @@ namespace FinancesBackend.Transaction.Requests
                 throw new UserNotFoundException(request.UserId);
             }
 
-            var transaction = await _financesContext.Transactions.SingleOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
+            var label = await _financesContext.Labels.SingleOrDefaultAsync(l => l.Id == request.Id, cancellationToken);
 
-            if (transaction != null && request.RowVersion == null)
+            if (label != null && request.RowVersion == null)
             {
                 throw new RowVersionMissingException();
             }
 
-            if (transaction != null)
+            if (label != null)
             {
-                transaction.TransactionType = request.TransactionType;
-                transaction.Date = request.Date;
-                transaction.Title = request.Title;
-                transaction.LabelId = request.LabelId;
-                transaction.Price = request.Price;
-                transaction.RowVersion = request.RowVersion;
+                label.Name = request.Name;
+                label.Color = request.Color;
+                label.RowVersion = request.RowVersion;
             }
 
-            if (transaction == null)
+            if (label == null)
             {
-                transaction = new Models.Transaction
+                label = new Models.Label
                 {
                     UserId = Guid.Parse(user.Id),
-                    TransactionType = request.TransactionType,
-                    Date = request.Date,
-                    Title = request.Title,
-                    LabelId = request.LabelId,
-                    Price = request.Price
+                    Name = request.Name,
+                    Color = request.Color
                 };
 
-                _financesContext.Transactions.Add(transaction);
+                _financesContext.Labels.Add(label);
             }
 
             try
@@ -68,7 +62,7 @@ namespace FinancesBackend.Transaction.Requests
                 throw _wrappedDbUpdateConcurrencyExceptionFactory.Create(exception);
             }
 
-            return transaction;
+            return label;
         }
     }
 }

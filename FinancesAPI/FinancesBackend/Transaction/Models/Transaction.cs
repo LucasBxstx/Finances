@@ -14,7 +14,7 @@ namespace FinancesBackend.Transaction.Models
 
         public string? Title { get; set; }
 
-        public string? Label { get; set; }
+        public int? LabelId { get; set; }
 
         [Required] public double Price { get; set; }
 

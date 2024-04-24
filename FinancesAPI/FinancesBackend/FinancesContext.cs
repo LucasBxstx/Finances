@@ -10,5 +10,7 @@ namespace FinancesBackend
         }
 
         public DbSet<Transaction.Models.Transaction> Transactions { get; set; } = null!;
+
+        public DbSet<Labels.Models.Label> Labels { get; set; } = null!;
     }
 }
