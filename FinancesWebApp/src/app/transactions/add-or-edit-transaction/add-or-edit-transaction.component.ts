@@ -3,7 +3,7 @@ import { AddOrEditTransaction, TransactionType } from '../../shared/models/trans
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../../shared/services/transaction.service';
-import { Subject, map, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, map, switchMap, takeUntil } from 'rxjs';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -11,14 +11,15 @@ import { NativeDateAdapter } from '@angular/material/core';
 import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
 import { GetDatePipe } from '../../shared/pipes/getDate.pipe';
 import { LabelService } from '../../shared/services/label.service';
-import { Label } from '../../shared/models/label';
+import { AddOrEditLabel, Label } from '../../shared/models/label';
+import { AddOrEditLabelComponent } from './add-or-edit-label/add-or-edit-label.component';
 
 export type UseCase = 'add' | 'edit';
 
 @Component({
   selector: 'app-add-or-edit-transaction',
   standalone: true,
-  imports: [NgClass, FormsModule, SpinnerComponent, NgIf, NgFor, AsyncPipe, MatDatepickerModule, MatNativeDateModule, GetDatePipe, NgStyle],
+  imports: [NgClass, FormsModule, SpinnerComponent, NgIf, NgFor, AsyncPipe, MatDatepickerModule, MatNativeDateModule, GetDatePipe, NgStyle, AddOrEditLabelComponent],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },
@@ -31,6 +32,8 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
   public TransactionType = TransactionType;
 
   private unsubscribe: Subject<void> = new Subject();
+  public currentAddedOrEditedLabel = new BehaviorSubject<AddOrEditLabel | null>(null);
+  public refreshLabels = new BehaviorSubject<null>(null);
 
   @Input({ required: true }) public addOrEditData!: AddOrEditTransaction;
   @Output() public closedWindow: EventEmitter<void> = new EventEmitter();
@@ -48,7 +51,9 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);
 
-  public readonly labels$ = this.labelService.getLabels('6104cf02-6adf-45da-8e0b-f32946e3cf13');
+  public readonly labels$ = this.refreshLabels.pipe(switchMap(() =>
+    this.labelService.getLabels('6104cf02-6adf-45da-8e0b-f32946e3cf13')
+  ));
 
   public ngOnInit(): void {
     if (this.addOrEditData.useCase === 'add' || !this.addOrEditData.transactionId) return;
@@ -94,10 +99,29 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
       labelId: this.editingLabelId,
       price: this.editingPrice ?? 0,
       rowVersion: this.rowVersion,
-    }).pipe(takeUntil(this.unsubscribe)).subscribe((transaction)=> {
+    }).pipe(takeUntil(this.unsubscribe)).subscribe((transaction) => {
       console.log("updated", transaction);
       this.showSpinner = false;
       this.closedWindow.emit();
     });
+  }
+
+  public addLabel(): void {
+    this.currentAddedOrEditedLabel.next({
+      useCase: 'add',
+      labelId: null,
+    });
+  }
+
+  public editLabel(labelId: number): void {
+    this.currentAddedOrEditedLabel.next({
+      useCase: 'edit',
+      labelId: labelId,
+    })
+  }
+
+  public closeAddOrEditLabelWindow(): void {
+    this.currentAddedOrEditedLabel.next(null);
+    this.refreshLabels.next(null);
   }
 }

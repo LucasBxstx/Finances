@@ -6,13 +6,16 @@
     <div class="container">
         <div class="transaction-type">
             <div class="bold">Type:</div>
-            <span [ngClass]="{selected: editingTransactionType === TransactionType.Income}" (click)="changeTypeTo(TransactionType.Income)">Income</span>
-            <span [ngClass]="{selected: editingTransactionType === TransactionType.Expense}" (click)="changeTypeTo(TransactionType.Expense)">Expense</span>
+            <span [ngClass]="{selected: editingTransactionType === TransactionType.Income}"
+                (click)="changeTypeTo(TransactionType.Income)">Income</span>
+            <span [ngClass]="{selected: editingTransactionType === TransactionType.Expense}"
+                (click)="changeTypeTo(TransactionType.Expense)">Expense</span>
         </div>
 
         <div class="transaction-date">
             <div class="bold">Date:</div>
-            <input class="date-input" matInput [matDatepicker]="datepicker" placeholder="Choose a date" (dateChange)="editingDate = $event.value" [(ngModel)]="editingDate">
+            <input class="date-input" matInput [matDatepicker]="datepicker" placeholder="Choose a date"
+                (dateChange)="editingDate = $event.value" [(ngModel)]="editingDate">
             <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
             <mat-datepicker #datepicker></mat-datepicker>
         </div>
@@ -26,10 +29,11 @@
             <div class="bold">Label:</div>
             <!-- <input type="text" placeholder="e.g. Food" [(ngModel)]="editingLabelId"> -->
             <div class="labels-list">
-                <button>Add Label</button>
-                <div *ngFor="let label of (labels$ | async)" class="label" [ngStyle]="{'background-color': label.color}" (click)="editingLabelId = label.id" [ngClass]="{selected: label.id === editingLabelId}">{{label.name}}</div>
+                <button (click)="addLabel()">Add Label</button>
+                <div *ngFor="let label of (labels$ | async)" class="label" [ngStyle]="{'background-color': label.color}"
+                    (click)="editingLabelId = label.id" (click)="editLabel(label.id)"
+                    [ngClass]="{selected: label.id === editingLabelId}">{{label.name}}</div>
             </div>
-            
         </div>
 
         <div class="transaction-price">
@@ -43,5 +47,8 @@
             <app-spinner *ngIf="showSpinner"></app-spinner>
         </button>
     </div>
-    
 </div>
+
+<app-add-or-edit-label *ngIf="(currentAddedOrEditedLabel |async) !== null"
+    [addOrEditData]="(currentAddedOrEditedLabel |async)!"
+    (closedWindow)="closeAddOrEditLabelWindow()"></app-add-or-edit-label>

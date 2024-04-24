@@ -1,0 +1,18 @@
+<div class="window">
+    <img src="assets/icons/close.svg" class="close" (click)="closedWindow.emit()">
+    <div class="title">{{addOrEditData.useCase === 'add' ? 'Add Label' : 'Edit Label'}}</div>
+    <div class="division"></div>
+
+    <div class="container">
+        <div class="label-name">
+            <div class="bold">Name:</div>
+            <input type="text" placeholder="e.g. Food" [(ngModel)]="editingName">
+        </div>
+
+        <div class="label-color">
+            <div class="bold">Color:</div>
+            <div class="color" [ngStyle]="{'background-color': editingColor}"></div>
+            <button>Choose</button>
+        </div>
+    </div>
+</div>
