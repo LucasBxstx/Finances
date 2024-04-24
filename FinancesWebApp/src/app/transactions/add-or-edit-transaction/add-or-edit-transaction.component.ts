@@ -13,6 +13,7 @@ import { GetDatePipe } from '../../shared/pipes/getDate.pipe';
 import { LabelService } from '../../shared/services/label.service';
 import { AddOrEditLabel, Label } from '../../shared/models/label';
 import { AddOrEditLabelComponent } from './add-or-edit-label/add-or-edit-label.component';
+import { HttpErrorResponse } from '@angular/common/http';
 
 export type UseCase = 'add' | 'edit';
 
@@ -47,6 +48,7 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
   private rowVersion: string | null = null;
 
   public showSpinner = false;
+  public labelEditingMode = false;
 
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);
@@ -99,11 +101,16 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
       labelId: this.editingLabelId,
       price: this.editingPrice ?? 0,
       rowVersion: this.rowVersion,
-    }).pipe(takeUntil(this.unsubscribe)).subscribe((transaction) => {
-      console.log("updated", transaction);
-      this.showSpinner = false;
-      this.closedWindow.emit();
-    });
+    }).pipe(takeUntil(this.unsubscribe))
+      .subscribe((transaction) => {
+        console.log("transaction successfully updated", transaction);
+        this.showSpinner = false;
+        this.closedWindow.emit();
+      },
+      (error: HttpErrorResponse) => {
+        console.log("update transaction error", error);
+        this.showSpinner = false;
+      });
   }
 
   public addLabel(): void {
@@ -113,15 +120,22 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
     });
   }
 
-  public editLabel(labelId: number): void {
-    this.currentAddedOrEditedLabel.next({
-      useCase: 'edit',
-      labelId: labelId,
-    })
-  }
-
   public closeAddOrEditLabelWindow(): void {
     this.currentAddedOrEditedLabel.next(null);
     this.refreshLabels.next(null);
+    this.labelEditingMode = false;
+  }
+
+  public handleLabelClick(labelId: number) {
+    if (!this.labelEditingMode) { 
+      this.editingLabelId = labelId;
+
+      return;
+    }
+
+    this.currentAddedOrEditedLabel.next({
+      useCase: 'edit',
+      labelId: labelId,
+    });
   }
 }

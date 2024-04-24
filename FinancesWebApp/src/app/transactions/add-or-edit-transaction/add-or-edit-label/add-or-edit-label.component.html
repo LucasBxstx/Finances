@@ -14,5 +14,10 @@
             <div class="color" [ngStyle]="{'background-color': editingColor}"></div>
             <button>Choose</button>
         </div>
+
+        <button class="save" (click)="saveLabel()">
+            <span *ngIf="!showSavingSpinner">{{addOrEditData.useCase === 'add' ? 'Add Label' : 'Save Changes'}}</span>
+            <app-spinner *ngIf="showSavingSpinner"></app-spinner>
+        </button>
     </div>
 </div>

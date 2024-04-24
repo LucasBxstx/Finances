@@ -30,8 +30,9 @@
             <!-- <input type="text" placeholder="e.g. Food" [(ngModel)]="editingLabelId"> -->
             <div class="labels-list">
                 <button (click)="addLabel()">Add Label</button>
+                <button (click)="labelEditingMode = !labelEditingMode" class="edit-button" [ngClass]="{editing: labelEditingMode}">Edit</button>
                 <div *ngFor="let label of (labels$ | async)" class="label" [ngStyle]="{'background-color': label.color}"
-                    (click)="editingLabelId = label.id" (click)="editLabel(label.id)"
+                    (click)="handleLabelClick(label.id)"
                     [ngClass]="{selected: label.id === editingLabelId}">{{label.name}}</div>
             </div>
         </div>
@@ -43,7 +44,7 @@
         </div>
 
         <button class="save" (click)="saveTransaction()">
-            <span *ngIf="!showSpinner"> {{addOrEditData.useCase === 'add' ? 'Add' : 'Save'}} Transaction</span>
+            <span *ngIf="!showSpinner"> {{addOrEditData.useCase === 'add' ? 'Add Transaction' : 'Save Changes'}}</span>
             <app-spinner *ngIf="showSpinner"></app-spinner>
         </button>
     </div>
@@ -51,4 +52,5 @@
 
 <app-add-or-edit-label *ngIf="(currentAddedOrEditedLabel |async) !== null"
     [addOrEditData]="(currentAddedOrEditedLabel |async)!"
-    (closedWindow)="closeAddOrEditLabelWindow()"></app-add-or-edit-label>
+    (closedWindow)="closeAddOrEditLabelWindow()">
+</app-add-or-edit-label>

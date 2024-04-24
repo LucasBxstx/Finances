@@ -123,6 +123,12 @@
                     font-weight: bold;
                 }
             }
+
+            .edit-button{
+                &.editing {
+                    background-color: aquamarine;
+                }
+            }
         }
     }
 
