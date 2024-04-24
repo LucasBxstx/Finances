@@ -105,11 +105,18 @@
         
         .labels-list {
             display: flex;
+            flex-wrap: wrap;
 
             button {
                 padding: 0.2rem 1.2rem; 
                 margin: 0.5rem;
                 border-radius: 10px;
+                max-width: 3rem;
+
+                .edit-icon {
+                    width: 15px;
+                    padding: 3px;
+                }
             }
 
             .label {
@@ -117,6 +124,9 @@
                 padding: 0.2rem 1.2rem; 
                 margin: 0.5rem;
                 border-radius: 10px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
 
                 &.selected {
                     border: 1px solid white;
@@ -126,7 +136,7 @@
 
             .edit-button{
                 &.editing {
-                    background-color: aquamarine;
+                    background-color: rgb(11, 212, 145);
                 }
             }
         }

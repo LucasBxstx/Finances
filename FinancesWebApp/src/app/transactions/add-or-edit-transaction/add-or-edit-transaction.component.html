@@ -29,8 +29,10 @@
             <div class="bold">Label:</div>
             <!-- <input type="text" placeholder="e.g. Food" [(ngModel)]="editingLabelId"> -->
             <div class="labels-list">
-                <button (click)="addLabel()">Add Label</button>
-                <button (click)="labelEditingMode = !labelEditingMode" class="edit-button" [ngClass]="{editing: labelEditingMode}">Edit</button>
+                <button (click)="addLabel()">+</button>
+                <button (click)="labelEditingMode = !labelEditingMode" class="edit-button" [ngClass]="{editing: labelEditingMode}">
+                    <img class="edit-icon" src="assets/icons/edit.svg">
+                </button>
                 <div *ngFor="let label of (labels$ | async)" class="label" [ngStyle]="{'background-color': label.color}"
                     (click)="handleLabelClick(label.id)"
                     [ngClass]="{selected: label.id === editingLabelId}">{{label.name}}</div>

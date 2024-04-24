@@ -11,8 +11,9 @@
 
         <div class="label-color">
             <div class="bold">Color:</div>
-            <div class="color" [ngStyle]="{'background-color': editingColor}"></div>
-            <button>Choose</button>
+            <div class="color" [style.background]="editingColor"></div>
+            <button [(colorPicker)]="editingColor" [cpOutputFormat]="'hex'">Choose</button>
+            
         </div>
 
         <button class="save" (click)="saveLabel()">

@@ -6,11 +6,12 @@ import { LabelService } from '../../../shared/services/label.service';
 import { Subject, takeUntil } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @Component({
   selector: 'app-add-or-edit-label',
   standalone: true,
-  imports: [FormsModule, NgStyle, SpinnerComponent, NgIf],
+  imports: [FormsModule, NgStyle, SpinnerComponent, NgIf, ColorPickerModule],
   templateUrl: './add-or-edit-label.component.html',
   styleUrl: './add-or-edit-label.component.scss'
 })
@@ -19,7 +20,7 @@ export class AddOrEditLabelComponent implements OnInit, OnDestroy{
   private readonly labelService = inject(LabelService);
 
   public editingName: string | null = null;
-  public editingColor: string | null = null;
+  public editingColor: string = '#FFFFFF';
   private rowVersion: string | null = null;
 
   public showSavingSpinner = false;
