@@ -10,6 +10,7 @@ import { TransactionService } from '../shared/services/transaction.service';
 import { MonthlyCategoryStatisticComponent } from './monthly-category-statistic/monthly-category-statistic.component';
 import { AllMonthCategoryData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup } from '../shared/models/statistics';
 import { LabelService } from '../shared/services/label.service';
+import { getCategoryDataOfSelectedYearGroupedByMonth, getTransactionsGroupedPerMonth } from '../shared/utils/statistics.utils';
 
 @Component({
   selector: 'app-statistics',
@@ -32,28 +33,7 @@ export class StatisticsComponent {;
   private readonly transactionData$: Observable<TransactionView> = this.transactionService.getTransactions('6104cf02-6adf-45da-8e0b-f32946e3cf13');
 
   private readonly transactionsGroupedByYearAndMonth$: Observable<MonthTransactionGroup[]> = this.transactionData$
-    .pipe(map((transactionData) => {
-      const transactionsGroupedPerMonth: MonthTransactionGroup[] = []
-      
-      transactionData.transactions.forEach((transaction) => {
-        const transactionYear = new Date(transaction.date).getFullYear();
-        const transactionMonth =  new Date(transaction.date).getMonth();
-        const group = transactionsGroupedPerMonth.find((group) => group.year === transactionYear && group.month === transactionMonth)
-
-        if(!group){
-          transactionsGroupedPerMonth.push({
-            year: transactionYear,
-            month: transactionMonth,
-            transactions: [transaction],
-          });
-        }
-
-        else group.transactions.push(transaction);
-      });
-
-      return transactionsGroupedPerMonth;
-    }
-  ));
+    .pipe(map((transactionData) => getTransactionsGroupedPerMonth(transactionData.transactions)));
 
   private readonly transactionsOfThisYearGroupedByMonth$: Observable<MonthTransactionGroup[]> = combineLatest([this.selectedYear$, this.transactionsGroupedByYearAndMonth$]).pipe(
     map(([selectedYear, transactionGroups]) =>
@@ -63,54 +43,7 @@ export class StatisticsComponent {;
   public readonly categoryDataOfSelectedYearGroupedByMonth$: Observable<AllMonthCategoryData> = combineLatest([
       this.labelService.getLabels('6104cf02-6adf-45da-8e0b-f32946e3cf13'),
       this.transactionsOfThisYearGroupedByMonth$
-    ]).pipe(map(([labels, transactionsGroupedByMonth]) => {
-      // Here transactionsGroupedByMonth contain only transactions of the selected year and are grouped by month.
-
-      const monthlyValuesOverTheYear: MonthlyCategoryValues[] =[];
-      // Contains all data for the aggregated label data over all months of the selected year.
-
-      transactionsGroupedByMonth.forEach((monthlyCategoryData) => {
-        // Aggregate label data for each month
-        var labelWithValues: LabelWithValues[] = [];
-
-        labels.forEach((label)=> {
-          labelWithValues.push({
-            labelId: label.id,
-            sumOfTransactionValues: 0,
-            transactionsCount: 0,
-          });
-        });
-        
-
-        monthlyCategoryData.transactions.forEach((transaction)=>{
-          // Aggregate prices of the transactions for each label
-          const accordingLabelGroup = labelWithValues.find((label) => label.labelId === transaction.labelId);
-          
-          if (accordingLabelGroup) {
-            accordingLabelGroup.sumOfTransactionValues += transaction.price * (transaction.transactionType === TransactionType.Expense ? -1 : 1);
-            accordingLabelGroup.transactionsCount ++;
-          }
-        });
-
-        var totalBilancePerMonthOverAllLabels = 0;
-        labelWithValues.forEach((label)=> {
-          totalBilancePerMonthOverAllLabels += label.sumOfTransactionValues;
-        })
-        
-        monthlyValuesOverTheYear.push({
-          month: monthlyCategoryData.month,
-          labelsWithValues: labelWithValues,
-          totalBilance: totalBilancePerMonthOverAllLabels,
-        });
-      });
-
-      const allMonthCategoryData: AllMonthCategoryData = {
-        labels: labels,
-        monthlyValues: monthlyValuesOverTheYear,
-      };
-
-      return allMonthCategoryData;
-    }));
+    ]).pipe(map(([labels, transactionsGroupedByMonth]) => getCategoryDataOfSelectedYearGroupedByMonth(labels, transactionsGroupedByMonth)));
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData.oldestTransactionDate));
