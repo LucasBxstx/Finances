@@ -16,12 +16,21 @@
         flex-direction: column;
     }
 
+    .label {
+        cursor: pointer;
+    }
+
     .columns {
         display: flex;
         flex-direction: column;
         width: 120px;
         justify-content: center;
         align-items: center;
+    }
+
+    .selected {
+        border: 1px solid white;
+        font-weight: bold;
     }
     
     .top-row {

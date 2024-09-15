@@ -14,11 +14,12 @@ import { getCategoryDataOfSelectedYearGroupedByMonth, getMonthString, getTransac
 import { ChartComponent } from "./chart/chart.component";
 import { EChartsOption } from 'echarts';
 import { GetMonthPipe } from '../shared/pipes/getMonth.pipe';
+import { InteractiveTableChartComponent } from "./interactive-table-chart/interactive-table-chart.component";
 
 @Component({
   selector: 'app-statistics',
   standalone: true,
-  imports: [NgClass, DropMenuComponent, AsyncPipe, MonthlyCategoryStatisticComponent, ChartComponent, GetMonthPipe],
+  imports: [NgClass, DropMenuComponent, AsyncPipe, MonthlyCategoryStatisticComponent, ChartComponent, GetMonthPipe, InteractiveTableChartComponent],
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.scss'
 })

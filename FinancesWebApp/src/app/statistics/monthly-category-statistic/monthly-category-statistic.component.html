@@ -1,10 +1,10 @@
 <div class="table" *ngIf="allMonthCategoryData">
     <div class="labels">
         <div class="top-row">Label / Month</div>
-        <div class="cell label" *ngFor="let label of allMonthCategoryData.labels"
-            [ngStyle]="{'background-color': label.color}">{{label.name}}</div>
+        <div class="cell label" [ngClass]="{selected: label.id === selectedLabelId}" *ngFor="let label of allMonthCategoryData.labels"
+            [ngStyle]="{'background-color': label.color}" (click)="selectedLabelChanged.emit(label.id)">{{label.name}}</div>
         <div class="split invisible"></div>
-        <div class="cell">Total</div>
+        <div class="cell label" [ngClass]="{selected: selectedLabelId === null}" (click)="selectedLabelChanged.emit(null)">Total</div>
     </div>
 
     <div class="columns" *ngFor="let monthlyCategoryData of allMonthCategoryData.monthlyValues">
@@ -18,3 +18,5 @@
             {{monthlyCategoryData.totalBilance }}</div>
     </div>
 </div>
+
+<app-chart></app-chart>
