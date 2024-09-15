@@ -89,10 +89,10 @@ export function getMonthString(monthNumeric: number): string {
   return monthsAlphabetic[monthNumeric -1];
 }
 
-export function getTransactionBilanceBarChartData(months: string[], bilancePerMonth: number[]): EChartsOption {
+export function getTransactionBilanceBarChartData(months: string[], bilancePerMonth: number[], labelName?: string): EChartsOption {
   return {
     title: {
-      text: 'Transaction bilance over the year',
+      text: labelName ? `Transaction bilance over the year | Filter: ${labelName}` :'Transaction bilance over the year',
       left: 'center',
       top: '10px',
       textStyle: {

@@ -26,23 +26,23 @@ export class InteractiveTableChartComponent implements OnChanges {
     const months: string[] = [];
     const bilancePerMonth: number[] = [];
 
-    if(!selectedLabelId){
-      this.allMonthCategoryData.monthlyValues.forEach((monthData)=>{
-        months.push(getMonthString(monthData.month));
-        bilancePerMonth.push(monthData.totalBilance);
-      })
-    }
+    this.allMonthCategoryData.monthlyValues.forEach((monthData)=>{
+      months.push(getMonthString(monthData.month));
 
-    else {
-      this.allMonthCategoryData.monthlyValues.forEach((monthData) => {
-        months.push(getMonthString(monthData.month));
-        const selectedLabelData = monthData.labelsWithValues.find((label) => label.labelId === selectedLabelId);
+      if(!selectedLabelId) bilancePerMonth.push(monthData.totalBilance);
+      else {
+          this.allMonthCategoryData!.monthlyValues.forEach((monthData) => {
+          const selectedLabelData = monthData.labelsWithValues.find((label) => label.labelId === selectedLabelId);
+          bilancePerMonth.push(selectedLabelData ? selectedLabelData.sumOfTransactionValues : 0);
+        });
+      }
+    });
 
-        bilancePerMonth.push(selectedLabelData ? selectedLabelData.sumOfTransactionValues : 0);
-      });
-    }
 
-    const chartOptions = getTransactionBilanceBarChartData(months, bilancePerMonth);
+    const label = this.allMonthCategoryData.labels.find((label)=> label.id === selectedLabelId);
+    const labelName = label?.name; 
+    
+    const chartOptions = getTransactionBilanceBarChartData(months, bilancePerMonth, labelName);
 
     return chartOptions;
   }));
