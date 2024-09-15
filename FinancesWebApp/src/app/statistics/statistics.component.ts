@@ -58,21 +58,6 @@ export class StatisticsComponent {;
       this.transactionsOfThisYearGroupedByMonth$
     ]).pipe(map(([labels, transactionsGroupedByMonth]) => getCategoryDataOfSelectedYearGroupedByMonth(labels, transactionsGroupedByMonth)));
 
-
-    public readonly transactionBilanceOverYear$: Observable<EChartsOption> = this.categoryDataOfSelectedYearGroupedByMonth$.pipe(map((data)=>{
-      const months: string[] = [];
-      const bilancePerMonth: number[] = [];
-  
-      data.monthlyValues.forEach((month)=>{
-        months.push(getMonthString(month.month));
-        bilancePerMonth.push(month.totalBilance);
-      })
-  
-      const chartOptions = getTransactionBilanceBarChartData(months, bilancePerMonth);
-  
-      return chartOptions;
-    }));
-
   public navigateTo(page: pageType): void {
     combineLatest([this.selectedYear$, this.selectedMonth$]).pipe(takeUntil(this.unsubscribe)).subscribe(([year, month]) => {
       this.router.navigate([`/${page}`], {

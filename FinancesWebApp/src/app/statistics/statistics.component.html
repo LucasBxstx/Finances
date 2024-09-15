@@ -15,8 +15,4 @@
 <app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async"
     (valueChanged)="changeMonth($event)"></app-drop-menu>
 
-<!-- <app-monthly-category-statistic [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async"></app-monthly-category-statistic>
-
-<app-chart [chartOptions]="transactionBilanceOverYear$ | async"></app-chart> -->
-
 <app-interactive-table-chart [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async"></app-interactive-table-chart>

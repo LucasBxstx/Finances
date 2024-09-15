@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
 import { MonthlyCategoryStatisticComponent } from '../monthly-category-statistic/monthly-category-statistic.component';
 import { ChartComponent } from '../chart/chart.component';
 import { AllMonthCategoryData } from '../../shared/models/statistics';
@@ -14,11 +14,11 @@ import { AsyncPipe } from '@angular/common';
   templateUrl: './interactive-table-chart.component.html',
   styleUrl: './interactive-table-chart.component.scss'
 })
-export class InteractiveTableChartComponent {
+export class InteractiveTableChartComponent implements OnChanges {
 
   @Input() public allMonthCategoryData: AllMonthCategoryData | null = null;
 
-  private readonly selectedLabelId$ = new BehaviorSubject<number| null>(null);
+  public readonly selectedLabelId$ = new BehaviorSubject<number| null>(null);
 
   public readonly chartOptions$: Observable<EChartsOption | null> = this.selectedLabelId$.pipe(map((selectedLabelId)=>{
     if(!this.allMonthCategoryData) return null;
@@ -46,6 +46,10 @@ export class InteractiveTableChartComponent {
 
     return chartOptions;
   }));
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if('allMonthCategoryData' in changes) this.selectedLabelChanged(null);
+  }
 
   public selectedLabelChanged(labelId: number | null): void {
     this.selectedLabelId$.next(labelId);
