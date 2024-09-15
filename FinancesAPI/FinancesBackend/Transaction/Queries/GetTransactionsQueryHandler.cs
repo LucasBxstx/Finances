@@ -73,6 +73,10 @@ namespace FinancesBackend.Transaction.Queries
 
                 transactionView.PriorBalance = priorBalance;
             }
+            else
+            {
+                transactionView.OldestTransactionDate = transactions.Min(t => t.Date);
+            }
 
             return transactionView;
         }

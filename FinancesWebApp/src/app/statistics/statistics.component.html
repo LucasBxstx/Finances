@@ -1,1 +1,18 @@
-<p>statistics works!</p>
+<div class="heading">My Finances</div>
+
+<div class="division"></div>
+
+<div class="navbar">
+    <div class="selector" (click)="navigateTo('transactions')">Transactions</div>
+    <div class="selector" [ngClass]="'selected'" (click)="navigateTo('statistics')">Statistics</div>
+</div>
+
+<div class="division space"></div>
+
+<app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
+    [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
+
+<app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async"
+    (valueChanged)="changeMonth($event)"></app-drop-menu>
+
+<app-monthly-category-statistic [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async"></app-monthly-category-statistic>

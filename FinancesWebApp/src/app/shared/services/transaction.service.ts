@@ -15,6 +15,7 @@ export class TransactionService {
   }
 
   public getTransactions(userId: string, startDate: Date | null = null, endDate: Date | null = null): Observable<TransactionView> {
+    // if startDate and endDate are null, the request will get all transactions
     if (startDate && endDate) {
       return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all?userId=${userId}&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
     }

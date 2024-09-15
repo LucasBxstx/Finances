@@ -1,0 +1,52 @@
+:host {
+    display: block;
+    margin: 0 15vw;
+    user-select: none;
+
+    @media screen and (max-width: 500px) {
+        margin: 0 0.5rem;
+    }
+  }
+
+.heading {
+    font-weight: bold;
+    font-size: 3vmax;
+    text-align: center;
+    margin: 2rem;
+}
+
+.division {
+    height: 1px;
+    background-color: rgb(64, 64, 64);
+}
+
+.space {
+    margin-bottom: 3rem;
+}
+
+.bottom {
+    height: 3rem;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-around;
+
+    .selector {
+        font-size: max(1rem, 2vmin);
+        cursor: pointer;
+        color: rgb(255, 255, 255);
+
+        &.selected {
+            color: rgb(184, 223, 255);
+        }
+    }
+}
+
+app-drop-menu {
+    margin: 1rem 0;
+}
+
+.year {
+    z-index: 1;
+}

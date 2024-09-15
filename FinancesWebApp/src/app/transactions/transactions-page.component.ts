@@ -72,7 +72,13 @@ export class TransactionsPageComponent implements OnDestroy {
   }
 
   public navigateTo(page: pageType): void {
-    this.router.navigate([`/${page}`]);
+    combineLatest([this.selectedYear$, this.selectedMonth$]).pipe(takeUntil(this.unsubscribe)).subscribe(([year, month]) => {
+      this.router.navigate([`/${page}`], {
+        queryParams: {
+          year: year, month: month,
+        }
+      });
+    })
   }
 
   public changeYear(year: number): void {
