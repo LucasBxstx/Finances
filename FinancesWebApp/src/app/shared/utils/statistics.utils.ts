@@ -29,6 +29,24 @@ export function getCategoryDataOfSelectedYearGroupedByMonth(labels: Label[], tra
     const monthlyValuesOverTheYear: MonthlyCategoryValues[] =[];
       // Contains all data for the aggregated label data over all months of the selected year.
 
+      var labelWithValuesConstruct: LabelWithValues[] = [];
+
+      labels.forEach((label)=> {
+        labelWithValuesConstruct.push({
+          labelId: label.id,
+          sumOfTransactionValues: 0,
+          transactionsCount: 0,
+        });
+      });
+
+      for(let month = 1 ; month <= 12 ; month++){
+        monthlyValuesOverTheYear.push({
+          month: month,
+          labelsWithValues: labelWithValuesConstruct,
+          totalBilance: 0,
+        });
+      }
+
       transactionsGroupedByMonth.forEach((monthlyCategoryData) => {
         // Aggregate label data for each month
         var labelWithValues: LabelWithValues[] = [];
@@ -56,12 +74,13 @@ export function getCategoryDataOfSelectedYearGroupedByMonth(labels: Label[], tra
         labelWithValues.forEach((label)=> {
           totalBilancePerMonthOverAllLabels += label.sumOfTransactionValues;
         })
+
+        var accordingMonthEntry = monthlyValuesOverTheYear.find((month) => month.month === monthlyCategoryData.month);
         
-        monthlyValuesOverTheYear.push({
-          month: monthlyCategoryData.month,
-          labelsWithValues: labelWithValues,
-          totalBilance: totalBilancePerMonthOverAllLabels,
-        });
+        if(accordingMonthEntry){
+          accordingMonthEntry.labelsWithValues = labelWithValues;
+          accordingMonthEntry.totalBilance = totalBilancePerMonthOverAllLabels;
+        }
       });
 
       const allMonthCategoryData: AllMonthCategoryData = {
@@ -74,7 +93,7 @@ export function getCategoryDataOfSelectedYearGroupedByMonth(labels: Label[], tra
 
 export function getMonthString(monthNumeric: number): string {
   const monthsAlphabetic = ["January", "February", "March", "April","May", "June", "July", "August", "September", "October", "November", "December"];
-  return monthsAlphabetic[monthNumeric - 1];
+  return monthsAlphabetic[monthNumeric];
 }
 
 export function getTransactionBilanceBarChartData(months: string[], bilancePerMonth: number[]): EChartsOption {
