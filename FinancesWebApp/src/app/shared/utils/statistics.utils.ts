@@ -1,7 +1,7 @@
 import { EChartsOption } from "echarts";
 import { Label } from "../models/label";
 import { AllMonthCategoryData, LabelWithData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup, pieChartData } from "../models/statistics";
-import { Transaction, TransactionType } from "../models/transaction";
+import { Transaction, TransactionType, TransactionView } from "../models/transaction";
 
 export function getTransactionsGroupedPerMonth(transactions: Transaction[]): MonthTransactionGroup[] {
     const transactionsGroupedPerMonth: MonthTransactionGroup[] = []
@@ -141,9 +141,12 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
   
   return {
     title: {
-      text: 'Referer of a Website',
-      subtext: 'Fake Data',
-      left: 'center'
+      text: 'Label share of all transactions',
+      left: 'center',
+      top: '10px',
+      textStyle: {
+        color: '#ffffff'
+      }
     },
     tooltip: {
       trigger: 'item'
@@ -163,9 +166,51 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
             shadowBlur: 10,
             shadowOffsetX: 0,
             shadowColor: 'rgba(0, 0, 0, 0.5)'
+          },
+          label: {
+            show: true,
+            fontSize: '16',
+            fontWeight: 'normal',
+            color: 'white',             // Schriftfarbe
+            textBorderColor: 'transparent',  // Umrandungsfarbe auf transparent setzen
+            textBorderWidth: 0,         // Umrandungsbreite auf 0 setzen
+            textShadowColor: 'none',    // Kein Schatten
+            textShadowBlur: 0,           // Schattenunschärfe auf 0 setzen
+            
           }
         }
       }
     ]
   };
+}
+
+export function calculateLabelShareData(transactionData: TransactionView, labels: Label[]){
+  const labelsWithValues: LabelWithData[] = []
+
+  transactionData.transactions.forEach((transaction)=>{
+    if (transaction.transactionType !== TransactionType.Expense || transaction.labelId === null) return;
+
+    const accordingLabelGroup = labelsWithValues.find((entry)=>entry.labelId === transaction.labelId);
+
+    if (accordingLabelGroup) {
+      accordingLabelGroup.sumOfTransactionValues += transaction.price;
+      accordingLabelGroup.transactionsCount ++;
+    }
+
+    else {
+      const labelData = labels.find((label)=> label.id === transaction.labelId);
+      const labelName = labelData?.name ?? 'error';
+      const labelColor = labelData?.color ?? 'grey';
+
+      labelsWithValues.push({
+        labelId: transaction.labelId,
+        labelName: labelName,
+        labelColor: labelColor,
+        sumOfTransactionValues: transaction.price,
+        transactionsCount: 1,
+      })
+    }
+  });
+
+  return labelsWithValues;
 }

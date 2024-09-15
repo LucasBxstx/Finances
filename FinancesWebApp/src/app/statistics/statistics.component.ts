@@ -10,7 +10,7 @@ import { TransactionService } from '../shared/services/transaction.service';
 import { MonthlyCategoryStatisticComponent } from './monthly-category-statistic/monthly-category-statistic.component';
 import { AllMonthCategoryData, LabelWithData, LabelWithValues, MonthTransactionGroup } from '../shared/models/statistics';
 import { LabelService } from '../shared/services/label.service';
-import { getCategoryDataOfSelectedYearGroupedByMonth, getMonthString, getTransactionBilanceBarChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth } from '../shared/utils/statistics.utils';
+import { calculateLabelShareData, getCategoryDataOfSelectedYearGroupedByMonth, getMonthString, getTransactionBilanceBarChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth } from '../shared/utils/statistics.utils';
 import { ChartComponent } from "./chart/chart.component";
 import { EChartsOption } from 'echarts';
 import { GetMonthPipe } from '../shared/pipes/getMonth.pipe';
@@ -74,30 +74,7 @@ export class StatisticsComponent {;
       //   return transactionDate <= endDate && transactionDate >= startDate;
       // });
 
-      const labelsWithValues: LabelWithData[] = []
-      transactionData.transactions.forEach((transaction)=>{
-        if (transaction.transactionType !== TransactionType.Expense || transaction.labelId === null) return;
-
-        const accordingLabelGroup = labelsWithValues.find((entry)=>entry.labelId === transaction.labelId);
-
-        if (accordingLabelGroup) {
-          accordingLabelGroup.sumOfTransactionValues += transaction.price;
-          accordingLabelGroup.transactionsCount ++;
-        }
-        else {
-          const labelData = labels.find((label)=> label.id === transaction.labelId);
-          const labelName = labelData?.name ?? 'error';
-          const labelColor = labelData?.color ?? 'grey';
-
-          labelsWithValues.push({
-            labelId: transaction.labelId,
-            labelName: labelName,
-            labelColor: labelColor,
-            sumOfTransactionValues: transaction.price,
-            transactionsCount: 1,
-          })
-        }
-      });
+      const labelsWithValues = calculateLabelShareData(transactionData, labels);
 
       return labelsWithValues;
       }));
