@@ -30,14 +30,7 @@ export function getCategoryDataOfSelectedYearGroupedByMonth(labels: Label[], tra
       // Contains all data for the aggregated label data over all months of the selected year.
 
       var labelWithValuesConstruct: LabelWithValues[] = [];
-
-      labels.forEach((label)=> {
-        labelWithValuesConstruct.push({
-          labelId: label.id,
-          sumOfTransactionValues: 0,
-          transactionsCount: 0,
-        });
-      });
+      labels.forEach((label) => labelWithValuesConstruct.push(getLabelWithEmptyValues(label.id)));
 
       for(let month = 1 ; month <= 12 ; month++){
         monthlyValuesOverTheYear.push({
@@ -50,16 +43,8 @@ export function getCategoryDataOfSelectedYearGroupedByMonth(labels: Label[], tra
       transactionsGroupedByMonth.forEach((monthlyCategoryData) => {
         // Aggregate label data for each month
         var labelWithValues: LabelWithValues[] = [];
-
-        labels.forEach((label)=> {
-          labelWithValues.push({
-            labelId: label.id,
-            sumOfTransactionValues: 0,
-            transactionsCount: 0,
-          });
-        });
+        labels.forEach((label) => labelWithValues.push(getLabelWithEmptyValues(label.id)));
         
-
         monthlyCategoryData.transactions.forEach((transaction)=>{
           // Aggregate prices of the transactions for each label
           const accordingLabelGroup = labelWithValues.find((label) => label.labelId === transaction.labelId);
@@ -89,6 +74,14 @@ export function getCategoryDataOfSelectedYearGroupedByMonth(labels: Label[], tra
       };
 
       return allMonthCategoryData;
+}
+
+export function getLabelWithEmptyValues(labelId: number) {
+  return {
+    labelId: labelId,
+    sumOfTransactionValues: 0,
+    transactionsCount: 0,
+  }
 }
 
 export function getMonthString(monthNumeric: number): string {

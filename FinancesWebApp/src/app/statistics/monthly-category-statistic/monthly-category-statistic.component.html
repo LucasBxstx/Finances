@@ -1,15 +1,20 @@
 <div class="table" *ngIf="allMonthCategoryData">
     <div class="labels">
         <div class="top-row">Label / Month</div>
-        <div class="cell label" *ngFor="let label of allMonthCategoryData.labels" [ngStyle]="{'background-color': label.color}">{{label.name}}</div>
+        <div class="cell label" *ngFor="let label of allMonthCategoryData.labels"
+            [ngStyle]="{'background-color': label.color}">{{label.name}}</div>
         <div class="split invisible"></div>
         <div class="cell">Total</div>
     </div>
 
     <div class="columns" *ngFor="let monthlyCategoryData of allMonthCategoryData.monthlyValues">
         <div class="cell">{{monthlyCategoryData.month | getMonth}}</div>
-        <div class="cell" *ngFor="let labelWithValues of monthlyCategoryData.labelsWithValues" [ngClass]="labelWithValues.sumOfTransactionValues >= 0 ? 'green' : 'red'">{{labelWithValues.sumOfTransactionValues}}</div>
+        <div class="cell" *ngFor="let labelWithValues of monthlyCategoryData.labelsWithValues"
+        [ngClass]="{green: labelWithValues.sumOfTransactionValues > 0, red: labelWithValues.sumOfTransactionValues < 0, grey: labelWithValues.sumOfTransactionValues === 0}">
+            {{labelWithValues.sumOfTransactionValues}}</div>
         <div class="split"></div>
-        <div class="cell" [ngClass]="monthlyCategoryData.totalBilance >= 0 ? 'green' : 'red'">{{monthlyCategoryData.totalBilance }}</div>
+        <div class="cell"
+            [ngClass]="{green: monthlyCategoryData.totalBilance > 0, red: monthlyCategoryData.totalBilance < 0, grey: monthlyCategoryData.totalBilance === 0}">
+            {{monthlyCategoryData.totalBilance }}</div>
     </div>
 </div>
