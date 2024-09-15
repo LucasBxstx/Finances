@@ -21,7 +21,9 @@
     "@angular/platform-browser-dynamic": "^17.0.0",
     "@angular/router": "^17.0.0",
     "@ngneat/transloco": "^6.0.4",
+    "echarts": "^5.5.1",
     "ngx-color-picker": "^16.0.0",
+    "ngx-echarts": "^18.0.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"

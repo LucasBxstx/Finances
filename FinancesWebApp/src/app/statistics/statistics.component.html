@@ -16,3 +16,5 @@
     (valueChanged)="changeMonth($event)"></app-drop-menu>
 
 <app-monthly-category-statistic [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async"></app-monthly-category-statistic>
+
+<app-chart [chartOptions]="transactionBilanceOverYear$ | async"></app-chart>

@@ -1,3 +1,4 @@
+import { EChartsOption } from "echarts";
 import { Label } from "../models/label";
 import { AllMonthCategoryData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup } from "../models/statistics";
 import { Transaction, TransactionType } from "../models/transaction";
@@ -69,4 +70,46 @@ export function getCategoryDataOfSelectedYearGroupedByMonth(labels: Label[], tra
       };
 
       return allMonthCategoryData;
+}
+
+export function getMonthString(monthNumeric: number): string {
+  const monthsAlphabetic = ["January", "February", "March", "April","May", "June", "July", "August", "September", "October", "November", "December"];
+  return monthsAlphabetic[monthNumeric - 1];
+}
+
+export function getTransactionBilanceBarChartData(months: string[], bilancePerMonth: number[]): EChartsOption {
+  return {
+    title: {
+      text: 'Transaction bilance over the year',
+      left: 'center',
+      top: '10px',
+      textStyle: {
+        color: '#ffffff'
+      }
+    },
+    xAxis: {
+      type: 'category',
+      data: months,
+    },
+    yAxis: {
+      type: 'value',
+      splitLine: {
+        lineStyle: {
+          color: 'rgb(64, 64, 64)',
+        }
+      }
+    },
+    series: [
+      {
+        data: bilancePerMonth,
+        type: 'bar',
+        itemStyle: {
+          color: (params) => {
+            const value = params.value as number;
+            return (value >= 0 ? 'rgb(13, 163, 13)' : 'rgb(216, 21, 21)');
+          }
+        }
+      }
+    ]
+  };
 }
