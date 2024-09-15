@@ -86,7 +86,7 @@ export function getLabelWithEmptyValues(labelId: number) {
 
 export function getMonthString(monthNumeric: number): string {
   const monthsAlphabetic = ["January", "February", "March", "April","May", "June", "July", "August", "September", "October", "November", "December"];
-  return monthsAlphabetic[monthNumeric];
+  return monthsAlphabetic[monthNumeric -1];
 }
 
 export function getTransactionBilanceBarChartData(months: string[], bilancePerMonth: number[]): EChartsOption {
