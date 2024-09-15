@@ -16,3 +16,5 @@
     (valueChanged)="changeMonth($event)"></app-drop-menu>
 
 <app-interactive-table-chart [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async"></app-interactive-table-chart>
+
+<app-chart [chartOptions]="labelSharePrice$ |async"></app-chart>

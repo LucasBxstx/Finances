@@ -1,6 +1,6 @@
 import { EChartsOption } from "echarts";
 import { Label } from "../models/label";
-import { AllMonthCategoryData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup } from "../models/statistics";
+import { AllMonthCategoryData, LabelWithData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup, pieChartData } from "../models/statistics";
 import { Transaction, TransactionType } from "../models/transaction";
 
 export function getTransactionsGroupedPerMonth(transactions: Transaction[]): MonthTransactionGroup[] {
@@ -119,6 +119,50 @@ export function getTransactionBilanceBarChartData(months: string[], bilancePerMo
           color: (params) => {
             const value = params.value as number;
             return (value >= 0 ? 'rgb(13, 163, 13)' : 'rgb(216, 21, 21)');
+          }
+        }
+      }
+    ]
+  };
+}
+
+export function getTransactionLabelSharePieChartData(labelWithData: LabelWithData[]): EChartsOption {
+  const pieChartData : pieChartData[] = [];
+
+  console.log('labelWithData',labelWithData)
+
+  labelWithData.forEach((labelData)=>{
+    pieChartData.push({
+      name: labelData.labelName,
+      value: labelData.sumOfTransactionValues,
+      itemStyle: {color: labelData.labelColor},
+    })
+  })
+  
+  return {
+    title: {
+      text: 'Referer of a Website',
+      subtext: 'Fake Data',
+      left: 'center'
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left'
+    },
+    series: [
+      {
+        name: 'Access From',
+        type: 'pie',
+        radius: '50%',
+        data: pieChartData,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
           }
         }
       }
