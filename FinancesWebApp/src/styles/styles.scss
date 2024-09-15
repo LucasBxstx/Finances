@@ -66,5 +66,23 @@ button:hover {
     background-color: rgb(198, 198, 209);
 }
 
-// html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+::-webkit-scrollbar {
+    width: 15px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(24, 24, 24);    
+    border-radius: 5px;       
+  }
+  
+::-webkit-scrollbar-thumb {
+    background-color: rgb(24, 24, 24);    
+    border-radius: 5px;       
+    border: 1px solid rgb(109, 109, 109);  
+  }
+  
+::-webkit-scrollbar-thumb:hover {
+    background: #2e0202;          
+  }
