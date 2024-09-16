@@ -1,8 +1,8 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { AllMonthCategoryData } from '../../shared/models/statistics';
 import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
-import { GetMonthPipe } from '../../shared/pipes/getMonth.pipe';
 import { ChartComponent } from "../chart/chart.component";
+import { GetMonthPipe } from '../../shared/pipes/getMonth.pipe';
 
 @Component({
   selector: 'app-monthly-category-statistic',

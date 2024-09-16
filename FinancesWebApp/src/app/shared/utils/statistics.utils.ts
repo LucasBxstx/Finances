@@ -60,7 +60,7 @@ export function getCategoryDataOfSelectedYearGroupedByMonth(labels: Label[], tra
           totalBilancePerMonthOverAllLabels += label.sumOfTransactionValues;
         })
 
-        var accordingMonthEntry = monthlyValuesOverTheYear.find((month) => month.month === monthlyCategoryData.month);
+        var accordingMonthEntry = monthlyValuesOverTheYear.find((month) => month.month === monthlyCategoryData.month + 1);
         
         if(accordingMonthEntry){
           accordingMonthEntry.labelsWithValues = labelWithValues;
@@ -86,7 +86,7 @@ export function getLabelWithEmptyValues(labelId: number) {
 
 export function getMonthString(monthNumeric: number): string {
   const monthsAlphabetic = ["January", "February", "March", "April","May", "June", "July", "August", "September", "October", "November", "December"];
-  return monthsAlphabetic[monthNumeric -1];
+  return monthsAlphabetic[monthNumeric - 1];
 }
 
 export function getTransactionBilanceBarChartData(months: string[], bilancePerMonth: number[], labelName?: string): EChartsOption {
