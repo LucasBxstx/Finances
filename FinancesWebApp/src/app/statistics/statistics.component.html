@@ -12,13 +12,16 @@
 <app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
     [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
 
-<app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async"
-    (valueChanged)="changeMonth($event)"></app-drop-menu>
-
 <app-interactive-table-chart [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async"></app-interactive-table-chart>
 
-<app-drop-menu class="pie-chart-drop-down-start-month" [description]="'Start month'" [translateMonth]="true" [currentValue]="pieChartSelectedStartMonth$ | async" 
+<div class="drop-menu-row">
+    <app-drop-menu class="pie-chart-drop-down-start-month" [description]="'Filter from'" [translateMonth]="true" [currentValue]="pieChartSelectedStartMonth$ | async" 
     [valueList]="availableMonths$ | async" (valueChanged)="changePieChartSelectedStartMonth($event)"></app-drop-menu>
+
+    <app-drop-menu class="pie-chart-drop-down-start-month" [description]="'to'" [translateMonth]="true" [currentValue]="pieChartSelectedEndMonth$ | async" 
+    [valueList]="availableMonths$ | async" (valueChanged)="changePieChartSelectedEndMonth($event)"></app-drop-menu>
+</div>
+
 
 <div class="row">
     <app-chart [chartOptions]="labelSharePrice$ |async"></app-chart>

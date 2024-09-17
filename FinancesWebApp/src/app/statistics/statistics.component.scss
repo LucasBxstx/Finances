@@ -43,7 +43,7 @@
     }
 }
 
-app-drop-menu {
+app-interactive-table-chart {
     margin: 1rem 0;
 }
 
@@ -68,8 +68,16 @@ app-drop-menu {
     app-chart{
         flex: 50%;
     }
+}
 
-    
+.drop-menu-row {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+
+    app-drop-menu {
+        width: 100%;
+    }
 }
 
 @media screen and (max-width: 1450px) {

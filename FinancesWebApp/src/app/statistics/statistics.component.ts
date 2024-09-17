@@ -60,10 +60,13 @@ export class StatisticsComponent {;
 
     public pieChartSelectedStartMonth$ = new BehaviorSubject<number>(1);
 
+    public pieChartSelectedEndMonth$ = new BehaviorSubject<number>(12);
+
     private readonly labelShareDateStartFilter$ = combineLatest([this.pieChartSelectedStartMonth$, this.selectedYear$])
      .pipe(map(([selectedStartMonth, selectedYear])=> new Date(selectedYear, selectedStartMonth - 1, 1)));
 
-    private readonly labelShareDateEndFilter$ = this.selectedYear$.pipe(map((selectedYear)=> new Date(selectedYear, 11, 31)));
+    private readonly labelShareDateEndFilter$ = combineLatest([this.pieChartSelectedEndMonth$, this.selectedYear$])
+      .pipe(map(([selectedEndMonth, selectedYear])=> new Date(selectedYear, selectedEndMonth - 1, 31)));
 
     private readonly labelShare$ = combineLatest([
       this.transactionData$,
@@ -119,5 +122,9 @@ export class StatisticsComponent {;
 
   public changePieChartSelectedStartMonth(month:number): void {
     this.pieChartSelectedStartMonth$.next(month);
+  }
+
+  public changePieChartSelectedEndMonth(month:number): void {
+    this.pieChartSelectedEndMonth$.next(month);
   }
 }
