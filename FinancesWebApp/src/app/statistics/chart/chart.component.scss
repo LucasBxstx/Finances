@@ -2,6 +2,12 @@
     display: block;
 }
 
+.no-entries {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 
 .echart {
     background-color: rgb(24, 24, 24);

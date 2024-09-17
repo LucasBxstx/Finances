@@ -1,6 +1,6 @@
 import { EChartsOption } from "echarts";
 import { Label } from "../models/label";
-import { AllMonthCategoryData, LabelWithData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup, pieChartData } from "../models/statistics";
+import { AllMonthCategoryData, BarChartData, LabelWithData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup, PieChartData } from "../models/statistics";
 import { Transaction, TransactionType, TransactionView } from "../models/transaction";
 
 export function getTransactionsGroupedPerMonth(transactions: Transaction[]): MonthTransactionGroup[] {
@@ -126,8 +126,39 @@ export function getTransactionBilanceBarChartData(months: string[], bilancePerMo
   };
 }
 
+export function calculateLabelShareData(transactions: Transaction[], labels: Label[]){
+  const labelsWithValues: LabelWithData[] = []
+
+  transactions.forEach((transaction)=>{
+    if (transaction.transactionType !== TransactionType.Expense || transaction.labelId === null) return;
+
+    const accordingLabelGroup = labelsWithValues.find((entry)=>entry.labelId === transaction.labelId);
+
+    if (accordingLabelGroup) {
+      accordingLabelGroup.sumOfTransactionValues += transaction.price;
+      accordingLabelGroup.transactionsCount ++;
+    }
+
+    else {
+      const labelData = labels.find((label)=> label.id === transaction.labelId);
+      const labelName = labelData?.name ?? 'error';
+      const labelColor = labelData?.color ?? 'grey';
+
+      labelsWithValues.push({
+        labelId: transaction.labelId,
+        labelName: labelName,
+        labelColor: labelColor,
+        sumOfTransactionValues: transaction.price,
+        transactionsCount: 1,
+      })
+    }
+  });
+
+  return labelsWithValues;
+}
+
 export function getTransactionLabelSharePieChartData(labelWithData: LabelWithData[]): EChartsOption {
-  const pieChartData : pieChartData[] = [];
+  const pieChartData : PieChartData[] = [];
 
   labelWithData.forEach((labelData)=>{
     pieChartData.push({
@@ -190,7 +221,7 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
 }
 
 export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWithData[]): EChartsOption {
-  const pieChartData : pieChartData[] = [];
+  const pieChartData : PieChartData[] = [];
 
   labelWithData.forEach((labelData)=>{
     pieChartData.push({
@@ -248,33 +279,80 @@ export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWi
   };
 }
 
-export function calculateLabelShareData(transactions: Transaction[], labels: Label[]){
-  const labelsWithValues: LabelWithData[] = []
+export function getTransactionsTopExpenseOrIncome(transactions: Transaction[], labels: Label[], filter: TransactionType): BarChartData {
+  // sortiere transactions so dass die transaction mit transaction.price mit dem höchsten wert vorne im array sortedTransactions ist
+  const sortedTransactions = transactions.sort((a, b) => b.price - a.price);
 
-  transactions.forEach((transaction)=>{
-    if (transaction.transactionType !== TransactionType.Expense || transaction.labelId === null) return;
-
-    const accordingLabelGroup = labelsWithValues.find((entry)=>entry.labelId === transaction.labelId);
-
-    if (accordingLabelGroup) {
-      accordingLabelGroup.sumOfTransactionValues += transaction.price;
-      accordingLabelGroup.transactionsCount ++;
-    }
-
-    else {
-      const labelData = labels.find((label)=> label.id === transaction.labelId);
-      const labelName = labelData?.name ?? 'error';
-      const labelColor = labelData?.color ?? 'grey';
-
-      labelsWithValues.push({
-        labelId: transaction.labelId,
-        labelName: labelName,
-        labelColor: labelColor,
-        sumOfTransactionValues: transaction.price,
-        transactionsCount: 1,
-      })
-    }
+  const filteredTransactions = sortedTransactions.filter((transaction) => {
+    if(filter === TransactionType.Expense) return transaction.transactionType === TransactionType.Expense;
+    else return transaction.transactionType === TransactionType.Income;
   });
 
-  return labelsWithValues;
+  const transactionNames = filteredTransactions.map((transaction) => transaction.title ?? '');
+  const transactionData = filteredTransactions.map((transaction) => {
+    const labelColor = labels.find((label) => label.id === transaction.labelId)?.color;
+  
+    return {value: transaction.price, itemStyle: {color: labelColor ?? 'grey'}}
+  });
+
+  return {transactionNames: transactionNames, transactionData: transactionData}
 }
+
+export function getTopPricesChatOptions(data: BarChartData, type: TransactionType): EChartsOption{
+  const maxValues = data.transactionData.length < 10 ? data.transactionData.length : 10;
+
+  return  {
+    grid: {
+      left: '15%',
+      right: '15%'
+    },
+    title: {
+      text: type === TransactionType. Expense ? `Top ${maxValues} Expenses` : `Top ${maxValues} Incomes`,
+      left: 'center',
+      top: '10px',
+      textStyle: {
+        color: '#ffffff'
+      }
+    },
+    xAxis: {
+      max: 'dataMax',
+      splitLine: {
+        show: false 
+      },
+      axisLine: {
+        show: true 
+    },
+    },
+    yAxis: {
+      type: 'category',
+  
+      axisTick: {
+        show: false
+      },
+      data: data.transactionNames,
+      inverse: true,
+      animationDuration: 300,
+      animationDurationUpdate: 300,
+      max: maxValues
+    },
+    series: [
+      {
+        realtimeSort: true,
+        name: 'X',
+        type: 'bar',
+        data: data.transactionData,
+        label: {
+          show: true,
+          position: 'right',
+          valueAnimation: true,
+          formatter: '{c} €' 
+        }
+      }
+    ],
+    animationDuration: 0,
+    animationDurationUpdate: 3000,
+    animationEasing: 'linear',
+    animationEasingUpdate: 'linear',
+  };
+}
+

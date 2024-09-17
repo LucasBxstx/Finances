@@ -33,10 +33,15 @@ export interface MonthTransactionGroup {
     transactions: Transaction[];
 }
 
-export interface pieChartData {
+export interface PieChartData {
     value: number;
     name: string;
     itemStyle: {
         color: string;
     }
+}
+
+export interface BarChartData {
+    transactionNames: string[];
+    transactionData: { value: number, itemStyle: { color: string } }[];
 }

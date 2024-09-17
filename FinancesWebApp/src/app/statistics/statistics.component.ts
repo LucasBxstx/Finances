@@ -3,18 +3,19 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageType } from '../transactions/transactions-page.component';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
-import { BehaviorSubject, Observable, Subject, combineLatest, map, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, map, of, takeUntil } from 'rxjs';
 import { getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
-import { TransactionView } from '../shared/models/transaction';
+import { TransactionType, TransactionView } from '../shared/models/transaction';
 import { TransactionService } from '../shared/services/transaction.service';
 import { MonthlyCategoryStatisticComponent } from './monthly-category-statistic/monthly-category-statistic.component';
-import { AllMonthCategoryData, MonthTransactionGroup } from '../shared/models/statistics';
+import { AllMonthCategoryData, BarChartData, MonthTransactionGroup } from '../shared/models/statistics';
 import { LabelService } from '../shared/services/label.service';
-import { calculateLabelShareData, getCategoryDataOfSelectedYearGroupedByMonth, getMonthString, getTransactionBilanceBarChartData, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth } from '../shared/utils/statistics.utils';
+import { calculateLabelShareData, getCategoryDataOfSelectedYearGroupedByMonth, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome } from '../shared/utils/statistics.utils';
 import { ChartComponent } from "./chart/chart.component";
 import { EChartsOption } from 'echarts';
 import { GetMonthPipe } from '../shared/pipes/getMonth.pipe';
 import { InteractiveTableChartComponent } from "./interactive-table-chart/interactive-table-chart.component";
+import { Label } from '../shared/models/label';
 
 @Component({
   selector: 'app-statistics',
@@ -33,6 +34,8 @@ export class StatisticsComponent {;
   
   public readonly selectedYear$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['year']));
   public readonly selectedMonth$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['month']));
+
+  private readonly labels$: Observable<Label[]> = this.labelService.getLabels('6104cf02-6adf-45da-8e0b-f32946e3cf13');
 
   private readonly transactionData$: Observable<TransactionView> = this.transactionService.getTransactions('6104cf02-6adf-45da-8e0b-f32946e3cf13');
 
@@ -54,40 +57,53 @@ export class StatisticsComponent {;
     ));
 
   public readonly categoryDataOfSelectedYearGroupedByMonth$: Observable<AllMonthCategoryData> = combineLatest([
-      this.labelService.getLabels('6104cf02-6adf-45da-8e0b-f32946e3cf13'),
+      this.labels$,
       this.transactionsOfThisYearGroupedByMonth$
     ]).pipe(map(([labels, transactionsGroupedByMonth]) => getCategoryDataOfSelectedYearGroupedByMonth(labels, transactionsGroupedByMonth)));
 
-    public pieChartSelectedStartMonth$ = new BehaviorSubject<number>(1);
+  public pieChartSelectedStartMonth$ = new BehaviorSubject<number>(1);
 
-    public pieChartSelectedEndMonth$ = new BehaviorSubject<number>(12);
+  public pieChartSelectedEndMonth$ = new BehaviorSubject<number>(12);
 
-    private readonly labelShareDateStartFilter$ = combineLatest([this.pieChartSelectedStartMonth$, this.selectedYear$])
-     .pipe(map(([selectedStartMonth, selectedYear])=> new Date(selectedYear, selectedStartMonth - 1, 1)));
+  private readonly labelShareDateStartFilter$ = combineLatest([this.pieChartSelectedStartMonth$, this.selectedYear$])
+    .pipe(map(([selectedStartMonth, selectedYear])=> new Date(selectedYear, selectedStartMonth - 1, 1)));
 
-    private readonly labelShareDateEndFilter$ = combineLatest([this.pieChartSelectedEndMonth$, this.selectedYear$])
-      .pipe(map(([selectedEndMonth, selectedYear])=> new Date(selectedYear, selectedEndMonth - 1, 31)));
+  private readonly labelShareDateEndFilter$ = combineLatest([this.pieChartSelectedEndMonth$, this.selectedYear$])
+    .pipe(map(([selectedEndMonth, selectedYear])=> new Date(selectedYear, selectedEndMonth - 1, 31)));
 
-    private readonly labelShare$ = combineLatest([
-      this.transactionData$,
-      this.labelService.getLabels('6104cf02-6adf-45da-8e0b-f32946e3cf13'), 
-      this.labelShareDateStartFilter$, 
-      this.labelShareDateEndFilter$
-    ])
-    .pipe(map(([transactionData, labels, startDate, endDate])=>{      
-      var filteredTransactions = transactionData.transactions.filter((transaction)=> {
-        const transactionDate = new Date(transaction.date);
+  private readonly filteredTransactions$ = combineLatest([
+    this.transactionData$,
+    this.labelShareDateStartFilter$, 
+    this.labelShareDateEndFilter$
+  ]).pipe(map(([transactionData, startDate, endDate]) => {
+    var filteredTransactions = transactionData.transactions.filter((t) => new Date(t.date) <= endDate && new Date(t.date) >= startDate);
 
-        return transactionDate <= endDate && transactionDate >= startDate;
-      });
-      const labelsWithValues = calculateLabelShareData(filteredTransactions, labels);
+    return filteredTransactions;
+  }))
 
-      return labelsWithValues;
-      }));
+  private readonly labelShare$ = combineLatest([
+      this.filteredTransactions$,
+      this.labels$, 
+    ]).pipe(map(([transactions, labels]) => calculateLabelShareData(transactions, labels)));
 
   public readonly labelSharePrice$: Observable<EChartsOption> = this.labelShare$.pipe(map(getTransactionLabelSharePieChartData));
 
-  public readonly labelShareCount$: Observable<EChartsOption> = this.labelShare$.pipe(map((getTransactionLabelShareCountPieChartData)));
+  public readonly labelShareCount$: Observable<EChartsOption> = this.labelShare$.pipe(map(getTransactionLabelShareCountPieChartData));
+
+  public readonly topExpenses$: Observable<EChartsOption> = combineLatest([this.filteredTransactions$, this.labels$]).pipe(map(([transactions, labels])=>{
+    const topExpenses = getTransactionsTopExpenseOrIncome(transactions, labels, TransactionType.Expense);
+    const chartOptions = getTopPricesChatOptions(topExpenses, TransactionType.Expense);
+
+    return chartOptions;
+  }));
+
+  public readonly topIncomes$: Observable<EChartsOption> = combineLatest([this.filteredTransactions$, this.labels$]).pipe(map(([transactions, labels])=>{
+    const topIncomes = getTransactionsTopExpenseOrIncome(transactions, labels, TransactionType.Income);
+    const chartOptions = getTopPricesChatOptions(topIncomes, TransactionType.Income);
+
+    return chartOptions;
+  }));
+
     
 
   public navigateTo(page: pageType): void {
