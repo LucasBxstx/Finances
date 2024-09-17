@@ -129,8 +129,6 @@ export function getTransactionBilanceBarChartData(months: string[], bilancePerMo
 export function getTransactionLabelSharePieChartData(labelWithData: LabelWithData[]): EChartsOption {
   const pieChartData : pieChartData[] = [];
 
-  console.log('labelWithData',labelWithData)
-
   labelWithData.forEach((labelData)=>{
     pieChartData.push({
       name: labelData.labelName,
@@ -141,7 +139,7 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
   
   return {
     title: {
-      text: 'Label share of all transactions',
+      text: 'Total transaction prices per label',
       left: 'center',
       top: '10px',
       textStyle: {
@@ -153,7 +151,68 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
     },
     legend: {
       orient: 'vertical',
-      left: 'left'
+      left: 'left',
+      textStyle: {
+        color: 'white',
+      }  
+    },
+    series: [
+      {
+        name: 'Access From',
+        type: 'pie',
+        radius: '50%',
+        data: pieChartData,
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowOffsetX: 0,
+            shadowColor: 'rgba(0, 0, 0, 0.5)'
+          },
+          label: {
+            show: true,
+            fontSize: '16',
+            fontWeight: 'normal',   
+            color: 'white',             // Schriftfarbe
+            textBorderColor: 'transparent',  // Umrandungsfarbe auf transparent setzen
+            textBorderWidth: 0,         // Umrandungsbreite auf 0 setzen
+            textShadowColor: 'none',    // Kein Schatten
+            textShadowBlur: 0,           // Schattenunschärfe auf 0 setzen         
+          }
+        }
+      }
+    ]
+  };
+}
+
+export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWithData[]): EChartsOption {
+  const pieChartData : pieChartData[] = [];
+
+  labelWithData.forEach((labelData)=>{
+    pieChartData.push({
+      name: labelData.labelName,
+      value: labelData.transactionsCount,
+      itemStyle: {color: labelData.labelColor},
+    })
+  })
+  
+  return {
+    title: {
+      text: 'Total transactions per label',
+      left: 'center',
+      top: '10px',
+      textStyle: {
+        color: '#ffffff'
+      }
+    },
+    tooltip: {
+      trigger: 'item'
+    },
+    legend: {
+      orient: 'vertical',
+      left: 'left',
+      textStyle: {
+        color: 'white',
+      }  
     },
     series: [
       {
@@ -175,8 +234,7 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
             textBorderColor: 'transparent',  // Umrandungsfarbe auf transparent setzen
             textBorderWidth: 0,         // Umrandungsbreite auf 0 setzen
             textShadowColor: 'none',    // Kein Schatten
-            textShadowBlur: 0,           // Schattenunschärfe auf 0 setzen
-            
+            textShadowBlur: 0,           // Schattenunschärfe auf 0 setzen            
           }
         }
       }
@@ -184,10 +242,10 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
   };
 }
 
-export function calculateLabelShareData(transactionData: TransactionView, labels: Label[]){
+export function calculateLabelShareData(transactions: Transaction[], labels: Label[]){
   const labelsWithValues: LabelWithData[] = []
 
-  transactionData.transactions.forEach((transaction)=>{
+  transactions.forEach((transaction)=>{
     if (transaction.transactionType !== TransactionType.Expense || transaction.labelId === null) return;
 
     const accordingLabelGroup = labelsWithValues.find((entry)=>entry.labelId === transaction.labelId);

@@ -3,14 +3,14 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageType } from '../transactions/transactions-page.component';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
-import { BehaviorSubject, Observable, Subject, combineLatest, forkJoin, map, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, map, takeUntil } from 'rxjs';
 import { getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
-import { TransactionType, TransactionView } from '../shared/models/transaction';
+import { TransactionView } from '../shared/models/transaction';
 import { TransactionService } from '../shared/services/transaction.service';
 import { MonthlyCategoryStatisticComponent } from './monthly-category-statistic/monthly-category-statistic.component';
-import { AllMonthCategoryData, LabelWithData, LabelWithValues, MonthTransactionGroup } from '../shared/models/statistics';
+import { AllMonthCategoryData, MonthTransactionGroup } from '../shared/models/statistics';
 import { LabelService } from '../shared/services/label.service';
-import { calculateLabelShareData, getCategoryDataOfSelectedYearGroupedByMonth, getMonthString, getTransactionBilanceBarChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth } from '../shared/utils/statistics.utils';
+import { calculateLabelShareData, getCategoryDataOfSelectedYearGroupedByMonth, getMonthString, getTransactionBilanceBarChartData, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth } from '../shared/utils/statistics.utils';
 import { ChartComponent } from "./chart/chart.component";
 import { EChartsOption } from 'echarts';
 import { GetMonthPipe } from '../shared/pipes/getMonth.pipe';
@@ -58,28 +58,33 @@ export class StatisticsComponent {;
       this.transactionsOfThisYearGroupedByMonth$
     ]).pipe(map(([labels, transactionsGroupedByMonth]) => getCategoryDataOfSelectedYearGroupedByMonth(labels, transactionsGroupedByMonth)));
 
-    private labelShareDateStartFilter$ = new BehaviorSubject<Date>(new Date(2024,0,1));
-    private labelShareDateEndFilter$ = new BehaviorSubject<Date>(new Date(2024,11,1));
+    public pieChartSelectedStartMonth$ = new BehaviorSubject<number>(1);
 
-    private readonly labelShare$ = forkJoin([
+    private readonly labelShareDateStartFilter$ = combineLatest([this.pieChartSelectedStartMonth$, this.selectedYear$])
+     .pipe(map(([selectedStartMonth, selectedYear])=> new Date(selectedYear, selectedStartMonth - 1, 1)));
+
+    private readonly labelShareDateEndFilter$ = this.selectedYear$.pipe(map((selectedYear)=> new Date(selectedYear, 11, 31)));
+
+    private readonly labelShare$ = combineLatest([
       this.transactionData$,
       this.labelService.getLabels('6104cf02-6adf-45da-8e0b-f32946e3cf13'), 
-      // this.labelShareDateStartFilter$, 
-      // this.labelShareDateEndFilter$
+      this.labelShareDateStartFilter$, 
+      this.labelShareDateEndFilter$
     ])
-    .pipe(map(([transactionData, labels,])=>{
-      // var filteredTransactions = transactionData.transactions.filter((transaction)=> {
-      //   const transactionDate = new Date(transaction.date);
+    .pipe(map(([transactionData, labels, startDate, endDate])=>{      
+      var filteredTransactions = transactionData.transactions.filter((transaction)=> {
+        const transactionDate = new Date(transaction.date);
 
-      //   return transactionDate <= endDate && transactionDate >= startDate;
-      // });
-
-      const labelsWithValues = calculateLabelShareData(transactionData, labels);
+        return transactionDate <= endDate && transactionDate >= startDate;
+      });
+      const labelsWithValues = calculateLabelShareData(filteredTransactions, labels);
 
       return labelsWithValues;
       }));
 
-  public labelSharePrice$: Observable<EChartsOption> = this.labelShare$.pipe(map(getTransactionLabelSharePieChartData));
+  public readonly labelSharePrice$: Observable<EChartsOption> = this.labelShare$.pipe(map(getTransactionLabelSharePieChartData));
+
+  public readonly labelShareCount$: Observable<EChartsOption> = this.labelShare$.pipe(map((getTransactionLabelShareCountPieChartData)));
     
 
   public navigateTo(page: pageType): void {
@@ -110,5 +115,9 @@ export class StatisticsComponent {;
         }
       });
     })
+  }
+
+  public changePieChartSelectedStartMonth(month:number): void {
+    this.pieChartSelectedStartMonth$.next(month);
   }
 }

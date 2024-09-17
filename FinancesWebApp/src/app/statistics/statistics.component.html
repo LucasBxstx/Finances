@@ -17,4 +17,11 @@
 
 <app-interactive-table-chart [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async"></app-interactive-table-chart>
 
-<app-chart [chartOptions]="labelSharePrice$ |async"></app-chart>
+<app-drop-menu class="pie-chart-drop-down-start-month" [description]="'Start month'" [translateMonth]="true" [currentValue]="pieChartSelectedStartMonth$ | async" 
+    [valueList]="availableMonths$ | async" (valueChanged)="changePieChartSelectedStartMonth($event)"></app-drop-menu>
+
+<div class="row">
+    <app-chart [chartOptions]="labelSharePrice$ |async"></app-chart>
+    <app-chart [chartOptions]="labelShareCount$ |async"></app-chart>
+</div>
+
