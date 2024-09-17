@@ -147,7 +147,8 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
       }
     },
     tooltip: {
-      trigger: 'item'
+      trigger: 'item',
+      formatter: '{b}: <br/> {c}€ <br/> {d}%'
     },
     legend: {
       orient: 'vertical',
@@ -158,9 +159,13 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
     },
     series: [
       {
-        name: 'Access From',
+        name: '',
         type: 'pie',
-        radius: '50%',
+        radius: '60%',
+        label: {
+          show: true,
+          formatter: '{b}',
+        },
         data: pieChartData,
         emphasis: {
           itemStyle: {
@@ -205,7 +210,8 @@ export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWi
       }
     },
     tooltip: {
-      trigger: 'item'
+      trigger: 'item',
+      formatter: '{b}: <br/> transactions: {c}  <br/> {d}%'
     },
     legend: {
       orient: 'vertical',
@@ -218,7 +224,7 @@ export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWi
       {
         name: 'Access From',
         type: 'pie',
-        radius: '50%',
+        radius: '60%',
         data: pieChartData,
         emphasis: {
           itemStyle: {
