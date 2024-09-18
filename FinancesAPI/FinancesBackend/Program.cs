@@ -55,7 +55,7 @@ static void ConfigureAuthorization(IServiceCollection services, IConfiguration c
             ValidateLifetime = true,
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
-            ClockSkew = TimeSpan.Zero // Token expiration time precision
+            ClockSkew = TimeSpan.Zero 
         };
     });
 
@@ -79,35 +79,15 @@ static void ConfigureMvc(IServiceCollection services)
     services.AddCors();
 }
 
-/*static void ConfigureSwagger(IServiceCollection services)
-{
-    services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen(options =>
-    {
-        options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-        {
-            In = ParameterLocation.Header,
-            Name = "Authorization",
-            Type = SecuritySchemeType.ApiKey
-        });
-
-        options.OperationFilter<SecurityRequirementsOperationFilter>();
-
-        // Weitere Swagger-Konfigurationsoptionen
-        options.SwaggerDoc("v1", new OpenApiInfo { Title = "Finances API", Version = "v1" });
-    });
-}*/
 static void ConfigureSwagger(IServiceCollection services)
 {
     services.AddSwaggerGen(options =>
     {
         options.SwaggerDoc("v1", new OpenApiInfo { Title = "Finances API", Version = "v1" });
 
-        // Entferne Konflikte durch Ignorieren bestimmter Typen
         options.IgnoreObsoleteActions();
         options.IgnoreObsoleteProperties();
 
-        // Füge Unterstützung für andere Formate hinzu, wenn notwendig
         options.DescribeAllParametersInCamelCase();
         options.CustomSchemaIds(type => type.FullName); // Vermeidet Namenskonflikte
     });

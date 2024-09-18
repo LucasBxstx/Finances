@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Login, Register, TokenResult } from '../models/auth';
 import { environment } from '../../../environments/environment';
 
@@ -8,15 +8,21 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root'
 })
 export class AuthService {
-  public isAuthenticated = false;
+  public userObjectId: string;
 
   private readonly http = inject(HttpClient);
 
+  constructor(){
+    this.userObjectId = localStorage.getItem('userObjectId') ?? '';
+  }
+
   public login(loginData: Login): Observable<TokenResult> {
-    return this.http.post<TokenResult>(`${environment.apiUrl}/login`, loginData).pipe(tap((tokenResult: TokenResult) => {
+    return this.http.post<TokenResult>(`${environment.apiUrl}/api/Auth/login`, loginData).pipe(tap((tokenResult: TokenResult) => {
       localStorage.setItem('loginToken', tokenResult.accessToken);
       localStorage.setItem('refreshToken', tokenResult.refreshToken);
-      this.isAuthenticated = true;
+      localStorage.setItem('userObjectId',tokenResult.userId);
+
+      this.userObjectId = tokenResult.userId;
 
       return tokenResult;
     }));

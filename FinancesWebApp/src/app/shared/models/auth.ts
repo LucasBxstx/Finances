@@ -15,4 +15,5 @@ export interface TokenResult {
     accessToken: string,
     expiresIn: 0,
     refreshToken: string,
+    userId: string,
 }
