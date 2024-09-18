@@ -42,6 +42,7 @@ export interface PieChartData {
 }
 
 export interface BarChartData {
-    transactionNames: string[];
+    transactionTitles: string[];
     transactionData: { value: number, itemStyle: { color: string } }[];
+    tooltipData: { transactionTitle: string; transactionFormattedDate: string; transactionPrice: number; labelName: string}[];
 }

@@ -179,7 +179,7 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
     },
     tooltip: {
       trigger: 'item',
-      formatter: '{b}: <br/> {c}€ <br/> {d}%'
+      formatter: ' <strong>{b}</strong> <br/> added expenses: {c}€ <br/> share: {d}%'
     },
     legend: {
       orient: 'vertical',
@@ -196,6 +196,8 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
         label: {
           show: true,
           formatter: '{b}',
+          color: 'white',
+          backgroundColor: 'transparent',
         },
         data: pieChartData,
         emphasis: {
@@ -242,7 +244,7 @@ export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWi
     },
     tooltip: {
       trigger: 'item',
-      formatter: '{b}: <br/> transactions: {c}  <br/> {d}%'
+      formatter: ' <strong>{b}</strong> <br/> transactions: {c}  <br/> share: {d}%'
     },
     legend: {
       orient: 'vertical',
@@ -256,6 +258,12 @@ export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWi
         name: 'Access From',
         type: 'pie',
         radius: '60%',
+        label: {
+          show: true,
+          formatter: '{b}',
+          color: 'white',
+          backgroundColor: 'transparent',
+        },
         data: pieChartData,
         emphasis: {
           itemStyle: {
@@ -288,14 +296,29 @@ export function getTransactionsTopExpenseOrIncome(transactions: Transaction[], l
     else return transaction.transactionType === TransactionType.Income;
   });
 
-  const transactionNames = filteredTransactions.map((transaction) => transaction.title ?? '');
+  const transactionTitles = filteredTransactions.map((transaction) => {
+    const title = transaction.title ?? '';
+
+    return title.length > 25 ? title.substring(0, 20) + '...' : title;
+  });
+
   const transactionData = filteredTransactions.map((transaction) => {
     const labelColor = labels.find((label) => label.id === transaction.labelId)?.color;
   
     return {value: transaction.price, itemStyle: {color: labelColor ?? 'grey'}}
   });
 
-  return {transactionNames: transactionNames, transactionData: transactionData}
+// { transactionTitle: string; transactionFormattedDate: string; transactionPrice: number; labelName: string}
+  const tooltipData = filteredTransactions.map((transaction)=> {
+    const transactionTitle = transaction.title ?? 'error';
+    const transactionFormattedDate = new Date(transaction.date).toLocaleDateString('de-DE');
+    const transactionPrice = transaction.price;
+    const labelName = labels.find((label)=> label.id === transaction.labelId)?.name ?? 'error';
+
+    return { transactionTitle: transactionTitle, transactionFormattedDate: transactionFormattedDate, transactionPrice: transactionPrice, labelName: labelName}
+  })
+
+  return {transactionTitles: transactionTitles, transactionData: transactionData, tooltipData: tooltipData}
 }
 
 export function getTopPricesChatOptions(data: BarChartData, type: TransactionType): EChartsOption{
@@ -325,11 +348,13 @@ export function getTopPricesChatOptions(data: BarChartData, type: TransactionTyp
     },
     yAxis: {
       type: 'category',
-  
       axisTick: {
         show: false
       },
-      data: data.transactionNames,
+      axisLabel: {
+        color: '#ffffff' 
+      },
+      data: data.transactionTitles,
       inverse: true,
       animationDuration: 300,
       animationDurationUpdate: 300,
@@ -345,10 +370,27 @@ export function getTopPricesChatOptions(data: BarChartData, type: TransactionTyp
           show: true,
           position: 'right',
           valueAnimation: true,
-          formatter: '{c} €' 
+          formatter: '{c} €',
+          color: 'white',
+          backgroundColor: 'transparent',
         }
       }
     ],
+    tooltip: {
+      trigger: 'item',
+      formatter: (params: any) => {
+        // Hier kannst du auf die `data`-Werte zugreifen, um den Tooltip zu formatieren
+        const transaction = data.tooltipData[params.dataIndex]; // Zugriff auf die Transaktion
+        
+        // Gib alle gewünschten Werte im Tooltip aus
+        return `
+          <strong>${transaction.transactionTitle}</strong><br/>
+          Date: ${transaction.transactionFormattedDate}<br/>
+          Price: ${transaction.transactionPrice} €<br/>
+          Label: ${transaction.labelName}
+        `;
+      }
+    },
     animationDuration: 0,
     animationDurationUpdate: 3000,
     animationEasing: 'linear',
