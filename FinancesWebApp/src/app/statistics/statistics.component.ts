@@ -16,6 +16,7 @@ import { EChartsOption } from 'echarts';
 import { GetMonthPipe } from '../shared/pipes/getMonth.pipe';
 import { InteractiveTableChartComponent } from "./interactive-table-chart/interactive-table-chart.component";
 import { Label } from '../shared/models/label';
+import { AuthService } from '../shared/services/auth.service';
 
 @Component({
   selector: 'app-statistics',
@@ -31,13 +32,14 @@ export class StatisticsComponent {;
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);
+  private readonly authService = inject(AuthService);
   
   public readonly selectedYear$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['year']));
   public readonly selectedMonth$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['month']));
 
-  private readonly labels$: Observable<Label[]> = this.labelService.getLabels('6104cf02-6adf-45da-8e0b-f32946e3cf13');
+  private readonly labels$: Observable<Label[]> = this.labelService.getLabels(this.authService.userObjectId);
 
-  private readonly transactionData$: Observable<TransactionView> = this.transactionService.getTransactions('6104cf02-6adf-45da-8e0b-f32946e3cf13');
+  private readonly transactionData$: Observable<TransactionView> = this.transactionService.getTransactions(this.authService.userObjectId);
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData.oldestTransactionDate));

@@ -14,6 +14,7 @@ import { LabelService } from '../../shared/services/label.service';
 import { AddOrEditLabel, Label } from '../../shared/models/label';
 import { AddOrEditLabelComponent } from './add-or-edit-label/add-or-edit-label.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../shared/services/auth.service';
 
 export type UseCase = 'add' | 'edit';
 
@@ -32,6 +33,7 @@ export type UseCase = 'add' | 'edit';
 export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestroy {
   public TransactionType = TransactionType;
 
+  private readonly authService = inject(AuthService);
   private unsubscribe: Subject<void> = new Subject();
   public currentAddedOrEditedLabel = new BehaviorSubject<AddOrEditLabel | null>(null);
   public refreshLabels = new BehaviorSubject<null>(null);
@@ -54,7 +56,7 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
   private readonly labelService = inject(LabelService);
 
   public readonly labels$ = this.refreshLabels.pipe(switchMap(() =>
-    this.labelService.getLabels('6104cf02-6adf-45da-8e0b-f32946e3cf13')
+    this.labelService.getLabels(this.authService.userObjectId)
   ));
 
   public ngOnInit(): void {
@@ -94,7 +96,7 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
 
     this.transactionService.createOrUpdateTransaction({
       id: this.addOrEditData.transactionId ?? -1,
-      userId: '6104cf02-6adf-45da-8e0b-f32946e3cf13',
+      userId: this.authService.userObjectId,
       transactionType: this.editingTransactionType,
       date: this.editingDate,
       title: this.editingTitle,

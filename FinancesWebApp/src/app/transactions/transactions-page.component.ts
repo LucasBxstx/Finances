@@ -12,6 +12,7 @@ import { GetPriceDecimalPipe } from '../shared/pipes/getPriceDecimal.pipe';
 import { TransactionComponent } from './transaction/transaction.component';
 import { AddOrEditTransactionComponent } from './add-or-edit-transaction/add-or-edit-transaction.component';
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
+import { AuthService } from '../shared/services/auth.service';
 
 export type pageType = 'transactions' | 'statistics';
 
@@ -31,6 +32,7 @@ export class TransactionsPageComponent implements OnDestroy {
   public showSpinner = true;
 
   private readonly transactionService = inject(TransactionService);
+  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
@@ -44,7 +46,7 @@ export class TransactionsPageComponent implements OnDestroy {
     switchMap(() => {
       return this.selectedMonthStartAndEndDate$.pipe(
         switchMap(({ firstDayOfMonth, lastDayOfMonth }) => {
-          return this.transactionService.getTransactions('6104cf02-6adf-45da-8e0b-f32946e3cf13', firstDayOfMonth, lastDayOfMonth);
+          return this.transactionService.getTransactions(this.authService.userObjectId, firstDayOfMonth, lastDayOfMonth);
         }));
     })
   );

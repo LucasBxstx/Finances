@@ -6,6 +6,7 @@ import { TransactionService } from '../../shared/services/transaction.service';
 import { Subject, takeUntil } from 'rxjs';
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 import { LabelService } from '../../shared/services/label.service';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-transaction',
@@ -20,6 +21,7 @@ export class TransactionComponent implements OnDestroy, OnChanges {
 
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);
+  private readonly authService = inject(AuthService);
 
   public labelColor?: string;
   public labelName?: string;
@@ -30,7 +32,7 @@ export class TransactionComponent implements OnDestroy, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if ('transaction' in changes) {
-      this.labelService.getLabel('6104cf02-6adf-45da-8e0b-f32946e3cf13', this.transaction.labelId!)
+      this.labelService.getLabel(this.authService.userObjectId, this.transaction.labelId!)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((label) => {
           this.labelColor = label.color;

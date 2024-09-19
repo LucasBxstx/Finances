@@ -11,10 +11,10 @@
         <div class="cell">{{monthlyCategoryData.month | getMonth}}</div>
         <div class="cell" *ngFor="let labelWithValues of monthlyCategoryData.labelsWithValues"
         [ngClass]="{green: labelWithValues.sumOfTransactionValues > 0, red: labelWithValues.sumOfTransactionValues < 0, grey: labelWithValues.sumOfTransactionValues === 0}">
-            {{labelWithValues.sumOfTransactionValues}}</div>
+            {{labelWithValues.sumOfTransactionValues | getPriceDecimal }}</div>
         <div class="split"></div>
         <div class="cell"
             [ngClass]="{green: monthlyCategoryData.totalBilance > 0, red: monthlyCategoryData.totalBilance < 0, grey: monthlyCategoryData.totalBilance === 0}">
-            {{monthlyCategoryData.totalBilance }}</div>
+            {{monthlyCategoryData.totalBilance | getPriceDecimal }}</div>
     </div>
 </div>

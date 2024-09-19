@@ -7,6 +7,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { AuthService } from '../../../shared/services/auth.service';
 
 @Component({
   selector: 'app-add-or-edit-label',
@@ -18,6 +19,7 @@ import { ColorPickerModule } from 'ngx-color-picker';
 export class AddOrEditLabelComponent implements OnInit, OnDestroy{
   private unsubscribe = new Subject<void>();
   private readonly labelService = inject(LabelService);
+  private readonly authService = inject(AuthService);
 
   public editingName: string | null = null;
   public editingColor: string = '#FFFFFF';
@@ -31,7 +33,7 @@ export class AddOrEditLabelComponent implements OnInit, OnDestroy{
   public ngOnInit(): void {
     if(!this.addOrEditData.labelId) return;
 
-    this.labelService.getLabel('6104cf02-6adf-45da-8e0b-f32946e3cf13', this.addOrEditData.labelId)
+    this.labelService.getLabel(this.authService.userObjectId, this.addOrEditData.labelId)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((label)=>{
         this.editingName = label.name;
@@ -50,7 +52,7 @@ export class AddOrEditLabelComponent implements OnInit, OnDestroy{
 
     this.labelService.createOrUpdateLabel({
       id: this.addOrEditData.labelId ?? -1,
-      userId: '6104cf02-6adf-45da-8e0b-f32946e3cf13',
+      userId: this.authService.userObjectId,
       name: this.editingName ?? '',
       color: this.editingColor ?? 'black',
       rowVersion: this.rowVersion,
