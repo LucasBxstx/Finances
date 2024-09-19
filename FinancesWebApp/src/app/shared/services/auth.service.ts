@@ -3,17 +3,21 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { Login, Register, TokenResult } from '../models/auth';
 import { environment } from '../../../environments/environment';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   public userObjectId: string;
+  public emailAddress: string;
 
   private readonly http = inject(HttpClient);
+  private readonly router = inject(Router);
 
   constructor(){
     this.userObjectId = localStorage.getItem('userObjectId') ?? '';
+    this.emailAddress = localStorage.getItem('emailAddress') ?? '';
   }
 
   public login(loginData: Login): Observable<TokenResult> {
@@ -21,11 +25,22 @@ export class AuthService {
       localStorage.setItem('loginToken', tokenResult.accessToken);
       localStorage.setItem('refreshToken', tokenResult.refreshToken);
       localStorage.setItem('userObjectId',tokenResult.userId);
+      localStorage.setItem('emailAddress', loginData.email)
 
       this.userObjectId = tokenResult.userId;
+      this.emailAddress = loginData.email;
 
       return tokenResult;
     }));
+  }
+
+  public logout(): void {
+    localStorage.removeItem('loginToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('userObjectId');
+
+    this.userObjectId = '';
+    this.router.navigate(['/login']);
   }
 
   public register(registerData: Register): Observable<TokenResult> {

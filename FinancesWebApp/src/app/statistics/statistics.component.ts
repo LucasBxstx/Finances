@@ -8,7 +8,7 @@ import { getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../sha
 import { TransactionType, TransactionView } from '../shared/models/transaction';
 import { TransactionService } from '../shared/services/transaction.service';
 import { MonthlyCategoryStatisticComponent } from './monthly-category-statistic/monthly-category-statistic.component';
-import { AllMonthCategoryData, BarChartData, MonthTransactionGroup } from '../shared/models/statistics';
+import { AllMonthCategoryData, MonthTransactionGroup } from '../shared/models/statistics';
 import { LabelService } from '../shared/services/label.service';
 import { calculateLabelShareData, getCategoryDataOfSelectedYearGroupedByMonth, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome } from '../shared/utils/statistics.utils';
 import { ChartComponent } from "./chart/chart.component";
@@ -17,11 +17,12 @@ import { GetMonthPipe } from '../shared/pipes/getMonth.pipe';
 import { InteractiveTableChartComponent } from "./interactive-table-chart/interactive-table-chart.component";
 import { Label } from '../shared/models/label';
 import { AuthService } from '../shared/services/auth.service';
+import { LogoutComponent } from "../shared/components/logout/logout.component";
 
 @Component({
   selector: 'app-statistics',
   standalone: true,
-  imports: [NgClass, DropMenuComponent, AsyncPipe, MonthlyCategoryStatisticComponent, ChartComponent, GetMonthPipe, InteractiveTableChartComponent],
+  imports: [NgClass, DropMenuComponent, AsyncPipe, MonthlyCategoryStatisticComponent, ChartComponent, GetMonthPipe, InteractiveTableChartComponent, LogoutComponent],
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.scss'
 })

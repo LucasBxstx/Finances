@@ -13,13 +13,14 @@ import { TransactionComponent } from './transaction/transaction.component';
 import { AddOrEditTransactionComponent } from './add-or-edit-transaction/add-or-edit-transaction.component';
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
 import { AuthService } from '../shared/services/auth.service';
+import { LogoutComponent } from "../shared/components/logout/logout.component";
 
 export type pageType = 'transactions' | 'statistics';
 
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, GetDatePipe, GetPriceDecimalPipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent],
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, GetDatePipe, GetPriceDecimalPipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent],
   templateUrl: './transactions-page.component.html',
   styleUrl: './transactions-page.component.scss'
 })

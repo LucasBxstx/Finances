@@ -1,0 +1,27 @@
+:host {
+    display: block;
+}
+
+.circle {
+    position: relative;
+    border-radius: 100%;
+    background-color: white;
+    width: 70px;
+    height: 70px;
+}
+
+.menu {
+    z-index: 20;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    border-radius: 5px;
+    right: -15px;
+    background-color: rgb(24, 24, 24);
+    border: 1px solid rgb(64, 64, 64);
+    padding: 20px 30px;
+
+    .email {
+        margin-bottom: 10px;
+    }
+}
