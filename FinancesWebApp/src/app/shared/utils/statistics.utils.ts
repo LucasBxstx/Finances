@@ -158,15 +158,13 @@ export function calculateLabelShareData(transactions: Transaction[], labels: Lab
 }
 
 export function getTransactionLabelSharePieChartData(labelWithData: LabelWithData[]): EChartsOption {
-  const pieChartData : PieChartData[] = [];
-
-  labelWithData.forEach((labelData)=>{
-    pieChartData.push({
-      name: labelData.labelName,
-      value: labelData.sumOfTransactionValues,
-      itemStyle: {color: labelData.labelColor},
-    })
-  })
+  const pieChartData : PieChartData[] = labelWithData.map((labelData) => {
+    return {
+    name: labelData.labelName,
+    value: labelData.sumOfTransactionValues,
+    itemStyle: {color: labelData.labelColor},
+    }
+  });
   
   return {
     title: {
@@ -179,7 +177,11 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
     },
     tooltip: {
       trigger: 'item',
-      formatter: ' <strong>{b}</strong> <br/> added expenses: {c}€ <br/> share: {d}%'
+      formatter: function(params: any) {
+        const roundedPrice = params.value.toFixed(2);
+        return `<strong> ${params.name} </strong> <br/> added expenses: ${roundedPrice}€ <br/> share: ${params.percent}%`
+      }
+     
     },
     legend: {
       orient: 'vertical',
@@ -223,14 +225,12 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
 }
 
 export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWithData[]): EChartsOption {
-  const pieChartData : PieChartData[] = [];
-
-  labelWithData.forEach((labelData)=>{
-    pieChartData.push({
+  const pieChartData : PieChartData[] = labelWithData.map((labelData) => {
+    return {
       name: labelData.labelName,
       value: labelData.transactionsCount,
       itemStyle: {color: labelData.labelColor},
-    })
+    };
   })
   
   return {
