@@ -1,4 +1,5 @@
 ﻿using FinancesBackend.Common.Exceptions;
+using FinancesBackend.Services;
 using FinancesBackend.Transaction.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -9,18 +10,23 @@ namespace FinancesBackend.Transaction.Requests
     {
         private readonly FinancesContext _financesContext;
         private readonly WrappedDbUpdateConcurrencyExceptionFactory _wrappedDbUpdateConcurrencyExceptionFactory;
+        private readonly IJwtTokenService _jwtTokenService;
 
         public DeleteTransactionRequestHandler(
             FinancesContext financesContext,
-            WrappedDbUpdateConcurrencyExceptionFactory wrappedDbUpdateConcurrencyExceptionFactory)
+            WrappedDbUpdateConcurrencyExceptionFactory wrappedDbUpdateConcurrencyExceptionFactory,
+            IJwtTokenService jwtTokenService)
         {
             _financesContext = financesContext;
             _wrappedDbUpdateConcurrencyExceptionFactory = wrappedDbUpdateConcurrencyExceptionFactory;
+            _jwtTokenService = jwtTokenService;
         }
 
         public async Task Handle(DeleteTransactionRequest request, CancellationToken cancellationToken)
         {
-            var transaction = await _financesContext.Transactions.FindAsync(request.Id);
+            var userObjectId = _jwtTokenService.GetUserObjectIdFromToken();
+
+            var transaction = await _financesContext.Transactions.FirstOrDefaultAsync(t => t.Id == request.Id && t.UserId == userObjectId, cancellationToken);
 
             if (transaction == null)
             {
@@ -35,9 +41,7 @@ namespace FinancesBackend.Transaction.Requests
             catch (DbUpdateConcurrencyException exception)
             {
                 throw _wrappedDbUpdateConcurrencyExceptionFactory.Create(exception);
-            }
-
- 
+            } 
         }
 
     }

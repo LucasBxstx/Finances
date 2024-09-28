@@ -1,6 +1,9 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using FinancesBackend.Transaction.Exceptions;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using FinancesBackend.Services;
 
 namespace FinancesBackend.Transaction.Queries
 {
@@ -8,14 +11,19 @@ namespace FinancesBackend.Transaction.Queries
     {
 
         private readonly FinancesContext _financesContext;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public GetTransactionQueryHandler(FinancesContext financesContext)
+        public GetTransactionQueryHandler(FinancesContext financesContext, IJwtTokenService jwtTokenService)
         {
             _financesContext = financesContext;
+            _jwtTokenService = jwtTokenService;
         }
         public async Task<Models.Transaction> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
         {
-            var transaction = await _financesContext.Transactions.FirstOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
+
+            var userObjectId = _jwtTokenService.GetUserObjectIdFromToken();
+
+            var transaction = await _financesContext.Transactions.FirstOrDefaultAsync(t => t.Id == request.Id && t.UserId == userObjectId, cancellationToken);
 
             if (transaction == null)
             {

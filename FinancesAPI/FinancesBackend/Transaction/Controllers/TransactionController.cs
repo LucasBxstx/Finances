@@ -4,6 +4,7 @@ using FinancesBackend.Transaction.Models;
 using FinancesBackend.Transaction.Queries;
 using FinancesBackend.Transaction.Requests;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using ControllerBase = FinancesBackend.Common.ControllerBase;
@@ -15,6 +16,7 @@ namespace FinancesBackend.Transaction.Controllers
     //[Authorize]
     public class TransactionController(IMediator mediator) : ControllerBase(mediator)
     {
+        [Authorize]
         [HttpGet]
         [SwaggerOperation("Gets the desired transaction")]
         [SwaggerResponse(StatusCodes.Status200OK, "The transaction data", typeof(Models.Transaction))]
@@ -33,6 +35,7 @@ namespace FinancesBackend.Transaction.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("all")]
         [SwaggerOperation("Gets all transactions for the user")]
         [SwaggerResponse(StatusCodes.Status200OK, "The transactions", typeof(TransactionView))]
@@ -52,6 +55,7 @@ namespace FinancesBackend.Transaction.Controllers
             
         }
 
+        [Authorize]
         [HttpPut]
         [SwaggerOperation("Creates or updates the transaction")]
         [SwaggerResponse(StatusCodes.Status200OK, "The created/updated Transaction", typeof(Models.Transaction))]
@@ -80,6 +84,7 @@ namespace FinancesBackend.Transaction.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete]
         [SwaggerOperation("Deletes the transaction")]
         [SwaggerResponse(StatusCodes.Status204NoContent, "The transaction was deleted")]

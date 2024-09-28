@@ -4,7 +4,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideTransloco, TranslocoService } from '@ngneat/transloco';
 
 import { appRoutes } from './app.routes';
-import { HTTP_INTERCEPTORS, provideHttpClient, withFetch } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptorsFromDi } from '@angular/common/http';
 import { TranslocoHttpLoader } from './transloco-loader';
 import { BackendInterceptor } from './shared/services/backendInterceptor';
 import { AuthGuardService } from './shared/services/authGuardService';
@@ -26,6 +26,7 @@ export const appConfig: ApplicationConfig = {
       loader: TranslocoHttpLoader,
     }),
     AuthGuardService,
+    provideHttpClient(withInterceptorsFromDi()),
     {
       provide: HTTP_INTERCEPTORS,
       useClass: BackendInterceptor,
