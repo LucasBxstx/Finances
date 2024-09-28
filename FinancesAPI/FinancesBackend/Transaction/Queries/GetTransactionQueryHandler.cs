@@ -4,10 +4,11 @@ using FinancesBackend.Transaction.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using FinancesBackend.Services;
+using FinancesBackend.Transaction.Models;
 
 namespace FinancesBackend.Transaction.Queries
 {
-    public class GetTransactionQueryHandler : IRequestHandler<GetTransactionQuery, Models.Transaction>
+    public class GetTransactionQueryHandler : IRequestHandler<GetTransactionQuery, Models.TransactionDto>
     {
 
         private readonly FinancesContext _financesContext;
@@ -18,7 +19,7 @@ namespace FinancesBackend.Transaction.Queries
             _financesContext = financesContext;
             _jwtTokenService = jwtTokenService;
         }
-        public async Task<Models.Transaction> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
+        public async Task<Models.TransactionDto> Handle(GetTransactionQuery request, CancellationToken cancellationToken)
         {
 
             var userObjectId = _jwtTokenService.GetUserObjectIdFromToken();
@@ -30,7 +31,7 @@ namespace FinancesBackend.Transaction.Queries
                 throw new TransactionNotFoundException(request.Id);
             }
 
-            return transaction;
+            return TransactionDto.MapFromDatabase(transaction);
         }
     }
 }

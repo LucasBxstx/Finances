@@ -47,7 +47,7 @@ export class TransactionsPageComponent implements OnDestroy {
     switchMap(() => {
       return this.selectedMonthStartAndEndDate$.pipe(
         switchMap(({ firstDayOfMonth, lastDayOfMonth }) => {
-          return this.transactionService.getTransactions(this.authService.userObjectId, firstDayOfMonth, lastDayOfMonth);
+          return this.transactionService.getTransactions(firstDayOfMonth, lastDayOfMonth);
         }));
     })
   );

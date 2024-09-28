@@ -1,4 +1,5 @@
 ﻿using FinancesBackend.Common.Exceptions;
+using FinancesBackend.Labels.Models;
 using FinancesBackend.Services;
 using FinancesBackend.Transaction.Exceptions;
 using MediatR;
@@ -6,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinancesBackend.Labels.Requests
 {
-    internal sealed class CreateOrUpdateLabelRequestHandler : IRequestHandler<CreateOrUpdateLabelRequest, Models.Label>
+    internal sealed class CreateOrUpdateLabelRequestHandler : IRequestHandler<CreateOrUpdateLabelRequest, Models.LabelDto>
     {
         private readonly FinancesContext _financesContext;
         private readonly WrappedDbUpdateConcurrencyExceptionFactory _wrappedDbUpdateConcurrencyExceptionFactory;
@@ -22,7 +23,7 @@ namespace FinancesBackend.Labels.Requests
             _jwtTokenService = jwtTokenService;
         }
 
-        public async Task<Models.Label> Handle(CreateOrUpdateLabelRequest request, CancellationToken cancellationToken)
+        public async Task<Models.LabelDto> Handle(CreateOrUpdateLabelRequest request, CancellationToken cancellationToken)
         {
             var userObjectId = _jwtTokenService.GetUserObjectIdFromToken();
 
@@ -68,7 +69,7 @@ namespace FinancesBackend.Labels.Requests
                 throw _wrappedDbUpdateConcurrencyExceptionFactory.Create(exception);
             }
 
-            return label;
+            return LabelDto.MapFromDatabase(label);
         }
     }
 }

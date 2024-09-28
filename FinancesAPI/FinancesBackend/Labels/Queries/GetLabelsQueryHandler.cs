@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinancesBackend.Labels.Queries
 {
-    internal sealed class GetLabelsQueryHandler : IRequestHandler<GetLabelsQuery, List<Label>>
+    internal sealed class GetLabelsQueryHandler : IRequestHandler<GetLabelsQuery, List<LabelDto>>
     {
         private readonly FinancesContext _financesContext;
         private readonly IJwtTokenService _jwtTokenService;
@@ -17,7 +17,7 @@ namespace FinancesBackend.Labels.Queries
             _jwtTokenService = jwtTokenService;
         }
 
-        public async Task<List<Label>> Handle(GetLabelsQuery request, CancellationToken cancellationToken)
+        public async Task<List<LabelDto>> Handle(GetLabelsQuery request, CancellationToken cancellationToken)
         {
             var userObjectId = _jwtTokenService.GetUserObjectIdFromToken();
 
@@ -35,7 +35,7 @@ namespace FinancesBackend.Labels.Queries
                 .OrderBy(l => l.Name)
                 .ToListAsync(cancellationToken);
 
-            return labels;
+            return labels.Select(LabelDto.MapFromDatabase).ToList();
         }
     }
 }

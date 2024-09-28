@@ -3,11 +3,8 @@ using MediatR;
 
 namespace FinancesBackend.Labels.Queries
 {
-    public sealed class GetLabelQuery : IRequest<Models.Label>
+    public sealed class GetLabelQuery : IRequest<Models.LabelDto>
     {
-        [NoEmptyGuid]
-        public required Guid UserId { get; set; }
-
         public required int Id { get; set; }
     }
 }

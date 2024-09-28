@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FinancesBackend.Labels.Queries
 {
-    internal sealed class GetLabelQueryHandler : IRequestHandler<GetLabelQuery, Label>
+    internal sealed class GetLabelQueryHandler : IRequestHandler<GetLabelQuery, LabelDto>
     {
         private readonly FinancesContext _financesContext;
         private readonly IJwtTokenService _jwtTokenService;
@@ -18,7 +18,7 @@ namespace FinancesBackend.Labels.Queries
             _jwtTokenService = jwtTokenService;
         }
 
-        public async Task<Label> Handle(GetLabelQuery request, CancellationToken cancellationToken)
+        public async Task<LabelDto> Handle(GetLabelQuery request, CancellationToken cancellationToken)
         {
             var userObjectId = _jwtTokenService.GetUserObjectIdFromToken();
 
@@ -37,7 +37,7 @@ namespace FinancesBackend.Labels.Queries
                 throw new LabelNotFoundException(request.Id);
             }
 
-            return label;
+            return LabelDto.MapFromDatabase(label);
         }
     }
 }

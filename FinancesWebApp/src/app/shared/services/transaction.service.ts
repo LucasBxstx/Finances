@@ -14,13 +14,13 @@ export class TransactionService {
     return this.http.get<Transaction>(`${environment.apiUrl}/api/Transaction?id=${transactionId}`);
   }
 
-  public getTransactions(userId: string, startDate: Date | null = null, endDate: Date | null = null): Observable<TransactionView> {
+  public getTransactions(startDate: Date | null = null, endDate: Date | null = null): Observable<TransactionView> {
     // if startDate and endDate are null, the request will get all transactions
     if (startDate && endDate) {
-      return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all?userId=${userId}&startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+      return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
     }
     else {
-      return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all?userId=${userId}`);
+      return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all`);
     }
   }
 

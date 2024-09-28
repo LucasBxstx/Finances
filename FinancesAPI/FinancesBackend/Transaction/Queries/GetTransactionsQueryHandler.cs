@@ -48,10 +48,12 @@ namespace FinancesBackend.Transaction.Queries
                     .ToListAsync(cancellationToken);
             }
 
+            var transactionsDto = transactions.Select(Models.TransactionDto.MapFromDatabase).ToList();
+
             
             var transactionView = new TransactionView
             {
-                Transactions = transactions,
+                Transactions = transactionsDto,
                 PriorBalance = null,
                 OldestTransactionDate = null,
             };

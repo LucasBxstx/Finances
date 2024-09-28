@@ -33,7 +33,7 @@ export class AddOrEditLabelComponent implements OnInit, OnDestroy{
   public ngOnInit(): void {
     if(!this.addOrEditData.labelId) return;
 
-    this.labelService.getLabel(this.authService.userObjectId, this.addOrEditData.labelId)
+    this.labelService.getLabel(this.addOrEditData.labelId)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe((label)=>{
         this.editingName = label.name;
@@ -52,7 +52,6 @@ export class AddOrEditLabelComponent implements OnInit, OnDestroy{
 
     this.labelService.createOrUpdateLabel({
       id: this.addOrEditData.labelId ?? -1,
-      userId: this.authService.userObjectId,
       name: this.editingName ?? '',
       color: this.editingColor ?? 'black',
       rowVersion: this.rowVersion,

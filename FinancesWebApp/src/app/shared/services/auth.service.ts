@@ -9,14 +9,12 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  public userObjectId: string;
   public emailAddress: string;
 
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
 
   constructor(){
-    this.userObjectId = localStorage.getItem('userObjectId') ?? '';
     this.emailAddress = localStorage.getItem('emailAddress') ?? '';
   }
 
@@ -27,7 +25,6 @@ export class AuthService {
       localStorage.setItem('userObjectId',tokenResult.userId);
       localStorage.setItem('emailAddress', loginData.email)
 
-      this.userObjectId = tokenResult.userId;
       this.emailAddress = loginData.email;
 
       return tokenResult;
@@ -39,7 +36,6 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userObjectId');
 
-    this.userObjectId = '';
     this.router.navigate(['/login']);
   }
 

@@ -1,12 +1,13 @@
 ﻿using FinancesBackend.Common.Exceptions;
 using FinancesBackend.Services;
 using FinancesBackend.Transaction.Exceptions;
+using FinancesBackend.Transaction.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinancesBackend.Transaction.Requests
 {
-    internal sealed class CreateOrUpdateTransactionRequestHandler : IRequestHandler<CreateOrUpdateTransactionRequest, Models.Transaction>
+    internal sealed class CreateOrUpdateTransactionRequestHandler : IRequestHandler<CreateOrUpdateTransactionRequest, Models.TransactionDto>
     {
         private readonly FinancesContext _financesContext;
         private readonly WrappedDbUpdateConcurrencyExceptionFactory _wrappedDbUpdateConcurrencyExceptionFactory;
@@ -22,7 +23,7 @@ namespace FinancesBackend.Transaction.Requests
             _jwtTokenService = jwtTokenService;
         }
 
-        public async Task<Models.Transaction> Handle(CreateOrUpdateTransactionRequest request, CancellationToken cancellationToken)
+        public async Task<Models.TransactionDto> Handle(CreateOrUpdateTransactionRequest request, CancellationToken cancellationToken)
         {
             var userObjectId = _jwtTokenService.GetUserObjectIdFromToken();
 
@@ -74,7 +75,7 @@ namespace FinancesBackend.Transaction.Requests
                 throw _wrappedDbUpdateConcurrencyExceptionFactory.Create(exception);
             }
 
-            return transaction;
+            return TransactionDto.MapFromDatabase(transaction) ;
         }
     }
 }

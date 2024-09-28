@@ -32,7 +32,7 @@ export class TransactionComponent implements OnDestroy, OnChanges {
 
   public ngOnChanges(changes: SimpleChanges): void {
     if ('transaction' in changes) {
-      this.labelService.getLabel(this.authService.userObjectId, this.transaction.labelId!)
+      this.labelService.getLabel(this.transaction.labelId!)
         .pipe(takeUntil(this.unsubscribe))
         .subscribe((label) => {
           this.labelColor = label.color;

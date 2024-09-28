@@ -4,12 +4,9 @@ using MediatR;
 
 namespace FinancesBackend.Transaction.Requests
 {
-    public sealed class CreateOrUpdateTransactionRequest: IRequest<Models.Transaction>
+    public sealed class CreateOrUpdateTransactionRequest: IRequest<Models.TransactionDto>
     {
         public int Id { get; set; }
-
-        [NoEmptyGuid]
-        public required Guid UserId { get; set; }
 
         public required TransactionType TransactionType { get; set; }
 
