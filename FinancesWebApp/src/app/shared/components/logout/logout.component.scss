@@ -6,8 +6,16 @@
     position: relative;
     border-radius: 100%;
     background-color: white;
-    width: 70px;
-    height: 70px;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+        width: 80%;
+        padding: 2px;
+    }
 }
 
 .menu {

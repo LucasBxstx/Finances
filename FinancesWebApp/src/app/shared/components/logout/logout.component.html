@@ -1,6 +1,8 @@
 <div class="container" (mouseleave)="menuOpened = false">
 
-    <div class="circle" (mouseenter)="menuOpened = true"></div>
+    <div class="circle" (mouseenter)="menuOpened = true">
+        <img src="assets/icons/person.svg">
+    </div>
     <div *ngIf="menuOpened"  class="menu">
         <span *ngIf="emailAddress" class="email">{{emailAddress}}</span>
         <button (click)="logout()">Logout</button>
