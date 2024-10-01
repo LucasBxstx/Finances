@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
 import { MonthlyCategoryStatisticComponent } from '../monthly-category-statistic/monthly-category-statistic.component';
 import { ChartComponent } from '../chart/chart.component';
 import { AllMonthCategoryData } from '../../shared/models/statistics';
@@ -6,6 +6,7 @@ import { EChartsOption } from 'echarts';
 import { BehaviorSubject, map, Observable } from 'rxjs';
 import { getMonthString, getTransactionBilanceBarChartData } from '../../shared/utils/statistics.utils';
 import { AsyncPipe } from '@angular/common';
+import { TranslocoService } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-interactive-table-chart',
@@ -15,6 +16,7 @@ import { AsyncPipe } from '@angular/common';
   styleUrl: './interactive-table-chart.component.scss'
 })
 export class InteractiveTableChartComponent implements OnChanges {
+  private readonly translocoService = inject(TranslocoService);
 
   @Input() public allMonthCategoryData: AllMonthCategoryData | null = null;
 
@@ -25,9 +27,10 @@ export class InteractiveTableChartComponent implements OnChanges {
 
     const months: string[] = [];
     const bilancePerMonth: number[] = [];
+    const activeLang = this.translocoService.getActiveLang() as "en" | "de";
 
     this.allMonthCategoryData.monthlyValues.forEach((monthData)=>{
-      months.push(getMonthString(monthData.month));
+      months.push(getMonthString(monthData.month, activeLang));
 
       if(!selectedLabelId) bilancePerMonth.push(monthData.totalBilance);
       else {

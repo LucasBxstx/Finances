@@ -14,7 +14,7 @@ export class AppComponent {
   private readonly translocoService = inject(TranslocoService);
   
   constructor() {
-    const activeLang = localStorage.getItem("activeLang");
+    const activeLang: string = localStorage.getItem("activeLang") ?? "en";
     if(activeLang) this.translocoService.setActiveLang(activeLang);
   }
 } 
