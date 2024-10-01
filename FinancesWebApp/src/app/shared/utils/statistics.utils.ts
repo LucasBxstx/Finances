@@ -177,6 +177,7 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
     },
     tooltip: {
       trigger: 'item',
+      position: 'top',
       formatter: function(params: any) {
         const roundedPrice = params.value.toFixed(2);
         return `<strong> ${params.name} </strong> <br/> added expenses: ${roundedPrice}€ <br/> share: ${params.percent}%`
@@ -244,6 +245,7 @@ export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWi
     },
     tooltip: {
       trigger: 'item',
+      position: 'top',
       formatter: ' <strong>{b}</strong> <br/> transactions: {c}  <br/> share: {d}%'
     },
     legend: {
@@ -299,7 +301,7 @@ export function getTransactionsTopExpenseOrIncome(transactions: Transaction[], l
   const transactionTitles = filteredTransactions.map((transaction) => {
     const title = transaction.title ?? '';
 
-    return title.length > 25 ? title.substring(0, 20) + '...' : title;
+    return title.length > 20 ? title.substring(0, 15) + '...' : title;
   });
 
   const transactionData = filteredTransactions.map((transaction) => {
@@ -378,11 +380,10 @@ export function getTopPricesChatOptions(data: BarChartData, type: TransactionTyp
     ],
     tooltip: {
       trigger: 'item',
+      position: 'top',
       formatter: (params: any) => {
-        // Hier kannst du auf die `data`-Werte zugreifen, um den Tooltip zu formatieren
-        const transaction = data.tooltipData[params.dataIndex]; // Zugriff auf die Transaktion
+        const transaction = data.tooltipData[params.dataIndex];
         
-        // Gib alle gewünschten Werte im Tooltip aus
         return `
           <strong>${transaction.transactionTitle}</strong><br/>
           Date: ${transaction.transactionFormattedDate}<br/>

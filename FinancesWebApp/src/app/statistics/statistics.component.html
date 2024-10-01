@@ -20,7 +20,7 @@
     <app-drop-menu class="pie-chart-drop-down-start-month" [description]="'Filter from'" [translateMonth]="true" [currentValue]="pieChartSelectedStartMonth$ | async" 
     [valueList]="availableMonths$ | async" (valueChanged)="changePieChartSelectedStartMonth($event)"></app-drop-menu>
 
-    <app-drop-menu class="pie-chart-drop-down-start-month" [description]="'to'" [translateMonth]="true" [currentValue]="pieChartSelectedEndMonth$ | async" 
+    <app-drop-menu class="pie-chart-drop-down-end-month" [description]="'to'" [translateMonth]="true" [currentValue]="pieChartSelectedEndMonth$ | async" 
     [valueList]="availableMonths$ | async" (valueChanged)="changePieChartSelectedEndMonth($event)"></app-drop-menu>
 </div>
 
@@ -33,4 +33,3 @@
 <app-chart [chartOptions]="topExpenses$ |async"></app-chart>
 
 <app-chart class="incomes" [chartOptions]="topIncomes$ |async"></app-chart>
-

@@ -15,6 +15,6 @@ export class GetDatePipe implements PipeTransform {
         const day = new Date(date).getDate();
         const dayString = day < 10 ? '0' + day : day.toString();
 
-        return `${weekday}, ${dayString}.${monthString}.${year}`
+        return `${weekday}, ${dayString}.${monthString}.`
     }
 }

@@ -3,8 +3,17 @@
     margin: 0 15vw;
     user-select: none;
 
-    @media screen and (max-width: 500px) {
+    @media screen and (max-width: 1300px) and (min-width: 800px) {
+        margin: 0 6rem;
+    }
+
+    @media screen and (max-width: 800px) {
         margin: 0 0.5rem;
+
+        app-logout{
+            top: 30px;
+            right: 10px;
+        }
     }
   }
 
@@ -16,7 +25,7 @@
 }
 
 app-logout{
-    position: fixed;
+    position: absolute;
     top: 30px;
     right: 30px;
 }
@@ -58,11 +67,11 @@ app-interactive-table-chart {
 }
 
 .pie-chart-drop-down-start-month {
-    z-index: 10;
+    z-index: 12;
 }
 
-.drop {
-    z-index: 10;
+.pie-chart-drop-down-end-month {
+    z-index: 11;
 }
 
 .incomes {
@@ -72,7 +81,7 @@ app-interactive-table-chart {
 .row {
     display: flex;
     flex-direction: row;
-    gap: 20px;
+    gap: 10px;
     margin: 20px 0;
 
     app-chart{
@@ -93,9 +102,14 @@ app-interactive-table-chart {
 @media screen and (max-width: 1450px) {
     .row {
         flex-direction: column;
+        gap: 20px;
 
         app-chart {
             flex: 100%;
         }
+    }
+
+    .drop-menu-row {
+        flex-direction: column;
     }
 }

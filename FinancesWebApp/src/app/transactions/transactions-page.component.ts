@@ -33,7 +33,6 @@ export class TransactionsPageComponent implements OnDestroy {
   public showSpinner = true;
 
   private readonly transactionService = inject(TransactionService);
-  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 

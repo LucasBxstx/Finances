@@ -4,29 +4,29 @@
     <div class="division"></div>
 
     <div class="container">
-        <div class="transaction-type">
-            <div class="bold">Type:</div>
+        <div class="transaction-type spacing">
+            <div class="text">Type:</div>
             <span [ngClass]="{selected: editingTransactionType === TransactionType.Income}"
                 (click)="changeTypeTo(TransactionType.Income)">Income</span>
             <span [ngClass]="{selected: editingTransactionType === TransactionType.Expense}"
                 (click)="changeTypeTo(TransactionType.Expense)">Expense</span>
         </div>
 
-        <div class="transaction-date">
-            <div class="bold">Date:</div>
+        <div class="transaction-date spacing">
+            <div class="text">Date:</div>
             <input class="date-input" matInput [matDatepicker]="datepicker" placeholder="Choose a date"
                 (dateChange)="editingDate = $event.value" [(ngModel)]="editingDate">
             <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
             <mat-datepicker #datepicker></mat-datepicker>
         </div>
 
-        <div class="transaction-title">
-            <div class="bold">Title:</div>
+        <div class="transaction-title spacing">
+            <div class="text">Title:</div>
             <input type="text" placeholder="e.g. Pizza" [(ngModel)]="editingTitle">
         </div>
 
-        <div class="transaction-label">
-            <div class="bold">Label:</div>
+        <div class="transaction-label spacing">
+            <div class="text label">Label:</div>
             <!-- <input type="text" placeholder="e.g. Food" [(ngModel)]="editingLabelId"> -->
             <div class="labels-list">
                 <button (click)="addLabel()">+</button>
@@ -39,8 +39,8 @@
             </div>
         </div>
 
-        <div class="transaction-price">
-            <div class="bold">Price:</div>
+        <div class="transaction-price spacing">
+            <div class="text">Price:</div>
             <input type="number" placeholder="10.00" [(ngModel)]="editingPrice" (keyup.enter)="saveTransaction()">
             <span class="euro">€</span>
         </div>

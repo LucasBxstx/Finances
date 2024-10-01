@@ -5,12 +5,17 @@
 
     @media screen and (max-width: 500px) {
         margin: 0 0.5rem;
+
+        app-logout{
+            top: 30px;
+            right: 10px;
+        }
     }
   }
 
 app-logout {
-    position: fixed;
-    top: 3%;
+    position: absolute;
+    top: 30px;
     right: 30px;
 }
 
@@ -71,7 +76,7 @@ app-monthly-overview {
     margin: 2rem 0;
 
     .date {
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 }    
 
