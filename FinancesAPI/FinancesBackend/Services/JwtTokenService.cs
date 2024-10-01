@@ -50,30 +50,6 @@
 
         public Guid GetUserObjectIdFromToken()
         {
-            /*var userObjectIdString = _httpContextAccessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userObjectIdString))
-            {
-                throw new UserUnauthorizedException();
-            }
-
-            return new Guid(userObjectIdString);
-
-            var httpContext = _httpContextAccessor.HttpContext;
-            if (httpContext == null || !httpContext.User.Identity.IsAuthenticated)
-            {
-                throw new UserUnauthorizedException();
-            }
-
-            var userObjectIdString = httpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userObjectIdString))
-            {
-                throw new UserUnauthorizedException();
-            }
-
-            return new Guid(userObjectIdString);*/
-
             var token = ExtractTokenFromRequest(); // Implementiere diese Methode, um das Token aus der Anfrage zu extrahieren
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(token);
