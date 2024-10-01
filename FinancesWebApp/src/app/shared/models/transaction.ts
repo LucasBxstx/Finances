@@ -1,6 +1,5 @@
 export interface Transaction {
     id: number;
-    userId: string;
     transactionType: TransactionType;
     date: Date;
     title: string | null;

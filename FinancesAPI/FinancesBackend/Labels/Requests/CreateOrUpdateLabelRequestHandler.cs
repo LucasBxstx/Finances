@@ -1,33 +1,40 @@
 ﻿using FinancesBackend.Common.Exceptions;
+using FinancesBackend.Labels.Models;
+using FinancesBackend.Services;
 using FinancesBackend.Transaction.Exceptions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinancesBackend.Labels.Requests
 {
-    internal sealed class CreateOrUpdateLabelRequestHandler : IRequestHandler<CreateOrUpdateLabelRequest, Models.Label>
+    internal sealed class CreateOrUpdateLabelRequestHandler : IRequestHandler<CreateOrUpdateLabelRequest, Models.LabelDto>
     {
         private readonly FinancesContext _financesContext;
         private readonly WrappedDbUpdateConcurrencyExceptionFactory _wrappedDbUpdateConcurrencyExceptionFactory;
+        private readonly IJwtTokenService _jwtTokenService;
 
         public CreateOrUpdateLabelRequestHandler(
             FinancesContext financesContext, 
-            WrappedDbUpdateConcurrencyExceptionFactory wrappedDbUpdateConcurrencyExceptionFactory)
+            WrappedDbUpdateConcurrencyExceptionFactory wrappedDbUpdateConcurrencyExceptionFactory,
+            IJwtTokenService jwtTokenService)
         {
             _financesContext = financesContext;
             _wrappedDbUpdateConcurrencyExceptionFactory = wrappedDbUpdateConcurrencyExceptionFactory;
+            _jwtTokenService = jwtTokenService;
         }
 
-        public async Task<Models.Label> Handle(CreateOrUpdateLabelRequest request, CancellationToken cancellationToken)
+        public async Task<Models.LabelDto> Handle(CreateOrUpdateLabelRequest request, CancellationToken cancellationToken)
         {
-            var user = await _financesContext.Users.SingleOrDefaultAsync(u => u.Id == request.UserId.ToString(), cancellationToken);
+            var userObjectId = _jwtTokenService.GetUserObjectIdFromToken();
+
+            var user = await _financesContext.Users.SingleOrDefaultAsync(u => u.Id ==userObjectId.ToString(), cancellationToken);
 
             if (user == null)
             {
-                throw new UserNotFoundException(request.UserId);
+                throw new UserNotFoundException(userObjectId);
             }
 
-            var label = await _financesContext.Labels.SingleOrDefaultAsync(l => l.Id == request.Id, cancellationToken);
+            var label = await _financesContext.Labels.SingleOrDefaultAsync(l => l.Id == request.Id && l.UserId == userObjectId, cancellationToken);
 
             if (label != null && request.RowVersion == null)
             {
@@ -62,7 +69,7 @@ namespace FinancesBackend.Labels.Requests
                 throw _wrappedDbUpdateConcurrencyExceptionFactory.Create(exception);
             }
 
-            return label;
+            return LabelDto.MapFromDatabase(label);
         }
     }
 }

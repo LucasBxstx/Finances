@@ -10,12 +10,12 @@ import { Observable } from 'rxjs';
 export class LabelService {
   private readonly http = inject(HttpClient);
 
-  public getLabel(userId: string, labelId: number): Observable<Label> {
-    return this.http.get<Label>(`${environment.apiUrl}/api/Label?userId=${userId}&id=${labelId}`);
+  public getLabel(labelId: number): Observable<Label> {
+    return this.http.get<Label>(`${environment.apiUrl}/api/Label?id=${labelId}`);
   }
 
-  public getLabels(userId: string): Observable<Label[]> {
-    return this.http.get<Label[]>(`${environment.apiUrl}/api/Label/all?userId=${userId}`);
+  public getLabels(): Observable<Label[]> {
+    return this.http.get<Label[]>(`${environment.apiUrl}/api/Label/all`);
   }
 
   public createOrUpdateLabel(label: Label): Observable<Label> {

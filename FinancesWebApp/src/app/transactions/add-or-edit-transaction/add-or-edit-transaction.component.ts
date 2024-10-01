@@ -56,7 +56,7 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
   private readonly labelService = inject(LabelService);
 
   public readonly labels$ = this.refreshLabels.pipe(switchMap(() =>
-    this.labelService.getLabels(this.authService.userObjectId)
+    this.labelService.getLabels()
   ));
 
   public ngOnInit(): void {
@@ -96,7 +96,6 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
 
     this.transactionService.createOrUpdateTransaction({
       id: this.addOrEditData.transactionId ?? -1,
-      userId: this.authService.userObjectId,
       transactionType: this.editingTransactionType,
       date: this.editingDate,
       title: this.editingTitle,

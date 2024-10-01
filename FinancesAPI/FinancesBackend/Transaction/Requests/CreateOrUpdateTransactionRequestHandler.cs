@@ -1,33 +1,40 @@
 ﻿using FinancesBackend.Common.Exceptions;
+using FinancesBackend.Services;
 using FinancesBackend.Transaction.Exceptions;
+using FinancesBackend.Transaction.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace FinancesBackend.Transaction.Requests
 {
-    internal sealed class CreateOrUpdateTransactionRequestHandler : IRequestHandler<CreateOrUpdateTransactionRequest, Models.Transaction>
+    internal sealed class CreateOrUpdateTransactionRequestHandler : IRequestHandler<CreateOrUpdateTransactionRequest, Models.TransactionDto>
     {
         private readonly FinancesContext _financesContext;
         private readonly WrappedDbUpdateConcurrencyExceptionFactory _wrappedDbUpdateConcurrencyExceptionFactory;
+        private readonly IJwtTokenService _jwtTokenService;
 
         public CreateOrUpdateTransactionRequestHandler(
             FinancesContext financesContext, 
-            WrappedDbUpdateConcurrencyExceptionFactory wrappedDbUpdateConcurrencyExceptionFactory)
+            WrappedDbUpdateConcurrencyExceptionFactory wrappedDbUpdateConcurrencyExceptionFactory,
+            IJwtTokenService jwtTokenService)
         {
             _financesContext = financesContext;
             _wrappedDbUpdateConcurrencyExceptionFactory = wrappedDbUpdateConcurrencyExceptionFactory;
+            _jwtTokenService = jwtTokenService;
         }
 
-        public async Task<Models.Transaction> Handle(CreateOrUpdateTransactionRequest request, CancellationToken cancellationToken)
+        public async Task<Models.TransactionDto> Handle(CreateOrUpdateTransactionRequest request, CancellationToken cancellationToken)
         {
-            var user = await _financesContext.Users.SingleOrDefaultAsync(u => u.Id == request.UserId.ToString(), cancellationToken);
+            var userObjectId = _jwtTokenService.GetUserObjectIdFromToken();
+
+            var user = await _financesContext.Users.SingleOrDefaultAsync(u => u.Id == userObjectId.ToString(), cancellationToken);
 
             if (user == null)
             {
-                throw new UserNotFoundException(request.UserId);
+                throw new UserNotFoundException(userObjectId);
             }
 
-            var transaction = await _financesContext.Transactions.SingleOrDefaultAsync(t => t.Id == request.Id, cancellationToken);
+            var transaction = await _financesContext.Transactions.SingleOrDefaultAsync(t => t.Id == request.Id && t.UserId == userObjectId, cancellationToken);
 
             if (transaction != null && request.RowVersion == null)
             {
@@ -68,7 +75,7 @@ namespace FinancesBackend.Transaction.Requests
                 throw _wrappedDbUpdateConcurrencyExceptionFactory.Create(exception);
             }
 
-            return transaction;
+            return TransactionDto.MapFromDatabase(transaction) ;
         }
     }
 }

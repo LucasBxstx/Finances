@@ -4,21 +4,19 @@ import { Observable } from "rxjs";
 
 @Injectable()
 export class BackendInterceptor implements HttpInterceptor {
+  constructor(){}
 
-    intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        const token = localStorage.getItem('loginToken');
+  intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    const token = localStorage.getItem('loginToken');
 
-        if (token) {
-            console.log("token from local storage: ", token);
-            const authHeader = `Bearer ${token}`;
-            request = request.clone({
-                setHeaders: {
-                    Authorization: authHeader
-                }
-            });
-        }
+    if (token) {
+        const clonedRequest = request.clone({
+          headers: request.headers.set('Authorization', `Bearer ${token}`)
+        });
+        return next.handle(clonedRequest);
+      }
 
-        return next.handle(request);
-    }
+    return next.handle(request);
+  }
 
 }

@@ -6,6 +6,6 @@
 
         public DateTimeOffset? OldestTransactionDate { get; set; }
 
-        public List<Transaction> Transactions { get; set; } = new List<Transaction>();
+        public List<TransactionDto> Transactions { get; set; } = new List<TransactionDto>();
     }
 }

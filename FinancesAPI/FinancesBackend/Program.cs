@@ -2,6 +2,7 @@ using FinancesBackend;
 using FinancesBackend.Common.Exceptions;
 using FinancesBackend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -76,7 +77,18 @@ static void ConfigureMvc(IServiceCollection services)
 
     services.AddHttpContextAccessor();
     services.AddHealthChecks();
-    services.AddCors();
+
+    services.AddCors(options =>
+    {
+        options.AddPolicy("AllowAllOrigins",
+            builder =>
+            {
+                builder
+                    .AllowAnyOrigin()
+                    .AllowAnyMethod() 
+                    .AllowAnyHeader(); 
+            });
+    });
 }
 
 static void ConfigureSwagger(IServiceCollection services)
@@ -85,24 +97,49 @@ static void ConfigureSwagger(IServiceCollection services)
     {
         options.SwaggerDoc("v1", new OpenApiInfo { Title = "Finances API", Version = "v1" });
 
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            In = ParameterLocation.Header,
+            Description = "Bitte das Bearer-Token einfügen.",
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "bearer"
+        });
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
+
         options.IgnoreObsoleteActions();
         options.IgnoreObsoleteProperties();
 
         options.DescribeAllParametersInCamelCase();
-        options.CustomSchemaIds(type => type.FullName); // Vermeidet Namenskonflikte
+        options.CustomSchemaIds(type => type.FullName);
     });
 }
 
 
 static void ConfigureServices(IServiceCollection services)
 {
+    services.AddHttpContextAccessor();
     services.AddSingleton<WrappedDbUpdateConcurrencyExceptionFactory>();
-
     services.AddScoped<IJwtTokenService, JwtTokenService>();
 }
 
 static void ConfigureApp(WebApplication webApplication, IConfiguration configuration)
 {
+    webApplication.UseCors("AllowAllOrigins");
     webApplication.UseRouting();
 
     webApplication.MapHealthChecks("/health");
@@ -117,10 +154,6 @@ static void ConfigureApp(WebApplication webApplication, IConfiguration configura
     if (webApplication.Environment.IsDevelopment())
     {
         webApplication.UseDeveloperExceptionPage();
-
-        webApplication.UseCors(
-            corsPolicyBuilder => corsPolicyBuilder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
-
         webApplication.UseSwagger();
         webApplication.UseSwaggerUI();
     }

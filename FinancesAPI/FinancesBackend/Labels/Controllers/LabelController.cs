@@ -5,6 +5,7 @@ using FinancesBackend.Labels.Requests;
 using FinancesBackend.Transaction.Exceptions;
 using FinancesBackend.Transaction.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using ControllerBase = FinancesBackend.Common.ControllerBase;
@@ -17,6 +18,7 @@ namespace FinancesBackend.Labels.Controllers
 
     public class LabelController(IMediator mediator) : ControllerBase(mediator)
     {
+        [Authorize]
         [HttpGet]
         [SwaggerOperation("Gets the desired label")]
         [SwaggerResponse(StatusCodes.Status200OK, "The label data", typeof(Models.Label))]
@@ -35,6 +37,7 @@ namespace FinancesBackend.Labels.Controllers
             }
         }
 
+        [Authorize]
         [HttpGet("all")]
         [SwaggerOperation("Gets all Labels for the user")]
         [SwaggerResponse(StatusCodes.Status200OK, "The labels", typeof(List<Models.Label>))]
@@ -54,6 +57,7 @@ namespace FinancesBackend.Labels.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
         [SwaggerOperation("Creates or updates the label")]
         [SwaggerResponse(StatusCodes.Status200OK, "The created/updated Label", typeof(Models.Label))]
