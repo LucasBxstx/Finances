@@ -5,6 +5,11 @@ export interface Login {
     twoFactorRecoveryCode: string,
 }
 
+export interface Refresh {
+    refreshToken: string,
+    userId: string,
+}
+
 export interface Register {
     email: string,
     password: string,

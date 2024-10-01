@@ -82,7 +82,7 @@
         "year": "Year",
         "addIncome": "Add Income",
         "addExpense": "Add Expense",
-        "noTransactions": "No transactions have been added yet for this month.",
+        "noTransactions": "No transactions have been added for this month.",
         "errorOccured": "Something went wrong.",
         "refreshPls": "Please refresh the page",
         "refresh" : "Refresh"
