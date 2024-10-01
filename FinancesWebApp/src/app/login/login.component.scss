@@ -20,6 +20,10 @@
     justify-content: center;
     align-items: center;
 
+    input {
+        max-width: 450px;
+    }
+
     .title {
         text-align: center;
         margin-bottom: 40px;
@@ -30,6 +34,7 @@
 
     button {
         margin: 5px 0px;
+        max-width: 450px;
         display: flex;
         justify-content: center;
         align-items: center;
