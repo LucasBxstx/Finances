@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Transaction, TransactionView } from '../models/transaction';
-import { Observable } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -14,13 +14,25 @@ export class TransactionService {
     return this.http.get<Transaction>(`${environment.apiUrl}/api/Transaction?id=${transactionId}`);
   }
 
-  public getTransactions(startDate: Date | null = null, endDate: Date | null = null): Observable<TransactionView> {
+  public getTransactions(startDate: Date | null = null, endDate: Date | null = null): Observable<TransactionView | null> {
     // if startDate and endDate are null, the request will get all transactions
     if (startDate && endDate) {
-      return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`);
+      return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all?startDate=${startDate.toISOString()}&endDate=${endDate.toISOString()}`)
+      .pipe(
+        catchError((error) => {
+          console.log('Error fetching transactions:', error);
+          return of(null);
+        })
+      );
     }
     else {
-      return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all`);
+      return this.http.get<TransactionView>(`${environment.apiUrl}/api/Transaction/all`)
+      .pipe(
+        catchError((error) => {
+          console.log('Error fetching transactions:', error);
+          return of(null);
+        })
+      );;
     }
   }
 

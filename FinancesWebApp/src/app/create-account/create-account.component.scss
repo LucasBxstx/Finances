@@ -7,7 +7,9 @@
 }
 
 .container {
-    width: 600px;
+    width: 60vw;
+    min-width: 300px;
+    max-width: 600px;
     background-color: rgb(24, 24, 24);
     border: 1px solid rgb(64, 64, 64);
     border-radius: 10px;
@@ -20,7 +22,7 @@
 
 
     .limitation {
-        width: 550px;
+        max-width: 550px;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -54,5 +56,15 @@
 
     .red {
         color: red;
+    }
+
+    .already-have-account {
+        color: rgb(136, 136, 136);
+        
+        span {
+            text-decoration: underline;
+            color:rgb(43, 164, 194);
+            cursor: pointer;
+        }
     }
 }

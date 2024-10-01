@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Label } from '../models/label';
 import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
+import { catchError, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,13 @@ export class LabelService {
     return this.http.get<Label>(`${environment.apiUrl}/api/Label?id=${labelId}`);
   }
 
-  public getLabels(): Observable<Label[]> {
-    return this.http.get<Label[]>(`${environment.apiUrl}/api/Label/all`);
+  public getLabels(): Observable<Label[] | null> {
+    return this.http.get<Label[]>(`${environment.apiUrl}/api/Label/all`).pipe(
+      catchError((error) => {
+        console.log('Error fetching transactions:', error);
+        return of(null);
+      })
+    );
   }
 
   public createOrUpdateLabel(label: Label): Observable<Label> {

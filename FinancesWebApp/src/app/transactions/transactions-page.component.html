@@ -11,34 +11,43 @@
 
 <div class="division space"></div>
 
-<app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
-    [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
+<div *ngIf="(transactions$ | async) !== null">
+    <app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
+        [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
 
-<app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async"
-    (valueChanged)="changeMonth($event)"></app-drop-menu>
+    <app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async" [valueList]="availableMonths$ |async"
+        (valueChanged)="changeMonth($event)"></app-drop-menu>
 
-<app-monthly-overview [currentMonth]="selectedMonth$ | async" [keyMetricData]="monthlyKeyMetrics$ |async">
-</app-monthly-overview>
+    <app-monthly-overview [currentMonth]="selectedMonth$ | async"
+        [keyMetricData]="monthlyKeyMetrics$ |async">
+    </app-monthly-overview>
 
-<div class="button-bar">
-    <button (click)="addTransaction(TransactionType.Income)">Add Income</button>
-    <button (click)="addTransaction(TransactionType.Expense)">Add Expense</button>
-</div>
+    <div class="button-bar">
+        <button (click)="addTransaction(TransactionType.Income)">Add Income</button>
+        <button (click)="addTransaction(TransactionType.Expense)">Add Expense</button>
+    </div>
 
-<app-add-or-edit-transaction *ngIf="(currentAddedOrEditedTransaction | async) !== null"
-    [addOrEditData]="(currentAddedOrEditedTransaction |async)!"
-    (closedWindow)="closeAddOrEditWindow()"></app-add-or-edit-transaction>
+    <app-add-or-edit-transaction *ngIf="(currentAddedOrEditedTransaction | async) !== null"
+        [addOrEditData]="(currentAddedOrEditedTransaction |async)!"
+        (closedWindow)="closeAddOrEditWindow()"></app-add-or-edit-transaction>
 
-<div *ngIf="(transactions$ |async) && !showSpinner">
-    <div *ngFor="let groupedTransaction of transactions$ | async" class="date-group">
-        <div class="date">{{groupedTransaction.date | getDate }}</div>
-        <app-transaction *ngFor="let transaction of groupedTransaction.transactions" [transaction]="transaction"
-            (transactionEdited)="editTransaction($event)" (transactionDeleted)="refreshTransactions.next(null)">
-        </app-transaction>
+    <div *ngIf="(transactions$ |async) && !showSpinner">
+        <div *ngFor="let groupedTransaction of transactions$ | async" class="date-group">
+            <div class="date">{{groupedTransaction.date | getDate }}</div>
+            <app-transaction *ngFor="let transaction of groupedTransaction.transactions" [transaction]="transaction"
+                (transactionEdited)="editTransaction($event)" (transactionDeleted)="refreshTransactions.next(null)">
+            </app-transaction>
+        </div>
     </div>
 </div>
 
-<div *ngIf="(transactions$ |async)?.length === 0" class="no-transactions">No transactions in this month</div>
+<div *ngIf="!showSpinner && (transactions$ |async)?.length === 0" class="error-message">No transactions have been added yet for this month.</div>
+
+<div *ngIf="!showSpinner &&(transactions$ | async) === null" class="error-message">
+    <span>Something went wrong.</span>
+    <span> Please refresh the page</span>
+    <button (click)="refreshPage()">Refresh</button>
+</div>
 
 <div class="spinner" *ngIf="showSpinner"><app-spinner [color]="'white'"></app-spinner></div>
 

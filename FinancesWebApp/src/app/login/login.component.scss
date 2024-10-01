@@ -7,7 +7,9 @@
 }
 
 .container {
-    width: 600px;
+    width: 60vw;
+    min-width: 300px;
+    max-width: 600px;
     background-color: rgb(24, 24, 24);
     border: 1px solid rgb(64, 64, 64);
     border-radius: 10px;
@@ -18,10 +20,6 @@
     justify-content: center;
     align-items: center;
 
-    .limitation {
-        width: 400px;
-    }
-
     .title {
         text-align: center;
         margin-bottom: 40px;
@@ -31,7 +29,7 @@
     }
 
     button {
-        margin: 15px 0px;
+        margin: 5px 0px;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -40,7 +38,10 @@
         .spinner {
             transform: scale(0.3);
         }
+    }
 
+    .space {
+        margin-top: 15px;
     }
 
     .red {

@@ -87,4 +87,8 @@ export class CreateAccountComponent implements OnDestroy{
         }
       );
   }
+
+  public backToLoginPage(): void {
+    this.router.navigate(['login']);
+  }
 }

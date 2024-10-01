@@ -46,3 +46,9 @@ export interface BarChartData {
     transactionData: { value: number, itemStyle: { color: string } }[];
     tooltipData: { transactionTitle: string; transactionFormattedDate: string; transactionPrice: number; labelName: string}[];
 }
+
+export enum ErrorMessages {
+    loading_failed = 0,
+     add_transactions = 1,
+     add_labels = 2,
+}

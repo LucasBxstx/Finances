@@ -91,8 +91,17 @@ app-add-or-edit-transaction {
     margin: 2rem;
 }
 
-.no-transactions {
-    text-align: center;
-    font-size: 1.3rem;
+.error-message {
+    font-size: 1.2rem;
     margin: 4rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid rgb(64, 64, 64);
+    padding: 10px 20px;
+
+    button {
+        margin-top: 10px;
+        width: 130px;
+    }
 }

@@ -11,25 +11,51 @@
 
 <div class="division space"></div>
 
-<app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
-    [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
+<div *ngIf="(showSpinner$ | async) === false">
 
-<app-interactive-table-chart [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async"></app-interactive-table-chart>
+    <div *ngIf="(errorMessage$ | async) === null">
+        <app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
+        [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
 
-<div class="drop-menu-row">
-    <app-drop-menu class="pie-chart-drop-down-start-month" [description]="'Filter from'" [translateMonth]="true" [currentValue]="pieChartSelectedStartMonth$ | async" 
-    [valueList]="availableMonths$ | async" (valueChanged)="changePieChartSelectedStartMonth($event)"></app-drop-menu>
+        <app-interactive-table-chart 
+            [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async"></app-interactive-table-chart>
 
-    <app-drop-menu class="pie-chart-drop-down-end-month" [description]="'to'" [translateMonth]="true" [currentValue]="pieChartSelectedEndMonth$ | async" 
-    [valueList]="availableMonths$ | async" (valueChanged)="changePieChartSelectedEndMonth($event)"></app-drop-menu>
+        <div class="drop-menu-row">
+            <app-drop-menu class="pie-chart-drop-down-start-month" [description]="'Filter from'" [translateMonth]="true"
+                [currentValue]="pieChartSelectedStartMonth$ | async" [valueList]="availableMonths$ | async"
+                (valueChanged)="changePieChartSelectedStartMonth($event)"></app-drop-menu>
+
+            <app-drop-menu class="pie-chart-drop-down-end-month" [description]="'to'" [translateMonth]="true"
+                [currentValue]="pieChartSelectedEndMonth$ | async" [valueList]="availableMonths$ | async"
+                (valueChanged)="changePieChartSelectedEndMonth($event)"></app-drop-menu>
+        </div>
+
+
+        <div class="row">
+            <app-chart [chartOptions]="labelSharePrice$ |async" [errorMessage]="'Add expenses to see label shares here'"></app-chart>
+            <app-chart [chartOptions]="labelShareCount$ |async" [errorMessage]="'Add expenses to see total label shares here'"></app-chart>
+        </div>
+
+        <app-chart [chartOptions]="topExpenses$ |async" [errorMessage]="'Add incomes to see them here'"></app-chart>
+
+        <app-chart class="incomes" [chartOptions]="topIncomes$ |async" [errorMessage]="'Add expenses to see them here'"></app-chart>
+    </div>
+    
+    <div  *ngIf="(errorMessage$ | async) === ErrorMessages.add_transactions" class="error-message">
+        <span> No transactions have been added yet.</span> 
+        <span>Add some transactions and give them labels to see statistics</span>
+    </div>
+
+    <div  *ngIf="(errorMessage$ | async) === ErrorMessages.add_labels" class="error-message">
+        <span> No Labels have been added yet.</span> 
+        <span>Add some labels for your transactions to see statistics</span>
+    </div>
+
+    <div class="error-message" *ngIf="(errorMessage$ | async) === ErrorMessages.loading_failed">
+        <span>An error occured.</span>
+        <span> Please refresh the page</span>
+        <button (click)="refreshPage()">Refresh</button>
+    </div>
 </div>
 
-
-<div class="row">
-    <app-chart [chartOptions]="labelSharePrice$ |async"></app-chart>
-    <app-chart [chartOptions]="labelShareCount$ |async"></app-chart>
-</div>
-
-<app-chart [chartOptions]="topExpenses$ |async"></app-chart>
-
-<app-chart class="incomes" [chartOptions]="topIncomes$ |async"></app-chart>
+<div class="spinner" *ngIf="(showSpinner$ | async) === true"><app-spinner [color]="'white'"></app-spinner></div>
