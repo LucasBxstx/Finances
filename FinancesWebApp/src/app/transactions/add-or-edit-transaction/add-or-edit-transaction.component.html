@@ -1,33 +1,33 @@
-<div class="window">
+<div *transloco="let t read 'addOrEditTransaction'" class="window">
     <img src="assets/icons/close.svg" class="close" (click)="closedWindow.emit()">
-    <div class="title">{{addOrEditData.useCase === 'add' ? 'Add Transaction' : 'Edit Transaction'}}</div>
+    <div class="title">{{addOrEditData.useCase === 'add' ? t('addTransaction'): t('editTransaction')}}</div>
     <div class="division"></div>
 
     <div class="container">
         <div class="transaction-type spacing">
-            <div class="text">Type:</div>
+            <div class="text">{{t('type')}}:</div>
             <span [ngClass]="{selected: editingTransactionType === TransactionType.Income}"
-                (click)="changeTypeTo(TransactionType.Income)">Income</span>
+                (click)="changeTypeTo(TransactionType.Income)">{{t('income')}}</span>
             <span [ngClass]="{selected: editingTransactionType === TransactionType.Expense}"
-                (click)="changeTypeTo(TransactionType.Expense)">Expense</span>
+                (click)="changeTypeTo(TransactionType.Expense)">{{t('expense')}}</span>
         </div>
 
         <div class="transaction-date spacing">
-            <div class="text">Date:</div>
-            <input class="date-input" matInput [matDatepicker]="datepicker" placeholder="Choose a date"
+            <div class="text">{{t('date')}}:</div>
+            <input class="date-input" matInput [matDatepicker]="datepicker" [placeholder]="t('chooseADate')"
                 (dateChange)="editingDate = $event.value" [(ngModel)]="editingDate">
             <mat-datepicker-toggle matSuffix [for]="datepicker"></mat-datepicker-toggle>
             <mat-datepicker #datepicker></mat-datepicker>
         </div>
 
         <div class="transaction-title spacing">
-            <div class="text">Title:</div>
-            <input type="text" placeholder="e.g. Pizza" [(ngModel)]="editingTitle">
+            <div class="text">{{t('title')}}:</div>
+            <input type="text" [placeholder]="t('placeholder')" [(ngModel)]="editingTitle">
         </div>
 
         <div class="transaction-label spacing">
-            <div class="text label">Label:</div>
-            <!-- <input type="text" placeholder="e.g. Food" [(ngModel)]="editingLabelId"> -->
+            <div class="text label">{{t('label')}}:</div>
+
             <div class="labels-list">
                 <button (click)="addLabel()">+</button>
                 <button (click)="labelEditingMode = !labelEditingMode" class="edit-button" [ngClass]="{editing: labelEditingMode}">
@@ -40,13 +40,13 @@
         </div>
 
         <div class="transaction-price spacing">
-            <div class="text">Price:</div>
+            <div class="text">{{t('price')}}:</div>
             <input type="number" placeholder="10.00" [(ngModel)]="editingPrice" (keyup.enter)="saveTransaction()">
             <span class="euro">€</span>
         </div>
 
         <button class="save" (click)="saveTransaction()">
-            <span *ngIf="!showSpinner"> {{addOrEditData.useCase === 'add' ? 'Add Transaction' : 'Save Changes'}}</span>
+            <span *ngIf="!showSpinner"> {{addOrEditData.useCase === 'add' ? t('addTransaction') : t('saveChanges')}}</span>
             <app-spinner *ngIf="showSpinner"></app-spinner>
         </button>
     </div>

@@ -3,11 +3,12 @@ import { Component, Input } from '@angular/core';
 import { GetMonthPipe } from '../../shared/pipes/getMonth.pipe';
 import { keyMetricData } from '../../shared/models/transaction';
 import { GetPriceDecimalPipe } from '../../shared/pipes/getPriceDecimal.pipe';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-monthly-overview',
   standalone: true,
-  imports: [NgIf, GetMonthPipe, NgClass, GetPriceDecimalPipe],
+  imports: [NgIf, GetMonthPipe, NgClass, GetPriceDecimalPipe, TranslocoDirective],
   templateUrl: './monthly-overview.component.html',
   styleUrl: './monthly-overview.component.scss'
 })

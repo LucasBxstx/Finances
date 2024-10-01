@@ -8,11 +8,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { SpinnerComponent } from '../../../shared/components/spinner/spinner.component';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { AuthService } from '../../../shared/services/auth.service';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-add-or-edit-label',
   standalone: true,
-  imports: [FormsModule, NgStyle, SpinnerComponent, NgIf, ColorPickerModule],
+  imports: [FormsModule, NgStyle, SpinnerComponent, NgIf, ColorPickerModule, TranslocoDirective],
   templateUrl: './add-or-edit-label.component.html',
   styleUrl: './add-or-edit-label.component.scss'
 })
