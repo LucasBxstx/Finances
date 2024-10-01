@@ -13,7 +13,7 @@
 
 .window {
     position: relative;
-    width: min(95%, 1000px);
+    width: min(80%, 1000px);
     // height: min(95%, 500px);
     background-color: rgb(24, 24, 24);
     border-radius: 5px;
@@ -33,8 +33,7 @@
 
     .title {
         font-weight: bold;
-        font-size: 1.5rem;
-
+        font-size: 1.3rem;
     }
 
 
@@ -44,13 +43,18 @@
     }
 
     .container {
-        margin: 0 2rem;
+        display: flex;
+        flex-direction: column;
+        margin: 20px 0;
+    }
+
+    .spacing {
+        margin: 5px 0;
     }
 
     .transaction-type {
         display: flex;
         align-items: center;
-        margin: 2rem 0;
 
         span {
             cursor: pointer;
@@ -74,7 +78,6 @@
     .transaction-date {
         display: flex;
         align-items: center;
-        margin: 2rem 0;
 
         .date-input {
             width: 120px;
@@ -95,17 +98,25 @@
     .transaction-title {
         display: flex;
         align-items: center;
-        margin: 1rem 0;
     }
 
     .transaction-label {
         display: flex;
-        align-items: center;
-        margin: 1rem 0;
+        align-items: start;
+
+        .label {
+            padding-top: 10px;
+        }
+
         
         .labels-list {
             display: flex;
             flex-wrap: wrap;
+            border: 1px solid rgb(64, 64, 64);
+            border-radius: 5px;
+            font-size: 1rem;
+            overflow: auto;
+            max-height: 500px;
 
             button {
                 padding: 0.2rem 1.2rem; 
@@ -148,7 +159,6 @@
     .transaction-price {
         display: flex;
         align-items: center;
-        margin: 1rem 0;
 
         .euro {
             margin-left: 0.5rem;
@@ -161,7 +171,7 @@
 
     .save {
         height: 2rem;
-        margin-top:  2rem;
+        margin-top:  10px;
 
         app-spinner {
             transform: scale(0.3);
@@ -171,12 +181,34 @@
 
 }
 
-.bold {
-    font-weight: bold;
+.text {
     margin-right: 2rem;
-    width: 60px !important;
+    font-size: 1rem;
+
+    min-width: 50px !important;
 }
 
 input::placeholder {
     color: grey;
+}
+
+@media screen and (max-width: 600px) {
+    .window {
+        padding: 5px 10px;
+        width: 90%;
+    }
+
+    .text {
+        font-weight: lighter;
+        margin-right: 10px;
+    }
+
+    .transaction-label{
+        .labels-list {
+            overflow: auto;
+            max-height: 150px;
+            font-size: 0.9rem;
+        }
+    }
+    
 }

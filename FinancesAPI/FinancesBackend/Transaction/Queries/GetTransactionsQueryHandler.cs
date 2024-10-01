@@ -20,8 +20,6 @@ namespace FinancesBackend.Transaction.Queries
 
         public async Task<TransactionView> Handle(GetTransactionsQuery request, CancellationToken cancellationToken)
         {
-            // ToDo: get User Id from the token 
-            // see: https://medium.com/@codewithankitsahu/authentication-and-authorization-in-net-8-web-api-94dda49516ee
             var userObjectId = _jwtTokenService.GetUserObjectIdFromToken();
 
             var user = await _financesContext.Users.SingleOrDefaultAsync(u => u.Id == userObjectId.ToString(), cancellationToken);
@@ -81,7 +79,8 @@ namespace FinancesBackend.Transaction.Queries
             }
             else
             {
-                transactionView.OldestTransactionDate = transactions.Min(t => t.Date);
+                if (transactions.Count != 0) transactionView.OldestTransactionDate = transactions.Min(t => t.Date);
+                else transactionView.OldestTransactionDate = null;
             }
 
             return transactionView;

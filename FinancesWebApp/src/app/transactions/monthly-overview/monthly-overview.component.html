@@ -6,18 +6,23 @@
     <div class="left-container">
         <div class="key-metrics">
             <span>Account Balance</span>
-            <span>Income</span>
-            <span>Expense</span>
             <span>Monthly Balance</span>
         </div>
-
         <div class="values">
             <span class="blue">{{keyMetricData.total | getPriceDecimal}}</span>
-            <span class="green">+{{keyMetricData.income | getPriceDecimal}}</span>
-            <span class="red">-{{(keyMetricData.expense * -1 | getPriceDecimal)}}</span>
             <span [ngClass]="keyMetricData.bilanz >= 0 ? 'green' : 'red'">{{ keyMetricData.bilanz | getPriceDecimal}}</span>
         </div>
     </div>
 
-    <div class="right-container"></div>
+    <div class="right-container">
+        <div class="key-metrics">
+            <span>Income</span>
+            <span>Expense</span>
+        </div>
+
+        <div class="values">
+            <span class="green">+{{keyMetricData.income | getPriceDecimal}}</span>
+            <span class="red">-{{(keyMetricData.expense * -1 | getPriceDecimal)}}</span>
+        </div>
+    </div>
 </div>

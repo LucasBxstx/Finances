@@ -13,7 +13,7 @@
 
 .window {
     position: relative;
-    width: min(95%, 1000px);
+    width: min(80%, 1000px);
     // height: min(95%, 500px);
     background-color: rgb(24, 24, 24);
     border-radius: 5px;
@@ -33,7 +33,7 @@
 
     .title {
         font-weight: bold;
-        font-size: 1.5rem;
+        font-size: 1.3rem;
 
     }
 
@@ -45,6 +45,8 @@
 
     .container {
         margin: 0 2rem;
+        flex-direction: column;
+        margin: 20px 0;
 
         .label-name {
             display: flex;
@@ -55,11 +57,11 @@
         .label-color {
             display: flex;
             align-items: center;
-            margin: 2rem 0;
+            margin: 1.5rem 0;
     
             .color {
-                width: 30px;
-                height: 30px;
+                width: 27px;
+                height: 27px;
                 border: 1px solid white;
                 border-radius: 5px;
             }
@@ -67,6 +69,7 @@
             button {
                 width: 100px;
                 margin-left: 2rem;
+
             }
         }
 
@@ -82,12 +85,24 @@
     }
 }
 
-.bold {
-    font-weight: bold;
+.text {
     margin-right: 2rem;
-    width: 60px !important;
+    font-size: 1rem;
+    min-width: 50px !important;
 }
 
 input::placeholder {
     color: grey;
+}
+
+@media screen and (max-width: 600px) {
+    .window {
+        padding: 5px 10px;
+        width: 90%;
+    }
+
+    .text {
+        font-weight: lighter;
+        margin-right: 10px;
+    }    
 }

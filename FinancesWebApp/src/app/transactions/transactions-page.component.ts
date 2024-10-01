@@ -33,7 +33,6 @@ export class TransactionsPageComponent implements OnDestroy {
   public showSpinner = true;
 
   private readonly transactionService = inject(TransactionService);
-  private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
@@ -43,7 +42,7 @@ export class TransactionsPageComponent implements OnDestroy {
   private readonly selectedMonthStartAndEndDate$ = combineLatest([this.selectedYear$, this.selectedMonth$])
     .pipe(map(([year, month]) => calculateFirstAndLastDayOfMonth(year, month)));
 
-  private readonly transactionData$: Observable<TransactionView> = this.refreshTransactions.pipe(
+  private readonly transactionData$: Observable<TransactionView | null> = this.refreshTransactions.pipe(
     switchMap(() => {
       return this.selectedMonthStartAndEndDate$.pipe(
         switchMap(({ firstDayOfMonth, lastDayOfMonth }) => {
@@ -52,12 +51,14 @@ export class TransactionsPageComponent implements OnDestroy {
     })
   );
 
-  public readonly transactions$: Observable<GroupedTransaction[]> = this.transactionData$.pipe(
-    map(({ transactions }) => mapTrasactionsToDateGroups(transactions)),
+  public readonly transactions$: Observable<GroupedTransaction[] | null> = this.transactionData$.pipe(
+    map((transactionData) => 
+      transactionData?.transactions ? mapTrasactionsToDateGroups(transactionData?.transactions) : null
+    ),
     tap(() => this.showSpinner = false));
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
-    map((transactionData) => transactionData.oldestTransactionDate));
+    map((transactionData) => transactionData?.oldestTransactionDate ?? null));
 
   public readonly availableYears$: Observable<number[]> = this.oldestTransactionDate$.pipe(
     map(getListOfAvailableYears));
@@ -66,9 +67,15 @@ export class TransactionsPageComponent implements OnDestroy {
     map(([selectedYear, oldestDate]) => getListOfAvailableMonthsPerYear(selectedYear, oldestDate))
   );
 
-  public readonly monthlyKeyMetrics$: Observable<keyMetricData> = this.transactionData$.pipe(
-    map(({ transactions, priorBalance }) => calculateMonthlyKeyMetricData(transactions, priorBalance)));
+  public readonly monthlyKeyMetrics$: Observable<keyMetricData | null> = this.transactionData$.pipe(
+    map((transactionData) => {
+      if(transactionData?.transactions && transactionData.priorBalance) {
+        return calculateMonthlyKeyMetricData(transactionData.transactions, transactionData.priorBalance)
+      };
 
+      return null;
+    }));
+    
   public ngOnDestroy(): void {
     this.unsubscribe.next();
     this.unsubscribe.complete();
@@ -120,5 +127,9 @@ export class TransactionsPageComponent implements OnDestroy {
     this.currentAddedOrEditedTransaction.next(null);
     this.refreshTransactions.next(null);
     this.showSpinner = true;
+  }
+
+  public refreshPage(): void {
+    window.location.reload();
   }
 }

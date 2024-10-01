@@ -1,17 +1,18 @@
-import { Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
 import { AddOrEditTransaction, Transaction, TransactionType } from '../../shared/models/transaction';
-import { NgClass, NgStyle } from '@angular/common';
+import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { GetPriceDecimalPipe } from '../../shared/pipes/getPriceDecimal.pipe';
 import { TransactionService } from '../../shared/services/transaction.service';
-import { Subject, takeUntil } from 'rxjs';
-import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
+import { map, Subject, takeUntil } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 import { LabelService } from '../../shared/services/label.service';
-import { AuthService } from '../../shared/services/auth.service';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { MOBILE_BREAKPOINT } from '../../shared/constants';
 
 @Component({
   selector: 'app-transaction',
   standalone: true,
-  imports: [NgClass, GetPriceDecimalPipe, NgStyle],
+  imports: [NgClass, GetPriceDecimalPipe, NgStyle, NgIf, AsyncPipe],
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss'
 })
@@ -21,14 +22,24 @@ export class TransactionComponent implements OnDestroy, OnChanges {
 
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);
-  private readonly authService = inject(AuthService);
+  private readonly breakpointObserver = inject(BreakpointObserver);
+
+  public readonly breakpointMobile$ = this.breakpointObserver.observe([MOBILE_BREAKPOINT]).pipe(map((state)=> state.matches));
 
   public labelColor?: string;
   public labelName?: string;
+  public openEditContainer = false;
 
   @Input({ required: true }) public transaction!: Transaction;
   @Output() public transactionEdited: EventEmitter<AddOrEditTransaction> = new EventEmitter();
   @Output() public transactionDeleted: EventEmitter<void> = new EventEmitter();
+
+  @HostListener('click')
+  public onClick(): void {
+    if(!this.isMobile()) return;
+
+    this.openEditContainer = !this.openEditContainer;
+  }
 
   public ngOnChanges(changes: SimpleChanges): void {
     if ('transaction' in changes) {
@@ -64,5 +75,9 @@ export class TransactionComponent implements OnDestroy, OnChanges {
         (error: HttpErrorResponse) => {
           console.log("error", error.status)
         })
+  }
+
+  private isMobile(): boolean {
+    return this.breakpointObserver.isMatched(MOBILE_BREAKPOINT);
   }
 }

@@ -1,20 +1,18 @@
 <div *transloco="let t; read: 'login'" class="container">
-    <div class="limitation">
-        <div class="title">{{t("myFinances")}}</div>
+    <div class="title">{{t("myFinances")}}</div>
 
-        <div class="center">
-            <span *ngIf="!showError">{{t("login")}}</span>
-            <span *ngIf="showError" class="red">{{t("error")}}</span>
-        </div>
-
-        <input type="text" [formControl]="emailFormControl" [placeholder]="t('email')">
-        <input type="password" (keyup.enter)="login()" [formControl]="passwordFormControl"
-            [placeholder]="t('password')">
-
-        <button (click)="login()" [disabled]="emailFormControl.invalid || passwordFormControl.invalid || showSpinner">
-            <span *ngIf="!showSpinner">{{t('loginButton')}}</span>
-            <app-spinner *ngIf="showSpinner" class="spinner"></app-spinner>
-        </button>
-        <button (click)="createAccount()">{{t('createAccount')}}</button>
+    <div class="center">
+        <span *ngIf="!showError">{{t("login")}}</span>
+        <span *ngIf="showError" class="red">{{t("error")}}</span>
     </div>
+
+    <input type="text" [formControl]="emailFormControl" [placeholder]="t('email')">
+    <input type="password" (keyup.enter)="login()" [formControl]="passwordFormControl"
+        [placeholder]="t('password')">
+
+    <button class="space" (click)="login()" [disabled]="emailFormControl.invalid || passwordFormControl.invalid || showSpinner">
+        <span *ngIf="!showSpinner">{{t('loginButton')}}</span>
+        <app-spinner *ngIf="showSpinner" class="spinner"></app-spinner>
+    </button>
+    <button (click)="createAccount()">{{t('createAccount')}}</button>
 </div>

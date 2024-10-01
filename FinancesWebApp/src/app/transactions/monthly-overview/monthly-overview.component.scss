@@ -12,6 +12,7 @@
 
     .title{
         display: flex;
+        justify-content: center;
         margin: 5px 30px;
         color: rgb(60, 172, 84);
     }
@@ -19,43 +20,56 @@
 
 .container {
     display: flex;
+    justify-content: space-around;
     margin: 5px 30px;
     font-size: 1rem;
 
     .left-container {
-        flex-grow: 1;
         display: flex;
-
-        .key-metrics,
-        .values {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .values {
-            margin-left: 20px;
-            text-align: end;
-
-            .blue {
-                color: rgb(43, 164, 194);
-                padding-left: 0.85rem;
-            }
-
-            .red{
-                color: rgb(216, 21, 21);
-            }
-
-            .green {
-                color: rgb(13, 163, 13);
-            }
-        }
     }
 
     .right-container {
-        flex-grow: 3;
+        display: flex;
     }
 
-    @media screen and (max-width: 500px) {
+    .key-metrics,
+    .values {
+        display: flex;
         flex-direction: column;
+        white-space: nowrap;
     }
+
+    .values {
+        margin-left: 20px;
+        text-align: end;
+
+        .blue {
+            color: rgb(43, 164, 194);
+            padding-left: 0.85rem;
+        }
+
+        .red{
+            color: rgb(216, 21, 21);
+        }
+
+        .green {
+            color: rgb(13, 163, 13);
+        }
+    }  
+}
+
+@media screen and (max-width: 700px) {
+
+    .header {
+        .title {
+            justify-content: start;
+        }
+    }
+    .container{
+        flex-direction: column;
+
+        .right-container, .left-container {
+            justify-content: space-between;
+        }
+    }  
 }

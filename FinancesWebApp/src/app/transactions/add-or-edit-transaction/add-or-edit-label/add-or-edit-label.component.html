@@ -5,12 +5,12 @@
 
     <div class="container">
         <div class="label-name">
-            <div class="bold">Name:</div>
+            <div class="text">Name:</div>
             <input type="text" placeholder="e.g. Food" [(ngModel)]="editingName">
         </div>
 
         <div class="label-color">
-            <div class="bold">Color:</div>
+            <div class="text">Color:</div>
             <div class="color" [style.background]="editingColor"></div>
             <button [(colorPicker)]="editingColor" [cpOutputFormat]="'hex'">Choose</button>
             

@@ -18,6 +18,7 @@ import { NgIf } from '@angular/common';
 })
 export class ChartComponent implements OnChanges{
   @Input() public chartOptions: EChartsOption | null = null;  
+  @Input() public errorMessage: string = "No Entries available";
 
   public isDataEmpty: boolean = true;
 

@@ -9,9 +9,8 @@ import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker
 import { MatNativeDateModule } from '@angular/material/core';
 import { NativeDateAdapter } from '@angular/material/core';
 import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
-import { GetDatePipe } from '../../shared/pipes/getDate.pipe';
 import { LabelService } from '../../shared/services/label.service';
-import { AddOrEditLabel, Label } from '../../shared/models/label';
+import { AddOrEditLabel } from '../../shared/models/label';
 import { AddOrEditLabelComponent } from './add-or-edit-label/add-or-edit-label.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../shared/services/auth.service';
@@ -21,7 +20,7 @@ export type UseCase = 'add' | 'edit';
 @Component({
   selector: 'app-add-or-edit-transaction',
   standalone: true,
-  imports: [NgClass, FormsModule, SpinnerComponent, NgIf, NgFor, AsyncPipe, MatDatepickerModule, MatNativeDateModule, GetDatePipe, NgStyle, AddOrEditLabelComponent],
+  imports: [NgClass, FormsModule, SpinnerComponent, NgIf, NgFor, AsyncPipe, MatDatepickerModule, MatNativeDateModule, NgStyle, AddOrEditLabelComponent],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },

@@ -16,6 +16,7 @@
         flex: 50%;
         display: flex;
         justify-content: center;
+        align-items: center;
         
         .chip{
             padding: 4px 10px;
@@ -29,6 +30,7 @@
     .price {
         flex: 15%;
         text-align: right;
+        white-space: nowrap;
 
         &.green{
             color: rgb(13, 163, 13);
@@ -66,6 +68,29 @@
             border-radius: 2px;
         }
     }
+
+    .edit-container-mobile {
+        padding-top: 10px;
+
+        .edit {
+            cursor: pointer;
+            transition: width 1s;
+            width: 1.3rem;
+            height: 1.3rem;
+            background-color: rgb(55, 95, 202);
+            border-radius: 2px;
+            margin-right: 10px;
+        }
+
+        .delete {
+            cursor: pointer;
+            transition: width 1s;
+            width: 1.3rem;
+            height: 1.3rem;
+            background-color: rgb(150, 39, 39);
+            border-radius: 2px;
+        }
+    }
 }
 
 .transaction:hover {
@@ -82,6 +107,24 @@
         .delete {
             width: 1.3rem;
             height: 1.3rem;
+        }
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .transaction{
+        flex-direction: column;
+        position: relative;
+
+        .label {
+            justify-content: left;
+            padding-top: 5px;
+        }
+
+        .price {
+            position: absolute;
+            bottom: 5px;
+            right: 10px;
         }
     }
 }
