@@ -19,11 +19,12 @@ import { Label } from '../shared/models/label';
 import { AuthService } from '../shared/services/auth.service';
 import { LogoutComponent } from "../shared/components/logout/logout.component";
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-statistics',
   standalone: true,
-  imports: [NgClass, DropMenuComponent, AsyncPipe, MonthlyCategoryStatisticComponent, ChartComponent, GetMonthPipe, InteractiveTableChartComponent, LogoutComponent, NgIf, SpinnerComponent],
+  imports: [NgClass, DropMenuComponent, AsyncPipe, MonthlyCategoryStatisticComponent, ChartComponent, GetMonthPipe, InteractiveTableChartComponent, LogoutComponent, NgIf, SpinnerComponent, TranslocoDirective],
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.scss'
 })

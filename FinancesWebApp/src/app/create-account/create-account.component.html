@@ -14,7 +14,7 @@
             <app-spinner *ngIf="showSpinner" class="spinner"></app-spinner>
         </button>
 
-        <div class="already-have-account">If you already have an account you can <span (click)="backToLoginPage()">sign in</span></div>
+        <div class="already-have-account">{{t('alreadyHaveAccount')}} <span (click)="backToLoginPage()">{{t('signIn')}}</span></div>
     </div>
 
 </div>

@@ -1,28 +1,31 @@
-<div *ngIf="currentMonth" class="header">
-    <span class="title">Overview {{currentMonth | getMonth}}</span>
-</div>
-
-<div *ngIf="keyMetricData" class="container">
-    <div class="left-container">
-        <div class="key-metrics">
-            <span>Account Balance</span>
-            <span>Monthly Balance</span>
-        </div>
-        <div class="values">
-            <span class="blue">{{keyMetricData.total | getPriceDecimal}}</span>
-            <span [ngClass]="keyMetricData.bilanz >= 0 ? 'green' : 'red'">{{ keyMetricData.bilanz | getPriceDecimal}}</span>
-        </div>
+<div *transloco="let t read 'monthlyOverview'">
+    <div *ngIf="currentMonth" class="header">
+        <span class="title">{{t('overview')}} {{currentMonth | getMonth}}</span>
     </div>
 
-    <div class="right-container">
-        <div class="key-metrics">
-            <span>Income</span>
-            <span>Expense</span>
+    <div *ngIf="keyMetricData" class="container">
+        <div class="left-container">
+            <div class="key-metrics">
+                <span>{{t('accountBalance')}}</span>
+                <span>{{t('monthlyBalance')}}</span>
+            </div>
+            <div class="values">
+                <span class="blue">{{keyMetricData.total | getPriceDecimal}}</span>
+                <span [ngClass]="keyMetricData.bilanz >= 0 ? 'green' : 'red'">{{ keyMetricData.bilanz |
+                    getPriceDecimal}}</span>
+            </div>
         </div>
 
-        <div class="values">
-            <span class="green">+{{keyMetricData.income | getPriceDecimal}}</span>
-            <span class="red">-{{(keyMetricData.expense * -1 | getPriceDecimal)}}</span>
+        <div class="right-container">
+            <div class="key-metrics">
+                <span>{{t('income')}}</span>
+                <span>{{t('expenses')}}</span>
+            </div>
+
+            <div class="values">
+                <span class="green">+{{keyMetricData.income | getPriceDecimal}}</span>
+                <span class="red">-{{(keyMetricData.expense * -1 | getPriceDecimal)}}</span>
+            </div>
         </div>
     </div>
 </div>

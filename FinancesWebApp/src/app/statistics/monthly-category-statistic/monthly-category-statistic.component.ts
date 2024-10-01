@@ -4,11 +4,12 @@ import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { ChartComponent } from "../chart/chart.component";
 import { GetMonthPipe } from '../../shared/pipes/getMonth.pipe';
 import { GetPriceDecimalPipe } from '../../shared/pipes/getPriceDecimal.pipe';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-monthly-category-statistic',
   standalone: true,
-  imports: [NgIf, NgFor, NgStyle, GetMonthPipe, NgClass, ChartComponent, GetPriceDecimalPipe],
+  imports: [NgIf, NgFor, NgStyle, GetMonthPipe, NgClass, ChartComponent, GetPriceDecimalPipe, TranslocoDirective],
   templateUrl: './monthly-category-statistic.component.html',
   styleUrl: './monthly-category-statistic.component.scss'
 })

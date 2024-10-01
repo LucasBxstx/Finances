@@ -14,13 +14,14 @@ import { AddOrEditLabel } from '../../shared/models/label';
 import { AddOrEditLabelComponent } from './add-or-edit-label/add-or-edit-label.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../shared/services/auth.service';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 export type UseCase = 'add' | 'edit';
 
 @Component({
   selector: 'app-add-or-edit-transaction',
   standalone: true,
-  imports: [NgClass, FormsModule, SpinnerComponent, NgIf, NgFor, AsyncPipe, MatDatepickerModule, MatNativeDateModule, NgStyle, AddOrEditLabelComponent],
+  imports: [NgClass, FormsModule, SpinnerComponent, NgIf, NgFor, AsyncPipe, MatDatepickerModule, MatNativeDateModule, NgStyle, AddOrEditLabelComponent, TranslocoDirective],
   providers: [
     { provide: DateAdapter, useClass: NativeDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: MAT_NATIVE_DATE_FORMATS },

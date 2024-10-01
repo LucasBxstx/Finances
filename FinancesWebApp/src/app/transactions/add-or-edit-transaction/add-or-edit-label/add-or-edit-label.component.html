@@ -1,18 +1,18 @@
-<div class="window">
+<div *transloco="let t read 'addOrEditLabel'" class="window">
     <img src="assets/icons/close.svg" class="close" (click)="closedWindow.emit()">
-    <div class="title">{{addOrEditData.useCase === 'add' ? 'Add Label' : 'Edit Label'}}</div>
+    <div class="title">{{addOrEditData.useCase === 'add' ? t('addLabel') : t('editLabel')}}</div>
     <div class="division"></div>
 
     <div class="container">
         <div class="label-name">
-            <div class="text">Name:</div>
+            <div class="text">{{t('name')}}:</div>
             <input type="text" placeholder="e.g. Food" [(ngModel)]="editingName">
         </div>
 
         <div class="label-color">
-            <div class="text">Color:</div>
+            <div class="text">{{t('color')}}:</div>
             <div class="color" [style.background]="editingColor"></div>
-            <button [(colorPicker)]="editingColor" [cpOutputFormat]="'hex'">Choose</button>
+            <button [(colorPicker)]="editingColor" [cpOutputFormat]="'hex'">{{t('choose')}}</button>
             
         </div>
 

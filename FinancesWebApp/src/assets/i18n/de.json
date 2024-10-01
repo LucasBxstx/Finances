@@ -15,7 +15,75 @@
         "createAccount": "Konto erstellen",
         "hint": "Geben Sie Ihre E-Mail-Adresse und Ihr eigenes Passwort an, um ein neues Konto zu erstellen",
         "emailError": "Es gibt bereits ein Konto mit dieser E-Mail Adresse",
-        "passwordError": "Das Passwort muss mindestens 6 Zeichen lang sein und mindestens ein nichtalphabetisches Zeichen, eine Zahl und einen Großbuchstaben enthalten"
-
+        "passwordError": "Das Passwort muss mindestens 6 Zeichen lang sein und mindestens ein nichtalphabetisches Zeichen, eine Zahl und einen Großbuchstaben enthalten",
+        "alreadyHaveAccount": "Falls Sie schon ein Konto haben können Sie sich",
+        "signIn": "hier anmelden"
+    },
+    "logout": {
+        "logout": "abmelden",
+        "german": "Deutsch",
+        "english": "Englisch"
+    },
+    "monthlyCategory": {
+        "labelMonth": "Label / Monat",
+        "total": "gesamt"
+    },
+    "navbar": {
+        "transactions": "Transaktionen",
+        "statistics": "Statistiken"
+    },
+    "statistics": {
+        "heading": "Meine Finanzen",
+        "noTransactions": "Es wurden noch keine Transaktionen hinzugefügt",
+        "addTransactions": "Fügen Sie Transaktionen hinzu und geben Sie ihnen Labels, damit Sie hier Statistiken sehen können",
+        "noLabels": "Es wurden den Transaktionen noch keine Labels gegeben.",
+        "addLabels": "Fügen Sie den Transaktionen Labels hinzu damit Sie hier Statistiken sehen können",
+        "errorOccured": "Ein Fehler ist aufgetreten",
+        "refreshPls": "Bitte aktualisieren Sie die Seite",
+        "refresh": "Aktualisieren",
+        "filterFrom": "Filtern von",
+        "filterTo": "bis",
+        "labelShareError": "Fügen Sie Ausgaben hinzu damit Sie hier die Label Anteile sehen können",
+        "totalLabelShareError": "Fügen Sie Ausgaben hinzu damit Sie hier die totalen Label Anteile sehen können",
+        "incomesError": "Fügen Sie Einnahmen hinzu damit Sie hier Ihre top Einahmen sehen können",
+        "expensesError": "Fügen Sie Ausgaben hinzu damit Sie hier Ihre top Ausgaben sehen können"
+    },
+    "addOrEditLabel": {
+        "name": "Name",
+        "color": "Farbe",
+        "choose": "Auswählen",
+        "addLabel": "Label hinzufügen",
+        "editLabel": "Label bearbeiten"
+    },
+    "addOrEditTransaction": {
+        "addTransaction": "Transaktion hinzufügen",
+        "editTransaction": "Transaktion bearbeiten",
+        "type": "Typ",
+        "income": "Einkommen",
+        "expense": "Ausgabe",
+        "date": "Datum",
+        "chooseADate": "Datum auswählen",
+        "title": "Name",
+        "placeholder": "z.B. Pizza",
+        "label": "Label",
+        "price": "Preis",
+        "saveChanges": "Änderungen speichern"
+    },
+    "monthlyOverview": {
+        "overview": "Übersicht",
+        "accountBalance": "Kontostand",
+        "monthlyBalance": "Monatliche Bilanz",
+        "income": "Einkommen",
+        "expenses": "Ausgaben"
+    },
+    "transactions": {
+        "heading": "Meine Finanzen",
+        "year": "Jahr",
+        "addIncome": "Einnahmen hinzufügen",
+        "addExpense": "Ausgaben hinzufügen",
+        "noTransactions": "Für diesen Monat wurden noch keine Transaktionen hinzugefügt",
+        "errorOccured": "Ein Fehler ist aufgetreten",
+        "refreshPls": "Bitte aktualisieren Sie die Seite",
+        "refresh" : "Aktualisieren"
     }
 }

@@ -1,11 +1,12 @@
-<div class="container" (mouseleave)="menuOpened = false">
+<div *transloco="let t; read: 'logout'" class="container" (mouseleave)="menuOpened = false">
 
     <div class="circle" (mouseenter)="menuOpened = true">
         <img src="assets/icons/person.svg">
     </div>
     <div *ngIf="menuOpened"  class="menu">
         <span *ngIf="emailAddress" class="email">{{emailAddress}}</span>
-        <button (click)="logout()">Logout</button>
+        <!-- <button (click)="changeLanguage()">{{ (currentLanguage$ | async) === "de" ? t('german') : t('english')}}</button> -->
+        <button (click)="logout()">{{t('logout')}}</button>
     </div>
 
 </div>

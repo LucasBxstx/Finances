@@ -15,6 +15,76 @@
         "createAccount": "Create Account",
         "hint": "Enter your e-mail address and your own password to create a new account",
         "emailError": "There is already an account with this email address",
-        "passwordError": "The password must be at least 6 characters long and contain at least one non-alphabetic character, one number and one capital letter"
+        "passwordError": "The password must be at least 6 characters long and contain at least one non-alphabetic character, one number and one capital letter",
+        "alreadyHaveAccount": "If you already have an account you can",
+        "signIn": "sign in"
+    },
+    "logout": {
+        "logout": "logout",
+        "german": "German",
+        "english": "English"
+    },
+    "monthlyCategory": {
+        "labelMonth": "Label / Month",
+        "total": "total"
+    },
+    "navbar": {
+        "transactions": "Transactions",
+        "statistics": "Statistics"
+    },
+    "statistics": {
+        "heading": "My Finances",
+        "noTransactions": "No transactions have been added yet.",
+        "addTransactions": "Add some transactions and give them labels to see statistics",
+        "noLabels": "No labels have been added yet.",
+        "addLabels": "Add some labels for your transactions to see statistics",
+        "errorOccured": "Something went wrong.",
+        "refreshPls": "Please refresh the page",
+        "refresh": "Refresh",
+        "filterFrom": "Filter from",
+        "filterTo": "to",
+        "labelShareError": "Add expenses to see label shares here",
+        "totalLabelShareError": "Add expenses to see total label shares here",
+        "incomesError": "Add incomes to see them here",
+        "expensesError": "Add expenses to see them here"
+
+    },
+    "addOrEditLabel": {
+        "name": "Name",
+        "color": "Color",
+        "choose": "Choose",
+        "addLabel": "Add Label",
+        "editLabel": "Edit Label"
+    },
+    "addOrEditTransaction": {
+        "addTransaction": "Add Transaction",
+        "editTransaction": "Edit Transaction",
+        "type": "Type",
+        "income": "Income",
+        "expense": "Expense",
+        "date": "Date",
+        "chooseADate": "Choose a date",
+        "title": "Title",
+        "placeholder": "e.g. Pizza",
+        "label": "Label",
+        "price": "Price",
+        "saveChanges": "save Changes"
+    }, 
+    "monthlyOverview": {
+        "overview": "Overview",
+        "accountBalance": "Account balance",
+        "monthlyBalance": "Monthly balance",
+        "income": "Income",
+        "expenses": "Expenses"
+    },
+    "transactions": {
+        "heading": "My Finances",
+        "year": "Year",
+        "addIncome": "Add Income",
+        "addExpense": "Add Expense",
+        "noTransactions": "No transactions have been added yet for this month.",
+        "errorOccured": "Something went wrong.",
+        "refreshPls": "Please refresh the page",
+        "refresh" : "Refresh"
     }
 }
