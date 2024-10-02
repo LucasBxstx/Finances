@@ -3,7 +3,9 @@
     using System;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
+    using System.Security.Cryptography;
     using System.Text;
+    using FinancesBackend.Authentication.Models;
     using FinancesBackend.Transaction.Exceptions;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Configuration;
@@ -11,7 +13,7 @@
 
     public interface IJwtTokenService
     {
-        string GenerateToken(IdentityUser user);
+        TokenResponse GenerateTokens(IdentityUser user);
         Guid GetUserObjectIdFromToken();
     }
 
@@ -26,7 +28,22 @@
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string GenerateToken(IdentityUser user)
+        public TokenResponse GenerateTokens(IdentityUser user)
+        {
+            var accessToken = GenerateAccessToken(user);
+            var refreshToken = GenerateRefreshToken();
+
+            // Optional: Speichere den Refresh Token in der Datenbank (mit User ID)
+            // SaveRefreshToken(user, refreshToken);
+
+            return new TokenResponse
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken
+            };
+        }
+
+        private string GenerateAccessToken(IdentityUser user)
         {
             var claims = new[]
             {
@@ -42,10 +59,20 @@
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddMinutes(30),  // Access Token Gültigkeit (30 Minuten)
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomNumber);
+                return Convert.ToBase64String(randomNumber);
+            }
         }
 
         public Guid GetUserObjectIdFromToken()
