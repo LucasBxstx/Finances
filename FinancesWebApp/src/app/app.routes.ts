@@ -4,6 +4,7 @@ import { CreateAccountComponent } from './create-account/create-account.componen
 import { TransactionsPageComponent } from './transactions/transactions-page.component';
 import { StatisticsComponent } from './statistics/statistics.component';
 import { AuthGuardService } from './shared/services/authGuardService';
+import { SessionExpiredComponent } from './session-expired/session-expired.component';
 
 export const appRoutes: Routes = [
     {
@@ -14,6 +15,10 @@ export const appRoutes: Routes = [
     {
         path: 'login',
         component: LoginComponent,
+    },
+    {
+        path: 'session-expired',
+        component: SessionExpiredComponent,
     },
     {
         path: 'create-account',

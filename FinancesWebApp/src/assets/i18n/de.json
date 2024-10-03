@@ -53,7 +53,9 @@
         "color": "Farbe",
         "choose": "Auswählen",
         "addLabel": "Label hinzufügen",
-        "editLabel": "Label bearbeiten"
+        "editLabel": "Label bearbeiten",
+        "savingError": "Die Änderungen konnten nicht gespeichert werden. Versuchen Sie es nochmal",
+        "loadingError":"Die Transaktion konnte nicht geladen werden"
     },
     "addOrEditTransaction": {
         "addTransaction": "Transaktion hinzufügen",
@@ -67,7 +69,9 @@
         "placeholder": "z.B. Pizza",
         "label": "Label",
         "price": "Preis",
-        "saveChanges": "Änderungen speichern"
+        "saveChanges": "Änderungen speichern",
+        "savingError": "Die Änderungen konnten nicht gespeichert werden. Versuchen Sie es nochmal",
+        "loadingError":"Die Transaktion konnte nicht geladen werden"
     },
     "monthlyOverview": {
         "overview": "Übersicht",
@@ -85,5 +89,10 @@
         "errorOccured": "Ein Fehler ist aufgetreten",
         "refreshPls": "Bitte aktualisieren Sie die Seite",
         "refresh" : "Aktualisieren"
+    },
+    "sessionExpired": {
+        "sessionExpired": "Sorry, Ihre Session ist abgelaufen",
+        "goLogin": "Versuchen Sie sich nochmal anzumelden",
+        "login": "Zur Anmeldung"
     }
 }

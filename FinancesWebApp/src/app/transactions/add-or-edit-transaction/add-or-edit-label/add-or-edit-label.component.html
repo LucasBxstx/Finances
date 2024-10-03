@@ -1,24 +1,36 @@
-<div *transloco="let t read 'addOrEditLabel'" class="window">
-    <img src="assets/icons/close.svg" class="close" (click)="closedWindow.emit()">
-    <div class="title">{{addOrEditData.useCase === 'add' ? t('addLabel') : t('editLabel')}}</div>
-    <div class="division"></div>
+<div *ngIf="!showLoadingSpinner" class="window">
+    <div *transloco="let t read 'addOrEditLabel'">
+        <img src="assets/icons/close.svg" class="close" (click)="closedWindow.emit()">
+        <div class="title">{{addOrEditData.useCase === 'add' ? t('addLabel') : t('editLabel')}}</div>
+        <div class="division"></div>
 
-    <div class="container">
-        <div class="label-name">
-            <div class="text">{{t('name')}}:</div>
-            <input type="text" placeholder="e.g. Food" [(ngModel)]="editingName">
+        <div class="container" *ngIf="!showLoadingError">
+            <div class="label-name">
+                <div class="text">{{t('name')}}:</div>
+                <input type="text" placeholder="e.g. Food" [(ngModel)]="editingName">
+            </div>
+
+            <div class="label-color">
+                <div class="text">{{t('color')}}:</div>
+                <div class="color" [style.background]="editingColor"></div>
+                <button [(colorPicker)]="editingColor" [cpOutputFormat]="'hex'">{{t('choose')}}</button>
+            </div>
+
+            <button class="save" (click)="saveLabel()">
+                <span *ngIf="!showSavingSpinner">{{addOrEditData.useCase === 'add' ? 'Add Label' :
+                    'SaveChanges'}}</span>
+                <app-spinner *ngIf="showSavingSpinner"></app-spinner>
+            </button>
+
+            <div *ngIf="showSavingError" class="saving-error">{{t('savingError')}}</div>
         </div>
 
-        <div class="label-color">
-            <div class="text">{{t('color')}}:</div>
-            <div class="color" [style.background]="editingColor"></div>
-            <button [(colorPicker)]="editingColor" [cpOutputFormat]="'hex'">{{t('choose')}}</button>
-            
-        </div>
-
-        <button class="save" (click)="saveLabel()">
-            <span *ngIf="!showSavingSpinner">{{addOrEditData.useCase === 'add' ? 'Add Label' : 'Save Changes'}}</span>
-            <app-spinner *ngIf="showSavingSpinner"></app-spinner>
-        </button>
+        <div *ngIf="showLoadingError" class="loading-error">
+            {{t('loadingError')}}
+        </div>       
     </div>
+</div>
+
+<div *ngIf="showLoadingSpinner" class="spinner">
+    <app-spinner [color]="'white'"></app-spinner>
 </div>
