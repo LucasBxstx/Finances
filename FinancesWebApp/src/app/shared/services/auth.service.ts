@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
 import { Login, Refresh, Register, TokenResult } from '../models/auth';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
@@ -40,17 +40,11 @@ export class AuthService {
     }
 
     return this.http.post<TokenResult>(`${environment.apiUrl}/api/Auth/refresh`, refreshData).pipe(
-      catchError((err: HttpErrorResponse) => {
+      catchError((error: HttpErrorResponse) => {
         console.log("fehler aufgetreten!!!!!")
         this.sessionExpired();
-        const tokenresult: TokenResult = {
-          tokenType: 'string',
-          accessToken: 'string',
-          expiresIn: 0,
-          refreshToken: 'string',
-          userId: 'string',
-        }
-        return of(tokenresult)
+       
+        return throwError(error);
       }
       ),
       tap((tokenResult: TokenResult) =>

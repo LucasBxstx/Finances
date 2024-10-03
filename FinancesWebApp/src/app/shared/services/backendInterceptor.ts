@@ -27,7 +27,7 @@ export class BackendInterceptor implements HttpInterceptor {
               return next.handle(request);
             }),
             catchError((error: HttpErrorResponse) => {
-              if(error.status === 401) this.authService.sessionExpired();
+              this.authService.sessionExpired();
               // Falls die Token-Erneuerung fehlschlägt, Benutzer abmelden
               
               return throwError("Session closed because refresh token expired");
