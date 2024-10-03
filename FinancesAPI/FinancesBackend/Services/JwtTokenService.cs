@@ -7,13 +7,14 @@
     using System.Text;
     using FinancesBackend.Authentication.Models;
     using FinancesBackend.Transaction.Exceptions;
+    using FinancesBackend.ApplicationUser.Models;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.Extensions.Configuration;
     using Microsoft.IdentityModel.Tokens;
 
     public interface IJwtTokenService
     {
-        TokenResponse GenerateTokens(IdentityUser user);
+        TokenResponse GenerateTokens(ApplicationUser user);
         Guid GetUserObjectIdFromToken();
     }
 
@@ -21,20 +22,27 @@
     {
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public JwtTokenService(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public JwtTokenService(
+            IConfiguration configuration, 
+            IHttpContextAccessor httpContextAccessor, 
+            UserManager<ApplicationUser> userManager)
         {
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
         }
 
-        public TokenResponse GenerateTokens(IdentityUser user)
+        public TokenResponse GenerateTokens(ApplicationUser user)
         {
             var accessToken = GenerateAccessToken(user);
             var refreshToken = GenerateRefreshToken();
 
-            // Optional: Speichere den Refresh Token in der Datenbank (mit User ID)
-            // SaveRefreshToken(user, refreshToken);
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.Now.AddMinutes(60);  // Refresh Token Gültigkeit (60 Minuten)
+          
+            _userManager.UpdateAsync(user).Wait();
 
             return new TokenResponse
             {
@@ -43,7 +51,7 @@
             };
         }
 
-        private string GenerateAccessToken(IdentityUser user)
+        private string GenerateAccessToken(ApplicationUser user)
         {
             var claims = new[]
             {
@@ -77,7 +85,7 @@
 
         public Guid GetUserObjectIdFromToken()
         {
-            var token = ExtractTokenFromRequest(); // Implementiere diese Methode, um das Token aus der Anfrage zu extrahieren
+            var token = ExtractTokenFromRequest();
             var tokenHandler = new JwtSecurityTokenHandler();
             var jwtToken = tokenHandler.ReadJwtToken(token);
 

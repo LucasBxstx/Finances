@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, combineLatest, filter, map, switchMap, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, filter, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs';
 import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
@@ -47,7 +47,7 @@ export class TransactionsPageComponent implements OnDestroy {
     switchMap(() => {
       return this.selectedMonthStartAndEndDate$.pipe(
         switchMap(({ firstDayOfMonth, lastDayOfMonth }) => {
-          return this.transactionService.getTransactions(firstDayOfMonth, lastDayOfMonth);
+          return this.transactionService.getTransactions(firstDayOfMonth, lastDayOfMonth).pipe(shareReplay(1));
         }));
     })
   );

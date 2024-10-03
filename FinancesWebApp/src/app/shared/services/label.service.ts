@@ -17,7 +17,7 @@ export class LabelService {
   public getLabels(): Observable<Label[] | null> {
     return this.http.get<Label[]>(`${environment.apiUrl}/api/Label/all`).pipe(
       catchError((error) => {
-        console.log('Error fetching transactions:', error);
+        console.log('Error fetching labels:', error);
         return of(null);
       })
     );

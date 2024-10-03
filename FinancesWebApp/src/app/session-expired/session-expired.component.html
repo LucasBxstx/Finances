@@ -1,0 +1,6 @@
+<div *transloco="let t read 'sessionExpired'" class="container">
+    <span>{{t('sessionExpired')}}</span>
+    <span>{{t('goLogin')}}</span>
+
+    <button (click)="navigateToLogin()">{{t('login')}}</button>
+</div>

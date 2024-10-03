@@ -1,0 +1,29 @@
+:host{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.container {
+    min-width: 200px;
+    width: 30vmin;
+    max-width: 400px;
+    background-color: rgb(24, 24, 24);
+    border: 1px solid rgb(64, 64, 64);
+    border-radius: 10px;
+    color: white;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: lighter;
+
+    button {
+        width: 230px;
+        margin-top: 20px;
+    }
+}

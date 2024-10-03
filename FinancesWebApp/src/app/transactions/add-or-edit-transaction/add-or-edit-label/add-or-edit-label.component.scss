@@ -82,7 +82,21 @@
                 max-width: 1rem;
             }
         }
+
+        .saving-error {
+            color: rgb(216, 21, 21);
+            text-align: center;
+            margin-top: 20px;
+        }
     }
+}
+
+.loading-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    color: rgb(216, 21, 21);
 }
 
 .text {

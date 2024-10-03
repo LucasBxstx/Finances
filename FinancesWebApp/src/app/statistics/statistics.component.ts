@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageType } from '../transactions/transactions-page.component';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
-import { BehaviorSubject, Observable, Subject, combineLatest, delay, map, of, startWith, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, combineLatest, delay, map, of, shareReplay, startWith, takeUntil, tap } from 'rxjs';
 import { getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
 import { Transaction, TransactionType, TransactionView } from '../shared/models/transaction';
 import { TransactionService } from '../shared/services/transaction.service';
@@ -40,9 +40,9 @@ export class StatisticsComponent {
   public readonly selectedYear$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['year']));
   public readonly selectedMonth$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['month']));
 
-  public readonly labels$: Observable<Label[] | null> = this.labelService.getLabels();
+  public readonly labels$: Observable<Label[] | null> = this.labelService.getLabels().pipe(shareReplay(1));
 
-  public readonly transactionData$: Observable<TransactionView | null> = this.transactionService.getTransactions();
+  public readonly transactionData$: Observable<TransactionView | null> = this.transactionService.getTransactions().pipe(shareReplay(1));
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData?.oldestTransactionDate ?? null));

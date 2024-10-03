@@ -1,6 +1,7 @@
 ﻿namespace FinancesBackend.Authentication.Controllers
 {
     using FinancesBackend.Authentication.Models;
+    using FinancesBackend.ApplicationUser.Models;
     using FinancesBackend.Services;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
@@ -10,11 +11,11 @@
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IJwtTokenService _jwtTokenService;
 
-        public AuthController(SignInManager<IdentityUser> signInManager, UserManager<IdentityUser> userManager, IJwtTokenService jwtTokenService)
+        public AuthController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, IJwtTokenService jwtTokenService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
@@ -48,6 +49,11 @@
             // Hier würdest du das Refresh Token validieren und ggf. ein neues Access Token erzeugen
             var user = await _userManager.FindByIdAsync(tokenRefreshRequest.UserId);
             if (user == null) return Unauthorized("Invalid refresh token or user not found");
+
+            if (user.RefreshToken != tokenRefreshRequest.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
+            {
+                return Unauthorized("Invalid or expired refresh token");
+            }
 
             // Neue Tokens generieren
             var newTokens = _jwtTokenService.GenerateTokens(user);

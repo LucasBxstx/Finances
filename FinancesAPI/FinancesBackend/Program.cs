@@ -1,4 +1,5 @@
 using FinancesBackend;
+using FinancesBackend.ApplicationUser.Models;
 using FinancesBackend.Common.Exceptions;
 using FinancesBackend.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -61,7 +62,7 @@ static void ConfigureAuthorization(IServiceCollection services, IConfiguration c
     });
 
     services.AddAuthorization();
-    services.AddIdentityCore<IdentityUser>()
+    services.AddIdentityCore<ApplicationUser>()
         .AddEntityFrameworkStores<FinancesContext>()
         .AddApiEndpoints();
 }
@@ -146,7 +147,7 @@ static void ConfigureApp(WebApplication webApplication, IConfiguration configura
     webApplication.MapGet("/", httpContext => httpContext.Response.WriteAsync("Backend alife")).RequireAuthorization();
     webApplication.MapControllers();
 
-    webApplication.MapIdentityApi<IdentityUser>();
+    webApplication.MapIdentityApi<ApplicationUser>();
     webApplication.UseAuthentication();
     webApplication.UseAuthorization();
 

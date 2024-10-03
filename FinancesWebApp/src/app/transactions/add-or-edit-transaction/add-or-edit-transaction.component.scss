@@ -179,6 +179,25 @@
         }
     }
 
+    .saving-error {
+        color: rgb(216, 21, 21);
+        text-align: center;
+        margin-top: 20px;
+    }
+}
+
+.spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-error {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 30px;
+    color: rgb(216, 21, 21);
 }
 
 .text {

@@ -1,7 +1,8 @@
 import { inject, Injectable } from "@angular/core";
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { catchError, Observable, switchMap, throwError } from "rxjs";
 import { AuthService } from "./auth.service";
+import { TokenResult } from "../models/auth";
 
 @Injectable()
 export class BackendInterceptor implements HttpInterceptor {
@@ -16,21 +17,24 @@ export class BackendInterceptor implements HttpInterceptor {
     
     return next.handle(request).pipe(
       // Falls der Request einen 401 Fehler liefert, Token erneuern
-      catchError(error => {
+      catchError((error: HttpErrorResponse) => {
         if (error.status === 401 && this.authService.getRefreshToken()) {
           return this.authService.refreshToken().pipe(
-            switchMap((response: any) => {
+            switchMap((token: TokenResult | null) => {
+              if(!token) return throwError("No refresh token available");
               // Neues Access Token zum Request hinzufügen und erneut senden
-              return next.handle(this.addToken(request, response.accessToken));
+              request = this.addToken(request, token.accessToken);
+              return next.handle(request);
             }),
-            catchError(err => {
+            catchError((error: HttpErrorResponse) => {
+              this.authService.sessionExpired();
               // Falls die Token-Erneuerung fehlschlägt, Benutzer abmelden
-              this.authService.clearTokens();
-              return throwError(err);
+              
+              return throwError("Session closed because refresh token expired");
             })
           );
         } else {
-          return throwError(error);
+          return throwError("Server not reachable");
         }
       })
     );

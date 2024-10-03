@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace FinancesBackend
 {
-    public class FinancesContext : IdentityDbContext
+    public class FinancesContext : IdentityDbContext<ApplicationUser.Models.ApplicationUser>
     {
         public FinancesContext(DbContextOptions<FinancesContext> contextOptions) : base(contextOptions)
         {

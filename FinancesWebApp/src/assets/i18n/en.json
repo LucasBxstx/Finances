@@ -54,7 +54,9 @@
         "color": "Color",
         "choose": "Choose",
         "addLabel": "Add Label",
-        "editLabel": "Edit Label"
+        "editLabel": "Edit Label",
+        "savingError": "The changes could not be saved. Please try again",
+        "loadingError":"The transaction could not be loaded"
     },
     "addOrEditTransaction": {
         "addTransaction": "Add Transaction",
@@ -68,7 +70,9 @@
         "placeholder": "e.g. Pizza",
         "label": "Label",
         "price": "Price",
-        "saveChanges": "save Changes"
+        "saveChanges": "save Changes",
+        "savingError": "The changes could not be saved. Please try again",
+        "loadingError":"The transaction could not be loaded"
     }, 
     "monthlyOverview": {
         "overview": "Overview",
@@ -86,5 +90,10 @@
         "errorOccured": "Something went wrong.",
         "refreshPls": "Please refresh the page",
         "refresh" : "Refresh"
+    },
+    "sessionExpired": {
+        "sessionExpired": "Sorry, your session expired.",
+        "goLogin": "Try to login again",
+        "login": "Login again"
     }
 }

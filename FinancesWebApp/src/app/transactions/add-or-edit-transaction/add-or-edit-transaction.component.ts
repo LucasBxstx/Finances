@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, inject } from '@angular/core';
-import { AddOrEditTransaction, TransactionType } from '../../shared/models/transaction';
+import { AddOrEditTransaction, Transaction, TransactionType } from '../../shared/models/transaction';
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../../shared/services/transaction.service';
-import { BehaviorSubject, Subject, map, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, catchError, map, switchMap, takeUntil, throwError } from 'rxjs';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -49,28 +49,49 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
   public editingPrice: number | null = null;
   private rowVersion: string | null = null;
 
-  public showSpinner = false;
+  public showLoadingSpinner = false;
+  public showSavingSpinner = false;
   public labelEditingMode = false;
+  public showSavingError = false;
+  public showLoadingError = false;
 
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);
 
-  public readonly labels$ = this.refreshLabels.pipe(switchMap(() =>
-    this.labelService.getLabels()
-  ));
+  public readonly labels$ = this.refreshLabels.pipe(
+    switchMap(() =>
+      this.labelService.getLabels().pipe(
+        catchError((error: HttpErrorResponse) => {
+          this.showLoadingError = true;
+
+          return throwError(error);
+      }))
+    ));
 
   public ngOnInit(): void {
     if (this.addOrEditData.useCase === 'add' || !this.addOrEditData.transactionId) return;
 
+    this.showLoadingSpinner = true;
+
     this.transactionService.getTransaction(this.addOrEditData.transactionId)
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((transaction) => {
+      .pipe(takeUntil(this.unsubscribe),
+        catchError((error) => {
+          console.log("The transaction could not be loaded", error);
+          this.showLoadingSpinner = false
+          this.showLoadingError = true;
+
+          return throwError("error");
+        })
+      )
+      .subscribe((transaction: Transaction) => {
         this.editingTransactionType = transaction.transactionType;
         this.editingDate = transaction.date;
         this.editingTitle = transaction.title;
         this.editingLabelId = transaction.labelId;
         this.editingPrice = transaction.price;
         this.rowVersion = transaction.rowVersion;
+
+        this.showLoadingSpinner = false
       });
   }
 
@@ -92,26 +113,34 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
   }
 
   public saveTransaction(): void {
-    this.showSpinner = true;
+    this.showSavingError = false;
+    this.showSavingSpinner = true;
+
+    const adjustedDate = new Date(this.editingDate).getHours() !== 12 ? new Date(this.editingDate.setHours(12)) : this.editingDate;
 
     this.transactionService.createOrUpdateTransaction({
       id: this.addOrEditData.transactionId ?? -1,
       transactionType: this.editingTransactionType,
-      date: this.editingDate,
+      date: adjustedDate,
       title: this.editingTitle,
       labelId: this.editingLabelId,
       price: this.editingPrice ?? 0,
       rowVersion: this.rowVersion,
-    }).pipe(takeUntil(this.unsubscribe))
-      .subscribe((transaction) => {
-        console.log("transaction successfully updated", transaction);
-        this.showSpinner = false;
-        this.closedWindow.emit();
-      },
-      (error: HttpErrorResponse) => {
+    }).pipe(
+      takeUntil(this.unsubscribe),
+      catchError((error: HttpErrorResponse) => {
         console.log("update transaction error", error);
-        this.showSpinner = false;
+        this.showSavingSpinner = false;
+        this.showSavingError = true;
+
+        return throwError(error);
+      }))
+      .subscribe((transaction: Transaction) => {
+        console.log("transaction successfully updated", transaction);
+        this.showSavingSpinner = false;
+        this.closedWindow.emit();
       });
+
   }
 
   public addLabel(): void {
@@ -128,7 +157,7 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
   }
 
   public handleLabelClick(labelId: number) {
-    if (!this.labelEditingMode) { 
+    if (!this.labelEditingMode) {
       this.editingLabelId = labelId;
 
       return;
