@@ -64,16 +64,30 @@ namespace FinancesBackend.Transaction.Queries
                     .ToListAsync(cancellationToken);
 
                 var priorBalance = transactionsPriorDate.Sum(t => t.TransactionType == TransactionType.Income ? t.Price : -t.Price);
-
    
                 if (transactionsPriorDate.Count == 0 && transactions.Count != 0)
                 {
                     transactionView.OldestTransactionDate = transactions.Min(t => t.Date);
                 }
+                else if (transactionsPriorDate.Count == 0 && transactions.Count == 0)
+                {
+                    var allTransactions = await _financesContext.Transactions
+                        .Where(t => t.UserId == userObjectId)
+                        .ToListAsync(cancellationToken);
+
+                    if (allTransactions.Count != 0)
+                    {
+                        transactionView.OldestTransactionDate = allTransactions.Min(t => t.Date);
+                    }
+                    else
+                    {
+                        transactionView.OldestTransactionDate = null;
+                    }
+                }
                 else if (transactionsPriorDate.Count != 0)
                 {
                     transactionView.OldestTransactionDate = transactionsPriorDate.Min(t => t.Date);
-                }
+                }   
 
                 transactionView.PriorBalance = priorBalance;
             }

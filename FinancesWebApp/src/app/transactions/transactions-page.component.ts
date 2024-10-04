@@ -1,20 +1,22 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, combineLatest, filter, map, shareReplay, switchMap, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, combineLatest, map, of, shareReplay, switchMap, takeUntil, tap, throwError } from 'rxjs';
 import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
 import { AddOrEditTransaction, GroupedTransaction, TransactionType, TransactionView, keyMetricData } from '../shared/models/transaction';
-import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, compareDates, getListOfAvailableMonthsPerYear, getListOfAvailableYears, mapTrasactionsToDateGroups } from '../shared/utils/transactions.utils';
+import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, getListOfAvailableMonthsPerYear, getListOfAvailableYears, mapTrasactionsWithLabelsToDateGroups } from '../shared/utils/transactions.utils';
 import { MonthlyOverviewComponent } from './monthly-overview/monthly-overview.component';
 import { GetDatePipe } from '../shared/pipes/getDate.pipe';
 import { GetPriceDecimalPipe } from '../shared/pipes/getPriceDecimal.pipe';
 import { TransactionComponent } from './transaction/transaction.component';
 import { AddOrEditTransactionComponent } from './add-or-edit-transaction/add-or-edit-transaction.component';
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
-import { AuthService } from '../shared/services/auth.service';
 import { LogoutComponent } from "../shared/components/logout/logout.component";
 import { TranslocoDirective } from '@ngneat/transloco';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Label } from '../shared/models/label';
+import { LabelService } from '../shared/services/label.service';
 
 export type pageType = 'transactions' | 'statistics';
 
@@ -29,11 +31,15 @@ export class TransactionsPageComponent implements OnDestroy {
   public TransactionType = TransactionType;
 
   private unsubscribe = new Subject<void>();
-  public refreshTransactions = new BehaviorSubject<null>(null);
-  public currentAddedOrEditedTransaction = new BehaviorSubject<AddOrEditTransaction | null>(null);
-  public showSpinner = true;
+  public refreshTransactions$ = new BehaviorSubject<null>(null);
+  public currentAddedOrEditedTransaction$ = new BehaviorSubject<AddOrEditTransaction | null>(null);
+
+  public showLoadingSpinner = true;
+  public showNoTransactionsError = false;
+  public showLoadingError = false;
 
   private readonly transactionService = inject(TransactionService);
+  private readonly labelService = inject(LabelService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
@@ -43,20 +49,38 @@ export class TransactionsPageComponent implements OnDestroy {
   private readonly selectedMonthStartAndEndDate$ = combineLatest([this.selectedYear$, this.selectedMonth$])
     .pipe(map(([year, month]) => calculateFirstAndLastDayOfMonth(year, month)));
 
-  private readonly transactionData$: Observable<TransactionView | null> = this.refreshTransactions.pipe(
-    switchMap(() => {
-      return this.selectedMonthStartAndEndDate$.pipe(
-        switchMap(({ firstDayOfMonth, lastDayOfMonth }) => {
-          return this.transactionService.getTransactions(firstDayOfMonth, lastDayOfMonth).pipe(shareReplay(1));
-        }));
-    })
-  );
+  private readonly transactionData$: Observable<TransactionView | null> = combineLatest([this.refreshTransactions$, this.selectedMonthStartAndEndDate$])
+    .pipe(
+      switchMap(([refresh, { firstDayOfMonth, lastDayOfMonth }]) => {
+        return this.transactionService.getTransactions(firstDayOfMonth, lastDayOfMonth).pipe(
+          map((transactionData)=> {
+            this.showNoTransactionsError = transactionData?.transactions.length === 0;
 
-  public readonly transactions$: Observable<GroupedTransaction[] | null> = this.transactionData$.pipe(
-    map((transactionData) => 
-      transactionData?.transactions ? mapTrasactionsToDateGroups(transactionData?.transactions) : null
-    ),
-    tap(() => this.showSpinner = false));
+            return transactionData;
+          }),
+          catchError((error: HttpErrorResponse) => {
+            this.showLoadingError = true;
+
+            return of(null);
+          }))
+      }),
+      shareReplay(1)
+    );
+
+  private readonly labels$ : Observable<Label[] | null>= this.labelService.getLabels().pipe(
+    catchError((error: HttpErrorResponse) => {
+      this.showLoadingError = true;
+      
+      return of(null);
+    }));
+
+  public readonly transactionsWithLabels$ : Observable<GroupedTransaction[] | null> = combineLatest([this.transactionData$, this.labels$]).pipe((
+    map(([transactionData, labels]) => {
+      this.showLoadingSpinner = false;
+      if(!transactionData || !labels) return null;
+
+      return mapTrasactionsWithLabelsToDateGroups(transactionData.transactions, labels);
+    })));
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData?.oldestTransactionDate ?? null));
@@ -70,11 +94,10 @@ export class TransactionsPageComponent implements OnDestroy {
 
   public readonly monthlyKeyMetrics$: Observable<keyMetricData | null> = this.transactionData$.pipe(
     map((transactionData) => {
-      if(transactionData?.transactions && transactionData.priorBalance) {
-        return calculateMonthlyKeyMetricData(transactionData.transactions, transactionData.priorBalance)
-      };
+      if(!transactionData) return null;
 
-      return null;
+      return calculateMonthlyKeyMetricData(transactionData.transactions, transactionData.priorBalance)
+
     }));
     
   public ngOnDestroy(): void {
@@ -113,7 +136,7 @@ export class TransactionsPageComponent implements OnDestroy {
   }
 
   public addTransaction(type: TransactionType): void {
-    this.currentAddedOrEditedTransaction.next({
+    this.currentAddedOrEditedTransaction$.next({
       useCase: 'add',
       transactionId: null,
       transactionType: type,
@@ -121,13 +144,17 @@ export class TransactionsPageComponent implements OnDestroy {
   }
 
   public editTransaction(editData: AddOrEditTransaction) {
-    this.currentAddedOrEditedTransaction.next(editData);
+    this.currentAddedOrEditedTransaction$.next(editData);
+  }
+
+  public transactionDeleted(): void {
+    this.refreshTransactions$.next(null);
   }
 
   public closeAddOrEditWindow(): void {
-    this.currentAddedOrEditedTransaction.next(null);
-    this.refreshTransactions.next(null);
-    this.showSpinner = true;
+    this.currentAddedOrEditedTransaction$.next(null);
+    this.refreshTransactions$.next(null);
+    this.showLoadingSpinner = true;
   }
 
   public refreshPage(): void {

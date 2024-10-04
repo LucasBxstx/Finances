@@ -12,9 +12,8 @@
 
     <div class="division space"></div>
 
-    <div *ngIf="(showSpinner$ | async) === false">
-
-        <div *ngIf="(errorMessage$ | async) === null">
+    <div [ngClass]="{invisible: (showSpinner$ |async) === true}">
+        <div *ngIf="!showLoadingError">
             <app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
                 [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
 
@@ -23,12 +22,12 @@
 
             <div class="drop-menu-row">
                 <app-drop-menu class="pie-chart-drop-down-start-month" [description]="t('filterFrom')"
-                    [translateMonth]="true" [currentValue]="pieChartSelectedStartMonth$ | async"
+                    [translateMonth]="true" [currentValue]="filterStartMonth$ | async"
                     [valueList]="availableMonths$ | async"
                     (valueChanged)="changePieChartSelectedStartMonth($event)"></app-drop-menu>
 
                 <app-drop-menu class="pie-chart-drop-down-end-month" [description]="t('filterTo')" [translateMonth]="true"
-                    [currentValue]="pieChartSelectedEndMonth$ | async" [valueList]="availableMonths$ | async"
+                    [currentValue]="filterEndMonth$ | async" [valueList]="availableMonths$ | async"
                     (valueChanged)="changePieChartSelectedEndMonth($event)"></app-drop-menu>
             </div>
 
@@ -46,17 +45,17 @@
                 [errorMessage]="t('expensesError')"></app-chart>
         </div>
 
-        <div *ngIf="(errorMessage$ | async) === ErrorMessages.add_transactions" class="error-message">
+        <div *ngIf="showNoTransactionsError" class="error-message">
             <span>{{t('noTransactions')}}</span>
             <span>{{t('addTransactions')}}</span>
         </div>
 
-        <div *ngIf="(errorMessage$ | async) === ErrorMessages.add_labels" class="error-message">
+        <div *ngIf="showNoLabelsError" class="error-message">
             <span>{{t('noLabels')}}</span>
             <span>{{t('addLabels')}}</span>
         </div>
 
-        <div class="error-message" *ngIf="(errorMessage$ | async) === ErrorMessages.loading_failed">
+        <div class="error-message" *ngIf="showLoadingError">
             <span>{{t('errorOccured')}}</span>
             <span> {{t('refreshPls')}}</span>
             <button (click)="refreshPage()">{{t('refresh')}}</button>

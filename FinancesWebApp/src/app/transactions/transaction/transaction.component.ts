@@ -1,11 +1,10 @@
 import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
-import { AddOrEditTransaction, Transaction, TransactionType } from '../../shared/models/transaction';
+import { AddOrEditTransaction, Transaction, TransactionType, TransactionWithLabel } from '../../shared/models/transaction';
 import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { GetPriceDecimalPipe } from '../../shared/pipes/getPriceDecimal.pipe';
 import { TransactionService } from '../../shared/services/transaction.service';
 import { map, Subject, takeUntil } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-import { LabelService } from '../../shared/services/label.service';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MOBILE_BREAKPOINT } from '../../shared/constants';
 
@@ -16,21 +15,18 @@ import { MOBILE_BREAKPOINT } from '../../shared/constants';
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss'
 })
-export class TransactionComponent implements OnDestroy, OnChanges {
+export class TransactionComponent implements OnDestroy {
   public TransactionType = TransactionType;
   private unsubscribe = new Subject<void>();
 
   private readonly transactionService = inject(TransactionService);
-  private readonly labelService = inject(LabelService);
   private readonly breakpointObserver = inject(BreakpointObserver);
 
   public readonly breakpointMobile$ = this.breakpointObserver.observe([MOBILE_BREAKPOINT]).pipe(map((state)=> state.matches));
 
-  public labelColor?: string;
-  public labelName?: string;
   public openEditContainer = false;
 
-  @Input({ required: true }) public transaction!: Transaction;
+  @Input({ required: true }) public transaction!: TransactionWithLabel;
   @Output() public transactionEdited: EventEmitter<AddOrEditTransaction> = new EventEmitter();
   @Output() public transactionDeleted: EventEmitter<void> = new EventEmitter();
 
@@ -39,17 +35,6 @@ export class TransactionComponent implements OnDestroy, OnChanges {
     if(!this.isMobile()) return;
 
     this.openEditContainer = !this.openEditContainer;
-  }
-
-  public ngOnChanges(changes: SimpleChanges): void {
-    if ('transaction' in changes) {
-      this.labelService.getLabel(this.transaction.labelId!)
-        .pipe(takeUntil(this.unsubscribe))
-        .subscribe((label) => {
-          this.labelColor = label.color;
-          this.labelName = label.name;
-        });
-    }
   }
 
   public ngOnDestroy(): void {

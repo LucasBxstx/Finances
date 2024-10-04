@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, catchError, Observable, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { Login, Refresh, Register, TokenResult } from '../models/auth';
 import { environment } from '../../../environments/environment';
 import { Router } from '@angular/router';
@@ -28,6 +28,10 @@ export class AuthService {
     }));
   }
 
+  public register(registerData: Register): Observable<TokenResult> {
+      return this.http.post<TokenResult>(`${environment.apiUrl}/register`, registerData);
+    }
+    
   public refreshToken(): Observable<TokenResult | null> {
     const refreshToken = this.getRefreshToken();
     const userId = localStorage.getItem("userObjectId");
@@ -40,17 +44,18 @@ export class AuthService {
     }
 
     return this.http.post<TokenResult>(`${environment.apiUrl}/api/Auth/refresh`, refreshData).pipe(
+      map((token) => {
+        this.storeTokenData(token)
+
+        return token;
+      }),
       catchError((error: HttpErrorResponse) => {
-        console.log("fehler aufgetreten!!!!!")
         this.sessionExpired();
        
         return throwError(error);
       }
-      ),
-      tap((tokenResult: TokenResult) =>
-        this.storeTokenData(tokenResult)
       ));
-  }
+    }
 
   public logout(): void {
     this.clearTokens();
@@ -75,17 +80,12 @@ export class AuthService {
     localStorage.removeItem('loginToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('userObjectId');
-  }
-
-  public getLoginToken(): string | null {
-    return localStorage.getItem("loginToken");
+    localStorage.removeItem('emailAddress');
   }
 
   public getRefreshToken(): string | null {
     return localStorage.getItem("refreshToken");
   }
 
-  public register(registerData: Register): Observable<TokenResult> {
-    return this.http.post<TokenResult>(`${environment.apiUrl}/register`, registerData);
-  }
+  
 }

@@ -8,9 +8,14 @@ export interface Transaction {
     rowVersion: string | null;
 }
 
+export interface TransactionWithLabel extends Transaction {
+    labelName: string;
+    labelColor: string,
+}
+
 export interface GroupedTransaction {
     date: Date;
-    transactions: Transaction[];
+    transactions: TransactionWithLabel[];
 }
 
 export enum TransactionType {
