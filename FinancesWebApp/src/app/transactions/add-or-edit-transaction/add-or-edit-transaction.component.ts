@@ -3,7 +3,7 @@ import { AddOrEditTransaction, Transaction, TransactionType } from '../../shared
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../../shared/services/transaction.service';
-import { BehaviorSubject, Subject, catchError, map, switchMap, takeUntil, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, catchError, switchMap, takeUntil, throwError } from 'rxjs';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';

@@ -1,5 +1,5 @@
-import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
-import { AddOrEditTransaction, Transaction, TransactionType, TransactionWithLabel } from '../../shared/models/transaction';
+import { Component, EventEmitter, HostListener, Input, OnDestroy, Output, inject } from '@angular/core';
+import { AddOrEditTransaction, TransactionType, TransactionWithLabel } from '../../shared/models/transaction';
 import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { GetPriceDecimalPipe } from '../../shared/pipes/getPriceDecimal.pipe';
 import { TransactionService } from '../../shared/services/transaction.service';
