@@ -1,7 +1,7 @@
 <div class="transaction">
     <span class="title">{{transaction.title}}</span>
     <div class="label">
-        <span class="chip" [ngStyle]="{'background-color': labelColor}">{{labelName}}</span>
+        <span class="chip" [ngStyle]="{'background-color': transaction.labelColor}">{{transaction.labelName}}</span>
     </div>
     <span [ngClass]="transaction.transactionType === TransactionType.Expense? 'red': 'green'" class="price">
         {{transaction.transactionType === TransactionType.Expense ? '-' : '+'}}

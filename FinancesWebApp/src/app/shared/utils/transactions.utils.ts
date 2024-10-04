@@ -1,4 +1,5 @@
-import { GroupedTransaction, Transaction, TransactionType, keyMetricData } from "../models/transaction";
+import { Label } from "../models/label";
+import { GroupedTransaction, Transaction, TransactionType, TransactionWithLabel, keyMetricData } from "../models/transaction";
 
 export function getListOfAvailableYears(oldestDate: Date | null): number[] {
   const currentYear = new Date().getFullYear();
@@ -73,17 +74,30 @@ export function compareDates(date1: Date, date2: Date): boolean {
   );
 }
 
-export function mapTrasactionsToDateGroups(transactions: Transaction[]): GroupedTransaction[] {
+export function mapTrasactionsWithLabelsToDateGroups(transactions: Transaction[], labels: Label[]): GroupedTransaction[] {
   const groupedTransactions: GroupedTransaction[] = []
 
   transactions.forEach((transaction) => {
+    const correspondingLabel = labels.find((label)=> label.id === transaction.labelId);
+    const transactionWithLabel: TransactionWithLabel = {
+      id: transaction.id,
+      transactionType: transaction.transactionType,
+      date: transaction.date,
+      title: transaction.title,
+      labelId: transaction.labelId,
+      price: transaction.price,
+      rowVersion: transaction.rowVersion,
+      labelName: correspondingLabel?.name ?? '',
+      labelColor: correspondingLabel?.color ?? 'grey',
+    }
+
     const existingGroup = groupedTransactions.find((group) => compareDates(group.date, transaction.date))
 
-    if (existingGroup) existingGroup.transactions.push(transaction);
+    if (existingGroup) existingGroup.transactions.push(transactionWithLabel);
     else {
       groupedTransactions.push({
         date: transaction.date,
-        transactions: [transaction],
+        transactions: [transactionWithLabel],
       });
     }
   });

@@ -3,7 +3,7 @@ import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { pageType } from '../transactions/transactions-page.component';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
-import { BehaviorSubject, Observable, Subject, combineLatest, delay, map, of, shareReplay, startWith, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, combineLatest, delay, map, of, shareReplay, startWith, takeUntil, tap } from 'rxjs';
 import { getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
 import { Transaction, TransactionType, TransactionView } from '../shared/models/transaction';
 import { TransactionService } from '../shared/services/transaction.service';
@@ -20,6 +20,7 @@ import { AuthService } from '../shared/services/auth.service';
 import { LogoutComponent } from "../shared/components/logout/logout.component";
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
 import { TranslocoDirective } from '@ngneat/transloco';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-statistics',
@@ -30,7 +31,14 @@ import { TranslocoDirective } from '@ngneat/transloco';
 })
 export class StatisticsComponent {
   public ErrorMessages = ErrorMessages;
+
   private unsubscribe = new Subject<void>();
+  public filterStartMonth$ = new BehaviorSubject<number>(1);
+  public filterEndMonth$ = new BehaviorSubject<number>(12);
+  
+  public showLoadingError = false;
+  public showNoTransactionsError = false;
+  public showNoLabelsError = false;
 
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -40,9 +48,33 @@ export class StatisticsComponent {
   public readonly selectedYear$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['year']));
   public readonly selectedMonth$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['month']));
 
-  public readonly labels$: Observable<Label[] | null> = this.labelService.getLabels().pipe(shareReplay(1));
+  public readonly labels$: Observable<Label[] | null> = this.labelService.getLabels().pipe(
+    map((labels) => {
+      this.showNoLabelsError = labels?.length === 0;
 
-  public readonly transactionData$: Observable<TransactionView | null> = this.transactionService.getTransactions().pipe(shareReplay(1));
+      return labels;
+    }),
+    catchError((error: HttpErrorResponse) => {
+      this.showLoadingError = true;
+      
+      return of(null);
+    }),
+    shareReplay(1)
+  );
+
+  public readonly transactionData$: Observable<TransactionView | null> = this.transactionService.getTransactions().pipe(
+    map((transactionsData) => {
+      this.showNoTransactionsError = transactionsData?.transactions.length === 0;
+
+      return transactionsData;
+    }),
+    catchError((error: HttpErrorResponse) => {
+      this.showLoadingError = true;
+
+      return of(null);
+    }),
+    shareReplay(1)
+  );
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData?.oldestTransactionDate ?? null));
@@ -69,20 +101,16 @@ export class StatisticsComponent {
       this.transactionsOfThisYearGroupedByMonth$
     ]).pipe(map(([labels, transactionsGroupedByMonth]) => getCategoryDataOfSelectedYearGroupedByMonth(labels ?? [], transactionsGroupedByMonth)));
 
-  public pieChartSelectedStartMonth$ = new BehaviorSubject<number>(1);
-
-  public pieChartSelectedEndMonth$ = new BehaviorSubject<number>(12);
-
-  private readonly labelShareDateStartFilter$ = combineLatest([this.pieChartSelectedStartMonth$, this.selectedYear$])
+  private readonly startDateFilter$ = combineLatest([this.filterStartMonth$, this.selectedYear$])
     .pipe(map(([selectedStartMonth, selectedYear])=> new Date(selectedYear, selectedStartMonth - 1, 1)));
 
-  private readonly labelShareDateEndFilter$ = combineLatest([this.pieChartSelectedEndMonth$, this.selectedYear$])
+  private readonly endDateFilter$ = combineLatest([this.filterEndMonth$, this.selectedYear$])
     .pipe(map(([selectedEndMonth, selectedYear])=> new Date(selectedYear, selectedEndMonth - 1, 31)));
 
   private readonly filteredTransactions$: Observable<Transaction[]> = combineLatest([
     this.transactionData$,
-    this.labelShareDateStartFilter$, 
-    this.labelShareDateEndFilter$
+    this.startDateFilter$, 
+    this.endDateFilter$
   ]).pipe(map(([transactionData, startDate, endDate]) => {
     if (!transactionData) return []
 
@@ -98,7 +126,7 @@ export class StatisticsComponent {
 
   public readonly labelShareCount$: Observable<EChartsOption> = this.labelShare$.pipe(map(getTransactionLabelShareCountPieChartData));
 
-  public readonly topExpenses$: Observable<EChartsOption> = combineLatest([this.filteredTransactions$, this.labels$]).pipe(map(([transactions, labels])=>{
+  public readonly topExpenses$: Observable<EChartsOption> = combineLatest([this.filteredTransactions$, this.labels$]).pipe(map(([transactions, labels]) => {
     const topExpenses = getTransactionsTopExpenseOrIncome(transactions, labels ?? [], TransactionType.Expense);
     const chartOptions = getTopPricesChatOptions(topExpenses, TransactionType.Expense);
 
@@ -112,23 +140,16 @@ export class StatisticsComponent {
     return chartOptions;
   }));
 
-
   public readonly showSpinner$: Observable<boolean> = combineLatest([
     this.categoryDataOfSelectedYearGroupedByMonth$,
     this.labelSharePrice$,
     this.labelShareCount$,
     this.topExpenses$,
     this.topIncomes$,
-  ]).pipe(map(()=> false),
+  ]).pipe(
+      map(()=> false),
+      shareReplay(1),
       startWith(true));
-
-  public readonly errorMessage$: Observable<ErrorMessages | null> = combineLatest([this.transactionData$, this.labels$]).pipe(map(([transactionData, labels])=>{
-    if(!transactionData?.transactions || !labels) return ErrorMessages.loading_failed;
-    if(transactionData.transactions.length === 0) return ErrorMessages.add_transactions;
-    if(labels.length === 0) return ErrorMessages.add_labels;
-     
-    return null; // In case that all data are available and no error exists
-  }))
 
   public navigateTo(page: pageType): void {
     combineLatest([this.selectedYear$, this.selectedMonth$]).pipe(takeUntil(this.unsubscribe)).subscribe(([year, month]) => {
@@ -161,11 +182,11 @@ export class StatisticsComponent {
   }
 
   public changePieChartSelectedStartMonth(month:number): void {
-    this.pieChartSelectedStartMonth$.next(month);
+    this.filterStartMonth$.next(month);
   }
 
   public changePieChartSelectedEndMonth(month:number): void {
-    this.pieChartSelectedEndMonth$.next(month);
+    this.filterEndMonth$.next(month);
   }
 
   public refreshPage(): void {

@@ -48,7 +48,7 @@
 
             // Hier würdest du das Refresh Token validieren und ggf. ein neues Access Token erzeugen
             var user = await _userManager.FindByIdAsync(tokenRefreshRequest.UserId);
-            if (user == null) return Unauthorized("Invalid refresh token or user not found");
+            if (user == null) return Unauthorized("User not found");
 
             if (user.RefreshToken != tokenRefreshRequest.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
