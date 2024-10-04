@@ -30,7 +30,9 @@
     },
     "navbar": {
         "transactions": "Transactions",
-        "statistics": "Statistics"
+        "statistics": "Statistics",
+        "login": "Login",
+        "createAccount": "Create Account"
     },
     "statistics": {
         "heading": "My Finances",

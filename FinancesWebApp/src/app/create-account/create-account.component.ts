@@ -8,11 +8,12 @@ import { AuthService } from '../shared/services/auth.service';
 import { Subject, takeUntil } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TokenResult } from '../shared/models/auth';
+import { FooterComponent } from '../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-create-account',
   standalone: true,
-  imports: [TranslocoDirective, ReactiveFormsModule, NgIf, SpinnerComponent, NgClass],
+  imports: [TranslocoDirective, ReactiveFormsModule, NgIf, SpinnerComponent, NgClass, FooterComponent],
   templateUrl: './create-account.component.html',
   styleUrl: './create-account.component.scss'
 })
