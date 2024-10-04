@@ -23,6 +23,8 @@ export function getListOfAvailableMonthsPerYear(selectedYear: number, oldestDate
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
 
+  if(selectedYear.toString() !== currentYear.toString() && oldestYear.toString() !== selectedYear.toString()) return [];
+
   const startMonth = selectedYear == oldestYear ? oldestMonth : 1;
   const endMonth = selectedYear == currentYear ? currentMonth : 12;
   const allMonths: number[] = [];

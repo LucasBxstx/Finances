@@ -28,6 +28,10 @@ export class AuthService {
     }));
   }
 
+  public register(registerData: Register): Observable<TokenResult> {
+      return this.http.post<TokenResult>(`${environment.apiUrl}/register`, registerData);
+    }
+    
   public refreshToken(): Observable<TokenResult | null> {
     const refreshToken = this.getRefreshToken();
     const userId = localStorage.getItem("userObjectId");
@@ -83,7 +87,5 @@ export class AuthService {
     return localStorage.getItem("refreshToken");
   }
 
-  public register(registerData: Register): Observable<TokenResult> {
-    return this.http.post<TokenResult>(`${environment.apiUrl}/register`, registerData);
-  }
+  
 }
