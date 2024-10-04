@@ -1,0 +1,6 @@
+<div *transloco="let t read 'cookies'">
+    <div *ngIf="!cookieConsentGiven" class="cookie-banner">
+        <p>{{t('text')}}</p>
+        <button (click)="acceptCookieConsent()">{{t('consent')}}</button>
+    </div>
+</div>

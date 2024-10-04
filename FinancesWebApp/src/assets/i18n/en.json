@@ -97,5 +97,9 @@
         "sessionExpired": "Sorry, your session expired.",
         "goLogin": "Try to login again",
         "login": "Login again"
+    },
+    "cookies": {
+        "consent": "Consent",
+        "text": "We use local storage to enable your connection to the server so that you can access your personal data. We also store your financial data to provide you with a clear overview of your income and expenses. This data is used exclusively for the function of the app and is not passed on to third parties."
     }
 }

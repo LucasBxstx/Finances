@@ -96,5 +96,9 @@
         "sessionExpired": "Sorry, Ihre Session ist abgelaufen",
         "goLogin": "Versuchen Sie sich nochmal anzumelden",
         "login": "Zur Anmeldung"
+    },
+    "cookies": {
+        "consent": "Zustimmen",
+        "text": "Wir verwenden Local Storage, um ihre Verbindung mit dem Server zu ermöglichen, damit Sie auf Ihre persönlichen Daten zugreifen können. Zudem speichern wir Ihre Finanzdaten, um Ihnen eine übersichtliche Aufbereitung Ihrer Ein- und Ausgaben zu ermöglichen. Diese Daten werden ausschließlich für die Funktion der App verwendet und nicht an Dritte weitergegeben."
     }
 }

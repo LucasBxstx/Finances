@@ -23,10 +23,13 @@
         <li><a class="index-link" (click)="scrollToElementById('mOverview')">Übersicht der Verarbeitungen</a></li>
         <li><a class="index-link" (click)="scrollToElementById('m2427')">Maßgebliche Rechtsgrundlagen</a></li>
         <li><a class="index-link" (click)="scrollToElementById('m27')">Sicherheitsmaßnahmen</a></li>
-        <li><a class="index-link" (click)="scrollToElementById('m12')">Allgemeine Informationen zur Datenspeicherung und Löschung</a></li>
-        <li><a class="index-link" (click)="scrollToElementById('m225')">Bereitstellung des Onlineangebots und Webhosting</a></li>
+        <li><a class="index-link" (click)="scrollToElementById('m12')">Allgemeine Informationen zur Datenspeicherung und
+                Löschung</a></li>
+        <li><a class="index-link" (click)="scrollToElementById('m225')">Bereitstellung des Onlineangebots und
+                Webhosting</a></li>
         <li><a class="index-link" (click)="scrollToElementById('m134')">Einsatz von Cookies</a></li>
-        <li><a class="index-link" (click)="scrollToElementById('m367')">Registrierung, Anmeldung und Nutzerkonto</a></li>
+        <li><a class="index-link" (click)="scrollToElementById('m367')">Registrierung, Anmeldung und Nutzerkonto</a>
+        </li>
         <li><a class="index-link" (click)="scrollToElementById('m263')">Webanalyse, Monitoring und Optimierung</a></li>
     </ul>
     <h2 id="m3">Verantwortlicher</h2>
@@ -50,16 +53,30 @@
         <li>Nutzer.</li>
     </ul>
     <h3>Zwecke der Verarbeitung</h3>
+    <p>Wir verwenden Local Storage in Ihrem Browser, um die für den Betrieb der App notwendigen Informationen sicher zu
+        speichern. Dazu gehören:</p>
     <ul>
-        <li>Graphische Aufbereitung von Daten der Nutzer</li>
-        <li>Sicherheitsmaßnahmen.</li>
-        <li>Reichweitenmessung.</li>
-        <li>Organisations- und Verwaltungsverfahren.</li>
-        <li>Feedback.</li>
-        <li>Profile mit nutzerbezogenen Informationen.</li>
-        <li>Bereitstellung unseres Onlineangebotes und Nutzerfreundlichkeit.</li>
-        <li>Informationstechnische Infrastruktur.</li>
+        <li>
+            JWT-Token (Login- und Refresh-Tokens): Diese Token dienen der sicheren Authentifizierung und ermöglichen
+            es Ihnen, während Ihrer Nutzung der App eingeloggt zu bleiben. Die Token werden im Local Storage
+            gespeichert, um Ihnen einen nahtlosen Zugriff auf Ihre Finanzdaten zu ermöglichen.
+        </li>
+        <li>Finanzdaten (Einnahmen und Ausgaben): Die von Ihnen in der App eingegebenen Einnahmen und Ausgaben werden
+            gespeichert, um Ihnen einen detaillierten Überblick über Ihre Finanzen zu geben. Diese Daten werden
+            ausschließlich lokal in der App genutzt, um Ihnen personalisierte Diagramme und Auswertungen zu bieten.</li>
     </ul>
+
+    <h3>Keine Weitergabe von Daten</h3>
+
+    <ul>
+        <li>Wir legen größten Wert auf den Schutz Ihrer Daten. Ihre in der App gespeicherten Finanzdaten und
+            Anmeldedaten werden nicht an Dritte weitergegeben und auch nicht für andere Zwecke verwendet als für die,
+            die der direkte Nutzen der App für Sie erfordert. Ihre Daten werden ausschließlich in der App verarbeitet
+            und dienen der Darstellung und Analyse Ihrer eigenen Finanzen.</li>
+    </ul>
+
+
+
     <h2 id="m2427">Maßgebliche Rechtsgrundlagen</h2>
     <p><strong>Maßgebliche Rechtsgrundlagen nach der DSGVO: </strong>Im Folgenden erhalten Sie eine Übersicht der
         Rechtsgrundlagen der DSGVO, auf deren Basis wir personenbezogene Daten verarbeiten. Bitte nehmen Sie zur
@@ -107,6 +124,11 @@
         die Gefährdung der Daten gewährleisten. Ferner berücksichtigen wir den Schutz personenbezogener Daten bereits
         bei der Entwicklung bzw. Auswahl von Hardware, Software sowie Verfahren entsprechend dem Prinzip des
         Datenschutzes, durch Technikgestaltung und durch datenschutzfreundliche Voreinstellungen.</p>
+
+    <p>Die Daten der Nutzer werden sicher verarbeitet und gespeichert. Der Zugriff auf die Daten ist durch eine Anmeldung
+        und den Einsatz moderner Sicherheitsmaßnahmen geschützt. Die JWT-Tokens sind im Local Storage Ihres Browsers
+        abgelegt und dienen nur der Authentifizierung, solange die Nutzer die App nutzen.</p>
+
     <p>Sicherung von Online-Verbindungen durch TLS-/SSL-Verschlüsselungstechnologie (HTTPS): Um die Daten der Nutzer,
         die über unsere Online-Dienste übertragen werden, vor unerlaubten Zugriffen zu schützen, setzen wir auf die
         TLS-/SSL-Verschlüsselungstechnologie. Secure Sockets Layer (SSL) und Transport Layer Security (TLS) sind die
@@ -393,7 +415,8 @@
                 target="_blank">https://myadcenter.google.com/personalizationoff</a>. <strong>Weitere
                 Informationen:</strong> <a href="https://business.safety.google/adsservices/"
                 target="_blank">https://business.safety.google/adsservices/</a> (Arten der Verarbeitung sowie der
-            verarbeiteten Daten).</li>
+            verarbeiteten Daten).
+        </li>
     </ul>
 
 </div>
