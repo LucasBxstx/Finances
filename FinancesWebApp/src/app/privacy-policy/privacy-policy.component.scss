@@ -4,7 +4,8 @@
     justify-content: center;
     align-items: center;
 
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
 
     @media screen and (max-width: 500px) {
         margin: 0 0.5rem;
@@ -23,21 +24,6 @@
     background-color: rgb(64, 64, 64);
 }
 
-.navbar {
-    display: flex;
-    justify-content: space-around;
-
-    .selector {
-        font-size: max(1rem, 2vmin);
-        cursor: pointer;
-        color: rgb(255, 255, 255);
-
-        &.selected {
-            color: rgb(184, 223, 255);
-        }
-    }
-}
-
 .container {
     display: flex;
     flex-direction: column;
@@ -47,12 +33,21 @@
     max-width: 900px;
     width: 70vw;
 
-    .index-link {
-        cursor: pointer;
+    h1, h2 {
+        color: #326ca5;
     }
-
-    .index-link:hover {
-        text-decoration: underline;
+    h1 {
+        text-align: center;
+    }
+    p {
+        margin: 10px 0;
+    }
+    ul {
+        list-style-type: none;
+        padding-left: 0;
+    }
+    ul li {
+        margin-bottom: 10px;
     }
 
 }
@@ -62,5 +57,5 @@ a {
 }
 
 .bottom {
-    height: 3rem;
+    height: 5rem;
 }
