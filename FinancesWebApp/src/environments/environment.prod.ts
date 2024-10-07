@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://api.meineapp.com'
+    apiUrl: 'https://myfinancestats.de'
 }

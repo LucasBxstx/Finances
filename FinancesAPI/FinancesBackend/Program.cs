@@ -146,6 +146,10 @@ static void ConfigureServices(IServiceCollection services)
 
 static void ConfigureApp(WebApplication webApplication, IConfiguration configuration)
 {
+    var scope = webApplication.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<FinancesContext>();
+    context.Database.Migrate();
+
     webApplication.UseCors("AllowAllOrigins");
     webApplication.UseRouting();
 
@@ -156,7 +160,6 @@ static void ConfigureApp(WebApplication webApplication, IConfiguration configura
     webApplication.MapIdentityApi<ApplicationUser>();
     webApplication.UseAuthentication();
     webApplication.UseAuthorization();
-
 
     if (webApplication.Environment.IsDevelopment())
     {
