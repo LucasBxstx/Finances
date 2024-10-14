@@ -8,11 +8,12 @@ import { TokenResult } from '../shared/models/auth';
 import { HttpErrorResponse } from '@angular/common/http';
 import { NgIf } from '@angular/common';
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
+import { FooterComponent } from '../shared/components/footer/footer.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [TranslocoDirective, ReactiveFormsModule, NgIf, SpinnerComponent],
+  imports: [TranslocoDirective, ReactiveFormsModule, NgIf, SpinnerComponent, FooterComponent],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })

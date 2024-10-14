@@ -14,6 +14,12 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
 ConfigureMvc(builder.Services);
 ConfigureSwagger(builder.Services);
 ConfigureDbContext(builder.Services, builder.Configuration);
@@ -31,7 +37,7 @@ static void ConfigureDbContext(IServiceCollection services, IConfiguration confi
 {
     services.AddDbContext<FinancesContext>(options =>
     {
-        options.UseSqlServer(configuration.GetConnectionString("FinancesContext"));
+        options.UseSqlServer(configuration.GetConnectionString("FinancesContext") ?? Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"));
     });
 }
 
@@ -39,7 +45,7 @@ static void ConfigureAuthorization(IServiceCollection services, IConfiguration c
 {
     // JWT Authentication configuration
     var jwtSettings = configuration.GetSection("Jwt");
-    var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
+    var key = Encoding.ASCII.GetBytes(jwtSettings["Key"] ?? Environment.GetEnvironmentVariable("JWT_KEY"));
 
     services.AddAuthentication(options =>
     {
@@ -101,7 +107,7 @@ static void ConfigureSwagger(IServiceCollection services)
         options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
         {
             In = ParameterLocation.Header,
-            Description = "Bitte das Bearer-Token einfügen.",
+            Description = "Bitte das Bearer-Token einfï¿½gen.",
             Name = "Authorization",
             Type = SecuritySchemeType.Http,
             Scheme = "bearer"
@@ -140,6 +146,10 @@ static void ConfigureServices(IServiceCollection services)
 
 static void ConfigureApp(WebApplication webApplication, IConfiguration configuration)
 {
+    /*var scope = webApplication.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<FinancesContext>();
+    context.Database.Migrate();*/
+
     webApplication.UseCors("AllowAllOrigins");
     webApplication.UseRouting();
 
@@ -151,7 +161,6 @@ static void ConfigureApp(WebApplication webApplication, IConfiguration configura
     webApplication.UseAuthentication();
     webApplication.UseAuthorization();
 
-
     if (webApplication.Environment.IsDevelopment())
     {
         webApplication.UseDeveloperExceptionPage();
@@ -159,9 +168,9 @@ static void ConfigureApp(WebApplication webApplication, IConfiguration configura
         webApplication.UseSwaggerUI();
     }
     else
-    {
+    {       
         var corsOrigins = new List<string>();
-        configuration.Bind("CORS", corsOrigins);
+        configuration.GetSection("Cors:Origins").Bind(corsOrigins);
 
         webApplication.UseCors(
             corsPolicyBuilder => corsPolicyBuilder.WithOrigins(corsOrigins.ToArray())

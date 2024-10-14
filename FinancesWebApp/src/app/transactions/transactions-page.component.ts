@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, catchError, combineLatest, map, of, shareReplay, switchMap, takeUntil, tap, throwError } from 'rxjs';
+import { Component, OnDestroy, inject } from '@angular/core';
+import { BehaviorSubject, Observable, Subject, catchError, combineLatest, map, of, shareReplay, switchMap, takeUntil, } from 'rxjs';
 import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';

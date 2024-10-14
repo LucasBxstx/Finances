@@ -1,4 +1,4 @@
-import { Component, inject, Input, OnChanges, OnInit, SimpleChange, SimpleChanges } from '@angular/core';
+import { Component, inject, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { MonthlyCategoryStatisticComponent } from '../monthly-category-statistic/monthly-category-statistic.component';
 import { ChartComponent } from '../chart/chart.component';
 import { AllMonthCategoryData } from '../../shared/models/statistics';

@@ -5,6 +5,8 @@ import { TransactionsPageComponent } from './transactions/transactions-page.comp
 import { StatisticsComponent } from './statistics/statistics.component';
 import { AuthGuardService } from './shared/services/authGuardService';
 import { SessionExpiredComponent } from './session-expired/session-expired.component';
+import { ImprintComponent } from './imprint/imprint.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
 
 export const appRoutes: Routes = [
     {
@@ -19,6 +21,14 @@ export const appRoutes: Routes = [
     {
         path: 'session-expired',
         component: SessionExpiredComponent,
+    },
+    {
+        path: 'imprint',
+        component: ImprintComponent,
+    },
+    {
+        path: 'privacy-policy',
+        component: PrivacyPolicyComponent,
     },
     {
         path: 'create-account',
