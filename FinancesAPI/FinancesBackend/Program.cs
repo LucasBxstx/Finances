@@ -146,9 +146,9 @@ static void ConfigureServices(IServiceCollection services)
 
 static void ConfigureApp(WebApplication webApplication, IConfiguration configuration)
 {
-    var scope = webApplication.Services.CreateScope();
+    /*var scope = webApplication.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<FinancesContext>();
-    context.Database.Migrate();
+    context.Database.Migrate();*/
 
     webApplication.UseCors("AllowAllOrigins");
     webApplication.UseRouting();
