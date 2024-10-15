@@ -67,11 +67,14 @@ export class TransactionsPageComponent implements OnDestroy {
       shareReplay(1)
     );
 
-  private readonly labels$ : Observable<Label[] | null>= this.labelService.getLabels().pipe(
-    catchError((error: HttpErrorResponse) => {
-      this.showLoadingError = true;
-      
-      return of(null);
+  private readonly labels$ : Observable<Label[] | null>= this.refreshTransactions$.pipe(switchMap(()=> {
+      return this.labelService.getLabels().pipe(
+        catchError((error: HttpErrorResponse) => {
+          this.showLoadingError = true;
+          
+          return of(null);
+        }
+      ));
     }));
 
   public readonly transactionsWithLabels$ : Observable<GroupedTransaction[] | null> = combineLatest([this.transactionData$, this.labels$]).pipe((
