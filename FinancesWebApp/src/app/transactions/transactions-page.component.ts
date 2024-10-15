@@ -53,7 +53,7 @@ export class TransactionsPageComponent implements OnDestroy {
     .pipe(
       switchMap(([refresh, { firstDayOfMonth, lastDayOfMonth }]) => {
         return this.transactionService.getTransactions(firstDayOfMonth, lastDayOfMonth).pipe(
-          map((transactionData)=> {
+          map((transactionData) => {
             this.showNoTransactionsError = transactionData?.transactions.length === 0;
 
             return transactionData;
@@ -67,17 +67,18 @@ export class TransactionsPageComponent implements OnDestroy {
       shareReplay(1)
     );
 
-  private readonly labels$ : Observable<Label[] | null>= this.labelService.getLabels().pipe(
-    catchError((error: HttpErrorResponse) => {
-      this.showLoadingError = true;
-      
-      return of(null);
-    }));
+  private readonly labels$: Observable<Label[] | null> = this.refreshTransactions$.pipe(
+    switchMap(() => this.labelService.getLabels().pipe(
+      catchError((error: HttpErrorResponse) => {
+        this.showLoadingError = true;
 
-  public readonly transactionsWithLabels$ : Observable<GroupedTransaction[] | null> = combineLatest([this.transactionData$, this.labels$]).pipe((
+        return of(null);
+      }))))
+
+  public readonly transactionsWithLabels$: Observable<GroupedTransaction[] | null> = combineLatest([this.transactionData$, this.labels$]).pipe((
     map(([transactionData, labels]) => {
       this.showLoadingSpinner = false;
-      if(!transactionData || !labels) return null;
+      if (!transactionData || !labels) return null;
 
       return mapTrasactionsWithLabelsToDateGroups(transactionData.transactions, labels);
     })));
@@ -94,12 +95,12 @@ export class TransactionsPageComponent implements OnDestroy {
 
   public readonly monthlyKeyMetrics$: Observable<keyMetricData | null> = this.transactionData$.pipe(
     map((transactionData) => {
-      if(!transactionData) return null;
+      if (!transactionData) return null;
 
       return calculateMonthlyKeyMetricData(transactionData.transactions, transactionData.priorBalance)
 
     }));
-    
+
   public ngOnDestroy(): void {
     this.unsubscribe.next();
     this.unsubscribe.complete();
