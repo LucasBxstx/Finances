@@ -43,6 +43,8 @@
 
             <app-chart class="incomes" [chartOptions]="topIncomes$ |async"
                 [errorMessage]="t('expensesError')"></app-chart>
+
+            <button (click)="exportTransactionToCSV()" class="export">{{t('export')}}</button>
         </div>
 
         <div *ngIf="showNoTransactionsError" class="error-message">

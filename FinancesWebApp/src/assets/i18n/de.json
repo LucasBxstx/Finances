@@ -48,7 +48,8 @@
         "labelShareError": "Fügen Sie Ausgaben hinzu damit Sie hier die Label Anteile sehen können",
         "totalLabelShareError": "Fügen Sie Ausgaben hinzu damit Sie hier die totalen Label Anteile sehen können",
         "incomesError": "Fügen Sie Einnahmen hinzu damit Sie hier Ihre top Einahmen sehen können",
-        "expensesError": "Fügen Sie Ausgaben hinzu damit Sie hier Ihre top Ausgaben sehen können"
+        "expensesError": "Fügen Sie Ausgaben hinzu damit Sie hier Ihre top Ausgaben sehen können",
+        "export": "Transaktionen als CSV exportieren"
     },
     "addOrEditLabel": {
         "name": "Name",
@@ -57,7 +58,8 @@
         "addLabel": "Label hinzufügen",
         "editLabel": "Label bearbeiten",
         "savingError": "Die Änderungen konnten nicht gespeichert werden. Versuchen Sie es nochmal",
-        "loadingError":"Die Transaktion konnte nicht geladen werden"
+        "loadingError":"Die Transaktion konnte nicht geladen werden",
+        "saveChanges": "Änderungen speichern"
     },
     "addOrEditTransaction": {
         "addTransaction": "Transaktion hinzufügen",

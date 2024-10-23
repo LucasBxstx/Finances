@@ -10,7 +10,7 @@ import { TransactionService } from '../shared/services/transaction.service';
 import { MonthlyCategoryStatisticComponent } from './monthly-category-statistic/monthly-category-statistic.component';
 import { AllMonthCategoryData, ErrorMessages, LabelWithData, MonthTransactionGroup } from '../shared/models/statistics';
 import { LabelService } from '../shared/services/label.service';
-import { calculateLabelShareData, getCategoryDataOfSelectedYearGroupedByMonth, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome } from '../shared/utils/statistics.utils';
+import { calculateLabelShareData, convertToCSV, getCategoryDataOfSelectedYearGroupedByMonth, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome } from '../shared/utils/statistics.utils';
 import { ChartComponent } from "./chart/chart.component";
 import { EChartsOption } from 'echarts';
 import { GetMonthPipe } from '../shared/pipes/getMonth.pipe';
@@ -186,6 +186,30 @@ export class StatisticsComponent {
 
   public changePieChartSelectedEndMonth(month:number): void {
     this.filterEndMonth$.next(month);
+  }
+
+  public exportTransactionToCSV(): void {
+    combineLatest([this.transactionData$, this.labels$])
+    .pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe(([transactionData, labels]) => {
+        if(!transactionData?.transactions) return;
+        
+        const csvData = convertToCSV(transactionData.transactions, labels ?? []);
+        this.downloadCSV(csvData);
+      })
+  }
+
+  private downloadCSV(csv: string): void {
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const date = new Date();
+    const today = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
+    a.setAttribute('href', url);
+    a.setAttribute('download', `MyFinanceStats Transactions ${today}.csv`);
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 
   public refreshPage(): void {

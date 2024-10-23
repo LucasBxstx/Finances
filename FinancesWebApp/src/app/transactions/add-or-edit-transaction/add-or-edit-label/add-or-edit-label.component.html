@@ -17,8 +17,8 @@
             </div>
 
             <button class="save" (click)="saveLabel()">
-                <span *ngIf="!showSavingSpinner">{{addOrEditData.useCase === 'add' ? 'Add Label' :
-                    'SaveChanges'}}</span>
+                <span *ngIf="!showSavingSpinner">{{addOrEditData.useCase === 'add' ? t('addLabel') :
+                    t('saveChanges')}}</span>
                 <app-spinner *ngIf="showSavingSpinner"></app-spinner>
             </button>
 

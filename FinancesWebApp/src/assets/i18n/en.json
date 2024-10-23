@@ -48,7 +48,8 @@
         "labelShareError": "Add expenses to see label shares here",
         "totalLabelShareError": "Add expenses to see total label shares here",
         "incomesError": "Add incomes to see them here",
-        "expensesError": "Add expenses to see them here"
+        "expensesError": "Add expenses to see them here",
+        "export": "Export transactions to CSV"
 
     },
     "addOrEditLabel": {
@@ -58,7 +59,8 @@
         "addLabel": "Add Label",
         "editLabel": "Edit Label",
         "savingError": "The changes could not be saved. Please try again",
-        "loadingError":"The transaction could not be loaded"
+        "loadingError":"The transaction could not be loaded",
+        "saveChanges": "save Changes"
     },
     "addOrEditTransaction": {
         "addTransaction": "Add Transaction",
