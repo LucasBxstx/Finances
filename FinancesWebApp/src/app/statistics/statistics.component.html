@@ -14,6 +14,8 @@
 
     <div [ngClass]="{invisible: (showSpinner$ |async) === true}">
         <div *ngIf="!showLoadingError">
+            <app-chart [chartOptions]="accountBalanceTimeData$ | async" [errorMessage]="t('expensesError')" class="account-balance-time-chart"></app-chart>
+
             <app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
                 [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
 

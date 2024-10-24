@@ -10,7 +10,7 @@ import { TransactionService } from '../shared/services/transaction.service';
 import { MonthlyCategoryStatisticComponent } from './monthly-category-statistic/monthly-category-statistic.component';
 import { AllMonthCategoryData, ErrorMessages, LabelWithData, MonthTransactionGroup } from '../shared/models/statistics';
 import { LabelService } from '../shared/services/label.service';
-import { calculateLabelShareData, convertToCSV, getCategoryDataOfSelectedYearGroupedByMonth, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome } from '../shared/utils/statistics.utils';
+import { calculateAccountBalanceTimeData, calculateLabelShareData, convertToCSV, getAccountBalanceTimeLineChartData, getCategoryDataOfSelectedYearGroupedByMonth, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome } from '../shared/utils/statistics.utils';
 import { ChartComponent } from "./chart/chart.component";
 import { EChartsOption } from 'echarts';
 import { GetMonthPipe } from '../shared/pipes/getMonth.pipe';
@@ -74,6 +74,13 @@ export class StatisticsComponent {
     }),
     shareReplay(1)
   );
+
+  public readonly accountBalanceTimeData$: Observable<EChartsOption> = this.transactionData$.pipe(map((transactionData)=>{
+    const accountBalanceTimeData = calculateAccountBalanceTimeData(transactionData?.transactions ?? [], transactionData?.priorBalance ?? 0);
+    const chartData = getAccountBalanceTimeLineChartData(accountBalanceTimeData);
+
+    return chartData;
+  }))
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData?.oldestTransactionDate ?? null));

@@ -2,6 +2,11 @@ import { Color } from "echarts";
 import { Label } from "./label";
 import { Transaction } from "./transaction";
 
+export interface AccountBalanceTimeData {
+    timeData: string[];
+    accountBalanceData: number[];
+}
+
 export interface AllMonthCategoryData {
     labels: Label [];
     monthlyValues: MonthlyCategoryValues[];

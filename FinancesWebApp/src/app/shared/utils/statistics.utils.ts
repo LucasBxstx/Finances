@@ -1,7 +1,8 @@
 import { EChartsOption } from "echarts";
 import { Label } from "../models/label";
-import { AllMonthCategoryData, BarChartData, LabelWithData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup, PieChartData } from "../models/statistics";
+import { AccountBalanceTimeData, AllMonthCategoryData, BarChartData, LabelWithData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup, PieChartData } from "../models/statistics";
 import { Transaction, TransactionType, TransactionView } from "../models/transaction";
+import * as echarts from 'echarts';
 
 export function getTransactionsGroupedPerMonth(transactions: Transaction[]): MonthTransactionGroup[] {
     const transactionsGroupedPerMonth: MonthTransactionGroup[] = []
@@ -90,6 +91,93 @@ export function getMonthString(monthNumeric: number, activeLang: "en" | "de"): s
     de: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
 };
   return monthsAlphabetic[activeLang][monthNumeric - 1];
+}
+
+export function calculateAccountBalanceTimeData(transactions: Transaction[], priorBalance: number): AccountBalanceTimeData {
+  const timeData: string[] = [];
+  const accountBalanceData: number[] = [];
+
+  let accountBalance: number = priorBalance ?? 0;
+
+  transactions.forEach((transaction)=> {
+    const price = (transaction.transactionType === TransactionType.Expense ? -1 : 1) * transaction.price;
+    accountBalance += price;
+
+    const date = new Date(transaction.date);
+    const day = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+
+    timeData.push(`${year}/${month}/${day}`);
+    accountBalanceData.push(accountBalance);
+  });
+
+  return { timeData, accountBalanceData };
+}
+
+export function getAccountBalanceTimeLineChartData(accountBalanceTimeData: AccountBalanceTimeData): EChartsOption {
+  return {
+    tooltip: {
+      trigger: 'axis',
+      position: function (pt) {
+        return [pt[0], '10%'];
+      },
+      formatter: function (params: any) {
+        const balance = params[0].data; 
+        const date = params[0].axisValue; 
+        return `<strong>Date:</strong> ${date}<br/><strong>Account Balance:</strong> ${balance.toFixed(2)}€`;  
+      }
+    },
+    title: {
+      text: 'Account Balance over the time',
+      left: 'center',
+      top: '10px',
+      textStyle: {
+        color: '#ffffff'
+      }
+    },
+    grid: {
+      bottom: '25%'  // Erhöhe den Abstand unten für die Scroll-Leiste
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: accountBalanceTimeData.timeData,
+    },
+    yAxis: {
+      type: 'value',
+      boundaryGap: [0, '100%']
+    },
+    dataZoom: [
+      {
+        type: 'inside',
+        start: 0,
+        end: 100
+      },
+      {
+        start: 0,
+        end: 100
+      }
+    ],
+    series: [
+      {
+        name: 'Account Balance',
+        type: 'line',
+        symbol: 'none',
+        sampling: 'lttb',
+        itemStyle: {
+          color: 'rgba(0, 255, 0, 0.6)'
+        },
+        areaStyle: {
+          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+            { offset: 0, color: 'rgba(0, 255, 0, 0.6)' }, 
+            { offset: 1, color: 'rgba(0, 150, 0, 0.2)' }    
+          ])
+        },
+        data: accountBalanceTimeData.accountBalanceData,
+      },
+    ]
+  };
 }
 
 export function getTransactionBilanceBarChartData(months: string[], bilancePerMonth: number[], labelName?: string): EChartsOption {
@@ -185,7 +273,6 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
         const roundedPrice = params.value.toFixed(2);
         return `<strong> ${params.name} </strong> <br/> added expenses: ${roundedPrice}€ <br/> share: ${params.percent}%`
       }
-     
     },
     legend: {
       orient: 'vertical',
