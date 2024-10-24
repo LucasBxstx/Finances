@@ -14,13 +14,13 @@
 
     <div [ngClass]="{invisible: (showSpinner$ |async) === true}">
         <div *ngIf="!showLoadingError">
-            <app-chart [chartOptions]="accountBalanceTimeData$ | async" [errorMessage]="t('expensesError')" class="account-balance-time-chart"></app-chart>
+            <app-chart [chartOptions]="accountBalanceTimeData$ | async" [title]="t('accountBalanceChartTitle')" [errorMessage]="t('expensesError')" class="account-balance-time-chart"></app-chart>
 
             <app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
                 [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
 
             <app-interactive-table-chart
-                [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async"></app-interactive-table-chart>
+                [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async" ></app-interactive-table-chart>
 
             <div class="drop-menu-row">
                 <app-drop-menu class="pie-chart-drop-down-start-month" [description]="t('filterFrom')"
@@ -36,9 +36,9 @@
 
             <div class="row">
                 <app-chart [chartOptions]="labelSharePrice$ |async"
-                    [errorMessage]="t('labelShareError')"></app-chart>
+                    [errorMessage]="t('labelShareError')" [title]="t('labelShareChartTitle')"></app-chart>
                 <app-chart [chartOptions]="labelShareCount$ |async"
-                    [errorMessage]="t('totalLabelShareError')"></app-chart>
+                    [errorMessage]="t('totalLabelShareError')" [title]="t('totalLabelShareChartTitle')"></app-chart>
             </div>
 
             <app-chart [chartOptions]="topExpenses$ |async" [errorMessage]="t('incomesError')"></app-chart>

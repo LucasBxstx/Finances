@@ -136,9 +136,9 @@ export function getAccountBalanceTimeLineChartData(accountBalanceTimeData: Accou
         color: '#ffffff'
       }
     },
-    grid: {
-      bottom: '25%'  // Erhöhe den Abstand unten für die Scroll-Leiste
-    },
+    // grid: {
+    //   bottom: '25%'  // Erhöhe den Abstand unten für die Scroll-Leiste
+    // },
     xAxis: {
       type: 'category',
       boundaryGap: false,
@@ -154,10 +154,10 @@ export function getAccountBalanceTimeLineChartData(accountBalanceTimeData: Accou
         start: 0,
         end: 100
       },
-      {
-        start: 0,
-        end: 100
-      }
+      // {
+      //   start: 0,
+      //   end: 100
+      // }
     ],
     series: [
       {

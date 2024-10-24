@@ -5,7 +5,7 @@
     </div>
     <div *ngIf="menuOpened"  class="menu">
         <span *ngIf="emailAddress" class="email">{{emailAddress}}</span>
-        <!-- <button (click)="changeLanguage()">{{ (currentLanguage$ | async) === "de" ? t('german') : t('english')}}</button> -->
+        <!-- <button class="language" (click)="changeLanguage()">{{ (currentLanguage$ | async) === "de" ? t('german') : t('english')}}</button> -->
         <button (click)="logout()">{{t('logout')}}</button>
     </div>
 

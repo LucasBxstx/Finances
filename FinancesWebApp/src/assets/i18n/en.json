@@ -49,7 +49,10 @@
         "totalLabelShareError": "Add expenses to see total label shares here",
         "incomesError": "Add incomes to see them here",
         "expensesError": "Add expenses to see them here",
-        "export": "Export transactions to CSV"
+        "export": "Export transactions to CSV",
+        "accountBalanceChartTitle": "Account Balance over the time",
+        "labelShareChartTitle": "Total transaction prices per label",
+        "totalLabelShareChartTitle": "Total transactions count per label"
 
     },
     "addOrEditLabel": {
