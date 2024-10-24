@@ -19,11 +19,27 @@ import { NgIf } from '@angular/common';
 export class ChartComponent implements OnChanges{
   @Input() public chartOptions: EChartsOption | null = null;  
   @Input() public errorMessage: string = "No Entries available";
+  @Input() public title?: string;
 
   public isDataEmpty: boolean = true;
 
   public ngOnChanges(changes: SimpleChanges): void {
-    if('chartOptions' in changes) this.checkIfDataIsEmpty()
+    if('chartOptions' in changes) {
+      this.checkIfDataIsEmpty();
+
+      if(this.isDataEmpty) return;
+
+      if(this.title && this.chartOptions?.title) {
+        this.chartOptions.title = {
+          text: this.title,
+          left: 'center',
+          top: '10px',
+          textStyle: {
+            color: '#ffffff'
+          }
+        }
+      }
+    }   
   }
 
   private checkIfDataIsEmpty(): void {

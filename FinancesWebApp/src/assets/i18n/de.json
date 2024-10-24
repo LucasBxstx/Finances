@@ -49,7 +49,10 @@
         "totalLabelShareError": "Fügen Sie Ausgaben hinzu damit Sie hier die totalen Label Anteile sehen können",
         "incomesError": "Fügen Sie Einnahmen hinzu damit Sie hier Ihre top Einahmen sehen können",
         "expensesError": "Fügen Sie Ausgaben hinzu damit Sie hier Ihre top Ausgaben sehen können",
-        "export": "Transaktionen als CSV exportieren"
+        "export": "Transaktionen als CSV exportieren",
+        "accountBalanceChartTitle": "Kontostand im Laufe der Zeit",
+        "labelShareChartTitle": "Anteile der Labels",
+        "totalLabelShareChartTitle": "Anzahl der Transaktionen pro Label"
     },
     "addOrEditLabel": {
         "name": "Name",
