@@ -3,7 +3,7 @@ import { AddOrEditTransaction, Transaction, TransactionType } from '../../shared
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from '../../shared/services/transaction.service';
-import { BehaviorSubject, Subject, catchError, switchMap, takeUntil, throwError } from 'rxjs';
+import { BehaviorSubject, Subject, catchError, map, switchMap, takeUntil, throwError } from 'rxjs';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
 import { MatDatepicker, MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
@@ -15,6 +15,7 @@ import { AddOrEditLabelComponent } from './add-or-edit-label/add-or-edit-label.c
 import { HttpErrorResponse } from '@angular/common/http';
 import { AuthService } from '../../shared/services/auth.service';
 import { TranslocoDirective } from '@ngneat/transloco';
+import { ActivatedRoute } from '@angular/router';
 
 export type UseCase = 'add' | 'edit';
 
@@ -33,7 +34,6 @@ export type UseCase = 'add' | 'edit';
 export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestroy {
   public TransactionType = TransactionType;
 
-  private readonly authService = inject(AuthService);
   private unsubscribe: Subject<void> = new Subject();
   public currentAddedOrEditedLabel = new BehaviorSubject<AddOrEditLabel | null>(null);
   public refreshLabels = new BehaviorSubject<null>(null);
@@ -57,6 +57,7 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
 
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
   public readonly labels$ = this.refreshLabels.pipe(
     switchMap(() =>
@@ -65,11 +66,21 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
           this.showLoadingError = true;
 
           return throwError(error);
-      }))
+        }))
     ));
 
   public ngOnInit(): void {
-    if (this.addOrEditData.useCase === 'add' || !this.addOrEditData.transactionId) return;
+    if (this.addOrEditData.useCase === 'add' || !this.addOrEditData.transactionId) {
+      this.activatedRoute.queryParams.pipe(takeUntil(this.unsubscribe))
+        .subscribe((queryParams) => {
+          const month = queryParams['month'];
+          const year = queryParams['year'];
+          const thisMonthEditingDate = new Date(year, month - 1);
+          this.editingDate = thisMonthEditingDate;
+        });
+
+      return;
+    };
 
     this.showLoadingSpinner = true;
 
