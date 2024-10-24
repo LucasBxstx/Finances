@@ -35,7 +35,7 @@ export class BackendInterceptor implements HttpInterceptor {
           }),
         ).subscribe((token) => {
           this.isRefreshingToken = false;
-          // window.location.reload();
+          window.location.reload();
           console.log("error", error)
         })
 
