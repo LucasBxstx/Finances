@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
+    using FinancesBackend.Authentication.Exceptions;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -26,10 +27,10 @@
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             var user = await _userManager.FindByEmailAsync(loginRequest.Email);
-            if (user == null) return Unauthorized("Invalid credentials");
+            if (user == null) throw new UserUnauthorizedException("No User with this email found");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, false);
-            if (!result.Succeeded) return Unauthorized("Invalid credentials");
+            if (!result.Succeeded) throw new UserUnauthorizedException("Wrong Password");
 
             var token = _jwtTokenService.GenerateTokens(user);
 
@@ -48,11 +49,11 @@
 
             // Hier würdest du das Refresh Token validieren und ggf. ein neues Access Token erzeugen
             var user = await _userManager.FindByIdAsync(tokenRefreshRequest.UserId);
-            if (user == null) return Unauthorized("User not found");
+            if (user == null) throw new UserUnauthorizedException("No User with this Id was found");
 
             if (user.RefreshToken != tokenRefreshRequest.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                return Unauthorized("Invalid or expired refresh token");
+                throw new UserUnauthorizedException("Invalid or expired Refresh Token");
             }
 
             // Neue Tokens generieren

@@ -25,7 +25,7 @@ export class BackendInterceptor implements HttpInterceptor {
     return next.handle(requestWithAuthHeader).pipe(
       catchError((error) => {
         if(error.status !== 401 || this.isRefreshingToken) return throwError(error);
-          
+        
         this.isRefreshingToken = true;
 
         this.authService.refreshToken().pipe(
@@ -35,7 +35,8 @@ export class BackendInterceptor implements HttpInterceptor {
           }),
         ).subscribe((token) => {
           this.isRefreshingToken = false;
-          window.location.reload();
+          // window.location.reload();
+          console.log("error", error)
         })
 
         return throwError("");
