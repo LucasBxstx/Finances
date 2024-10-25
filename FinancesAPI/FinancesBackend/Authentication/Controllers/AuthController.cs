@@ -7,6 +7,8 @@
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
     using FinancesBackend.Authentication.Exceptions;
+    using FinancesBackend.Common.Exceptions;
+    using FinancesBackend.Transaction.Exceptions;
 
     [ApiController]
     [Route("api/[controller]")]
@@ -27,10 +29,11 @@
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             var user = await _userManager.FindByEmailAsync(loginRequest.Email);
-            if (user == null) throw new UserUnauthorizedException("No User with this email found");
+
+            if (user == null) return Unauthorized(new {message = "No user with this email found"});
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, false);
-            if (!result.Succeeded) throw new UserUnauthorizedException("Wrong Password");
+            if (!result.Succeeded) return Unauthorized(new { message = "Wrong password" });
 
             var token = _jwtTokenService.GenerateTokens(user);
 
@@ -45,21 +48,16 @@
         [HttpPost("refresh")]
         public async Task<IActionResult> Refresh([FromBody] TokenRefreshRequest tokenRefreshRequest)
         {
-            // Validierung des Refresh Tokens (optional: Überprüfen gegen Datenbank)
-
-            // Hier würdest du das Refresh Token validieren und ggf. ein neues Access Token erzeugen
             var user = await _userManager.FindByIdAsync(tokenRefreshRequest.UserId);
-            if (user == null) throw new UserUnauthorizedException("No User with this Id was found");
+            if (user == null) return Unauthorized(new { message = "No User with this Id was found" });
 
             if (user.RefreshToken != tokenRefreshRequest.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                throw new UserUnauthorizedException("Invalid or expired Refresh Token");
+                return Unauthorized(new { message = "Invalid or expired Refresh Token" });
             }
 
-            // Neue Tokens generieren
             var newTokens = _jwtTokenService.GenerateTokens(user);
 
-            // Neue Tokens zurückgeben
             return Ok(new
             {
                 accessToken = newTokens.AccessToken,
