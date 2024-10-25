@@ -132,6 +132,8 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
     this.showSavingSpinner = true;
 
     const adjustedDate = new Date(this.editingDate).getHours() !== 12 ? new Date(this.editingDate.setHours(12)) : this.editingDate;
+    const price = this.editingPrice ?? 0;
+    const positivePrice = price < 0 ? price * -1 : price;
 
     this.transactionService.createOrUpdateTransaction({
       id: this.addOrEditData.transactionId ?? -1,
@@ -139,7 +141,7 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
       date: adjustedDate,
       title: this.editingTitle,
       labelId: this.editingLabelId,
-      price: this.editingPrice ?? 0,
+      price: positivePrice,
       rowVersion: this.rowVersion,
     }).pipe(
       takeUntil(this.unsubscribe),
