@@ -29,6 +29,9 @@ export class AddOrEditLabelComponent implements OnInit, OnDestroy{
   public showLoadingSpinner = false;
   public showSavingError = false;
   public showLoadingError = false;
+  public showDeleteWindow = false;
+  public showDeletingSpinner = false;
+  public showDeletingErrorMessage = false;
 
   @Input({ required: true }) public addOrEditData!: AddOrEditLabel;
   @Output() public closedWindow: EventEmitter<void> = new EventEmitter();
@@ -83,6 +86,24 @@ export class AddOrEditLabelComponent implements OnInit, OnDestroy{
         this.closedWindow.emit();
         this.showSavingSpinner = false;
       });
-      
+  }
+
+  public deleteLabel(): void {
+    if(!this.addOrEditData.labelId) return;
+
+    this.showDeletingSpinner = true;
+
+    this.labelService.deleteLabel(this.addOrEditData.labelId).pipe(
+      takeUntil(this.unsubscribe),
+      catchError((error: HttpErrorResponse) => {
+        this.showDeletingSpinner = false;
+        this.showDeletingErrorMessage = true;
+
+        return throwError(error);
+      })
+  ).subscribe(()=> {
+      this.showDeletingSpinner = false;
+      this.closedWindow.emit();
+    });
   }
 }

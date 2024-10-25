@@ -84,31 +84,35 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
 
     this.showLoadingSpinner = true;
 
-    this.transactionService.getTransaction(this.addOrEditData.transactionId)
-      .pipe(takeUntil(this.unsubscribe),
-        catchError((error) => {
-          console.log("The transaction could not be loaded", error);
-          this.showLoadingSpinner = false
-          this.showLoadingError = true;
-
-          return throwError("error");
-        })
-      )
-      .subscribe((transaction: Transaction) => {
-        this.editingTransactionType = transaction.transactionType;
-        this.editingDate = transaction.date;
-        this.editingTitle = transaction.title;
-        this.editingLabelId = transaction.labelId;
-        this.editingPrice = transaction.price;
-        this.rowVersion = transaction.rowVersion;
-
-        this.showLoadingSpinner = false
-      });
+    this.getTransaction(this.addOrEditData.transactionId);
   }
 
   public ngOnDestroy(): void {
     this.unsubscribe.next();
     this.unsubscribe.complete();
+  }
+
+  public getTransaction(transactionId: number): void {
+    this.transactionService.getTransaction(transactionId)
+    .pipe(takeUntil(this.unsubscribe),
+      catchError((error) => {
+        console.log("The transaction could not be loaded", error);
+        this.showLoadingSpinner = false
+        this.showLoadingError = true;
+
+        return throwError("error");
+      })
+    )
+    .subscribe((transaction: Transaction) => {
+      this.editingTransactionType = transaction.transactionType;
+      this.editingDate = transaction.date;
+      this.editingTitle = transaction.title;
+      this.editingLabelId = transaction.labelId;
+      this.editingPrice = transaction.price;
+      this.rowVersion = transaction.rowVersion;
+
+      this.showLoadingSpinner = false
+    });
   }
 
   public ngOnChanges(changes: SimpleChanges): void {
@@ -163,8 +167,11 @@ export class AddOrEditTransactionComponent implements OnChanges, OnInit, OnDestr
 
   public closeAddOrEditLabelWindow(): void {
     this.currentAddedOrEditedLabel.next(null);
+    if(this.addOrEditData.useCase === "edit") this.getTransaction(this.addOrEditData.transactionId!);
+    
     this.refreshLabels.next(null);
     this.labelEditingMode = false;
+    
   }
 
   public handleLabelClick(labelId: number) {

@@ -51,7 +51,7 @@ export class LoginComponent implements OnDestroy {
     }).pipe(takeUntil(this.unsubscribe))
       .subscribe(
         (tokenResult: TokenResult) => {
-          console.log('login successful', tokenResult);
+          console.log('login successful');
           this.showSpinner = false;
           this.showError = false;
 
