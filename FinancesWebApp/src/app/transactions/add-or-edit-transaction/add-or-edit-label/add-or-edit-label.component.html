@@ -22,6 +22,8 @@
                 <app-spinner *ngIf="showSavingSpinner"></app-spinner>
             </button>
 
+            <button *ngIf="addOrEditData.useCase === 'edit'" class="delete-label" (click)="showDeleteWindow = true">{{t('deleteLabel')}}</button>
+
             <div *ngIf="showSavingError" class="saving-error">{{t('savingError')}}</div>
         </div>
 
@@ -33,4 +35,24 @@
 
 <div *ngIf="showLoadingSpinner" class="spinner">
     <app-spinner [color]="'white'"></app-spinner>
+</div>
+
+<div *transloco="let t read 'deleteWindow'">
+    <div *ngIf="showDeleteWindow" class="delete-window-position">
+        <div class="delete-window">
+            <span class="delete">{{t('deleteLabel')}}</span>
+            <span>{{t('deleteInfo')}}</span>
+
+            <span *ngIf="showDeletingErrorMessage" class="error-message">{{t('deletingError')}}</span>
+
+            <div class="row">
+                <button (click)="deleteLabel()" class="yes">
+                    <span *ngIf="!showDeletingSpinner">{{t('yes')}}</span>
+                    <app-spinner *ngIf="showDeletingSpinner"></app-spinner>
+                </button>
+                <button (click)="showDeleteWindow = !showDeleteWindow" >{{t('no')}}</button>
+            </div>
+
+        </div>
+    </div>
 </div>

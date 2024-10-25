@@ -4,6 +4,7 @@ using FinancesBackend.Labels.Queries;
 using FinancesBackend.Labels.Requests;
 using FinancesBackend.Transaction.Exceptions;
 using FinancesBackend.Transaction.Queries;
+using FinancesBackend.Transaction.Requests;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -79,6 +80,29 @@ namespace FinancesBackend.Labels.Controllers
             catch (RowVersionMissingException exception)
             {
                 return exception.ToActionResult<Models.Label>(this);
+            }
+            catch (WrappedDbUpdateConcurrencyException)
+            {
+                return Conflict();
+            }
+        }
+
+        [Authorize]
+        [HttpDelete]
+        [SwaggerOperation("Deletes the label")]
+        [SwaggerResponse(StatusCodes.Status204NoContent, "The label was deleted")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "The label was not found", typeof(ProblemDetails))]
+        public async Task<IActionResult> DeleteLabel([FromQuery] DeleteLabelRequest request)
+        {
+            try
+            {
+                await Mediator.Send(request, HttpContext.RequestAborted);
+
+                return NoContent();
+            }
+            catch (LabelNotFoundException exception)
+            {
+                return exception.ToActionResult(this);
             }
             catch (WrappedDbUpdateConcurrencyException)
             {

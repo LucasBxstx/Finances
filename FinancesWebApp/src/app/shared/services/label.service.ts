@@ -26,4 +26,8 @@ export class LabelService {
   public createOrUpdateLabel(label: Label): Observable<Label> {
     return this.http.put<Label>(`${environment.apiUrl}/api/Label`, label)
   }
+
+  public deleteLabel(labelId: number): Observable<void> {
+    return this.http.delete<void>(`${environment.apiUrl}/api/Label?Id=${labelId}`)
+  }
 }

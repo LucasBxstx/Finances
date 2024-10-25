@@ -63,7 +63,15 @@
         "editLabel": "Edit Label",
         "savingError": "The changes could not be saved. Please try again",
         "loadingError":"The transaction could not be loaded",
-        "saveChanges": "save Changes"
+        "saveChanges": "Save changes",
+        "deleteLabel": "Delete Label"
+    },
+    "deleteWindow": {
+        "deleteLabel": "Do you really want to delete this Label?",
+        "deleteInfo": "By deleting this Label it will be removed from all Transactions",
+        "deletingError": "An error occured. Please try again",
+        "yes": "Yes",
+        "no": "No"
     },
     "addOrEditTransaction": {
         "addTransaction": "Add Transaction",
@@ -77,7 +85,7 @@
         "placeholder": "e.g. Pizza",
         "label": "Label",
         "price": "Price",
-        "saveChanges": "save Changes",
+        "saveChanges": "Save changes",
         "savingError": "The changes could not be saved. Please try again",
         "loadingError":"The transaction could not be loaded"
     }, 

@@ -62,7 +62,15 @@
         "editLabel": "Label bearbeiten",
         "savingError": "Die Änderungen konnten nicht gespeichert werden. Versuchen Sie es nochmal",
         "loadingError":"Die Transaktion konnte nicht geladen werden",
-        "saveChanges": "Änderungen speichern"
+        "saveChanges": "Änderungen speichern",
+        "deleteLabel": "Label löschen"
+    },
+    "deleteWindow": {
+        "deleteLabel": "Möchten Sie dieses Label wirklich löschen?",
+        "deleteInfo": "Indem Sie dieses Label löschen, wird es bei allen Transaktionen entfernt",
+        "deletingError": "Es ist ein Fehler aufgetreten. Versuchen Sie es erneut",
+        "yes": "Ja",
+        "no": "Nein"
     },
     "addOrEditTransaction": {
         "addTransaction": "Transaktion hinzufügen",
