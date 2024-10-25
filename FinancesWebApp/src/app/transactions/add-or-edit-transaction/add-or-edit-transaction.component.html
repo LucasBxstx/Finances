@@ -43,7 +43,7 @@
 
             <div class="transaction-price spacing">
                 <div class="text">{{t('price')}}:</div>
-                <input type="number" placeholder="10.00" [(ngModel)]="editingPrice" (keyup.enter)="saveTransaction()">
+                <input type="number" placeholder="10.00" min="0" [(ngModel)]="editingPrice" (keyup.enter)="saveTransaction()">
                 <span class="euro">€</span>
             </div>
 
