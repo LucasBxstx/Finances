@@ -26,10 +26,10 @@
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
             var user = await _userManager.FindByEmailAsync(loginRequest.Email);
-            if (user == null) return Unauthorized("Invalid credentials");
+            if (user == null) return Unauthorized( new { message = "Invalid email" } );
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginRequest.Password, false);
-            if (!result.Succeeded) return Unauthorized("Invalid credentials");
+            if (!result.Succeeded) return Unauthorized( new { message = "Invalid password" });
 
             var token = _jwtTokenService.GenerateTokens(user);
 
@@ -48,11 +48,11 @@
 
             // Hier würdest du das Refresh Token validieren und ggf. ein neues Access Token erzeugen
             var user = await _userManager.FindByIdAsync(tokenRefreshRequest.UserId);
-            if (user == null) return Unauthorized("User not found");
+            if (user == null) return Unauthorized(new { message = "Invalid refresh token" });
 
             if (user.RefreshToken != tokenRefreshRequest.RefreshToken || user.RefreshTokenExpiryTime <= DateTime.Now)
             {
-                return Unauthorized("Invalid or expired refresh token");
+                return Unauthorized(new { message = "Invalid refresh token" });
             }
 
             // Neue Tokens generieren

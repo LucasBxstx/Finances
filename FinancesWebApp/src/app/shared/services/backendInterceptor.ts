@@ -26,6 +26,7 @@ export class BackendInterceptor implements HttpInterceptor {
       catchError((error) => {
         if(error.status !== 401 || this.isRefreshingToken) return throwError(error);
           
+        if(error.status === 401 && error.error?.message && (error.error.message === "Invalid email" || error.error.message === "Invalid password")) return throwError(error);
         this.isRefreshingToken = true;
 
         this.authService.refreshToken().pipe(
