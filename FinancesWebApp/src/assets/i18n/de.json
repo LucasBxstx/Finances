@@ -24,6 +24,13 @@
         "german": "Deutsch",
         "english": "Englisch"
     },
+    "deleteAccount": {
+        "deleteAccount": "Möchten Sie wirklich ihren Account löschen?",
+        "deleteInfo": "Diese Aktion kann nicht rückgängig gemacht werden. Alle Ihre Daten werden gelöscht und können nicht wiederhergestellt werden!",
+        "deletingError": "Es ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut",
+        "yes": "Ja, ich will",
+        "no": "Nein"
+    },
     "monthlyCategory": {
         "labelMonth": "Label / Monat",
         "total": "gesamt"

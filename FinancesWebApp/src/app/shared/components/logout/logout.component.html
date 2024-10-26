@@ -7,6 +7,8 @@
         <span *ngIf="emailAddress" class="email">{{emailAddress}}</span>
         <!-- <button class="language" (click)="changeLanguage()">{{ (currentLanguage$ | async) === "de" ? t('german') : t('english')}}</button> -->
         <button (click)="logout()">{{t('logout')}}</button>
+        <button (click)="menuOpened = false; showDeleteUserPrompt = true" class="delete-account">Delete Account</button>
     </div>
-
 </div>
+
+<app-delete-account-prompt *ngIf="showDeleteUserPrompt" (closeDeletingPrompt)="showDeleteUserPrompt = false"></app-delete-account-prompt>

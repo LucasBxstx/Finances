@@ -1,0 +1,15 @@
+<div *transloco="let t read 'deleteAccount'" class="delete-window">
+    <span class="delete">{{t('deleteAccount')}}</span>
+    <span>{{t('deleteInfo')}}</span>
+
+    <span *ngIf="showDeletingErrorMessage" class="error-message">{{t('deletingError')}}</span>
+
+    <div class="row">
+        <button (click)="deleteAccount()" class="yes">
+            <span *ngIf="!showDeletingSpinner">{{t('yes')}}</span>
+            <app-spinner *ngIf="showDeletingSpinner"></app-spinner>
+        </button>
+        <button (click)="closeDeletingPrompt.emit()">{{t('no')}}</button>
+    </div>
+
+</div>
