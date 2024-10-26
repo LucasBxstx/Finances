@@ -24,6 +24,13 @@
         "german": "German",
         "english": "English"
     },
+    "deleteAccount": {
+        "deleteAccount": "Do you really want to delete your Account?",
+        "deleteInfo": "This action cannot be undone. All your data are deleted and cannot be restored!",
+        "deletingError": "An error occured. Please try again",
+        "yes": "Yes, I want",
+        "no": "No"
+    },
     "monthlyCategory": {
         "labelMonth": "Label / Month",
         "total": "total"

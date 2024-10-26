@@ -3,22 +3,26 @@ import { Component, inject, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { TranslocoDirective, TranslocoService } from '@ngneat/transloco';
 import { startWith } from 'rxjs';
+import { UserService } from '../../services/user.service';
+import { DeleteAccountPromptComponent } from "./delete-account-prompt/delete-account-prompt.component";
 
 @Component({
   selector: 'app-logout',
   standalone: true,
-  imports: [NgIf, TranslocoDirective, AsyncPipe],
+  imports: [NgIf, TranslocoDirective, AsyncPipe, DeleteAccountPromptComponent],
   templateUrl: './logout.component.html',
   styleUrl: './logout.component.scss'
 })
 export class LogoutComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly translocoService = inject(TranslocoService);
+  private readonly userService = inject(UserService);
 
   public readonly currentLanguage$ = this.translocoService.langChanges$.pipe(startWith(this.translocoService.getActiveLang()))
 
   public menuOpened = false;
   public emailAddress?: string;
+  public showDeleteUserPrompt = false;
   
   public ngOnInit(): void {
     this.emailAddress = localStorage.getItem('emailAddress') ?? this.authService.emailAddress;
@@ -34,5 +38,9 @@ export class LogoutComponent implements OnInit {
     this.translocoService.setActiveLang(setLangTo);
     localStorage.setItem("activeLang", setLangTo);
     window.location.reload();
+  }
+
+  public openDeleteUserPrompt(): void {
+
   }
 }
