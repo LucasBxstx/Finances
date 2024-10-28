@@ -8,11 +8,12 @@ import { Label } from '../../shared/models/label';
 import { TransactionComponent } from '../transaction/transaction.component';
 import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TranslocoDirective } from '@ngneat/transloco';
 
 @Component({
   selector: 'app-import-csvfile',
   standalone: true,
-  imports: [NgIf, NgFor, TransactionComponent, SpinnerComponent],
+  imports: [NgIf, NgFor, TransactionComponent, SpinnerComponent, TranslocoDirective],
   templateUrl: './import-csvfile.component.html',
   styleUrl: './import-csvfile.component.scss'
 })
