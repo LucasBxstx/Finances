@@ -1,0 +1,37 @@
+<div class="window">
+    <img src="assets/icons/close.svg" class="close" (click)="closedWindow.emit()">
+        <div class="title">Import Transactions from a CSV file</div>
+        <div class="division"></div>
+    <div class="container">
+        <div *ngIf="!fileSelected">
+            <span class="info-text">Select the CSV file with the File Explorer</span>
+            <div class="row">
+                <button class="select" (click)="selectFile()">Select File</button>
+                <input id="file" type="file" (change)="onFileSelected($event)" accept=".csv"/>
+           </div>
+        </div>
+
+        <div *ngIf="fileSelected && !uploadCompleted">
+            <span>Imported File: {{fileName}}</span>
+
+            <div  class="preview-transactions">
+                <app-transaction *ngFor="let transaction of previewTransactions" [transaction]="transaction" [useCase]="'detail'"></app-transaction>
+            </div>
+            
+            <button [disabled]="showUploadingSpinner" class="upload" (click)="uploadImportedTransactions()">
+                <span *ngIf="!showUploadingSpinner">Upload all Transactions</span> 
+                <app-spinner *ngIf="showUploadingSpinner"></app-spinner>
+            </button>
+
+            <div class="count" *ngIf="showUploadingSpinner">{{uploadingTransactionNumber}}/{{previewTransactions.length}} Transactions have been uploaded yet</div>
+
+            <span *ngIf="showUploadingError">Something went wrong</span>
+            
+        </div>
+
+        <div *ngIf="uploadCompleted" class="completed">
+            <span>Upload Completed</span>
+            <button (click)="closedWindow.emit()">View Transactions</button>
+        </div>
+    </div>
+</div>

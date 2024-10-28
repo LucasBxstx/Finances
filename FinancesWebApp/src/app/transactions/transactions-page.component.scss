@@ -6,7 +6,7 @@
     @media screen and (max-width: 500px) {
         margin: 0 0.5rem;
 
-        app-logout{
+        app-logout {
             top: 30px;
             right: 10px;
         }
@@ -76,18 +76,30 @@ app-monthly-overview {
     gap: 0.5rem;
 }
 
-.date-group{
-    margin: 2rem 0;
+.import {
+    margin-bottom: 10px;
+}
+
+.date-group {
+    margin: 1rem 0;
+    display: flex;
+    flex-direction: column;
 
     .date {
         font-size: 1rem;
         font-weight: lighter;
     }
-}    
+
+    app-transaction {
+        margin: 4px 0;
+    }
+}
 
 app-add-or-edit-transaction {
     margin: 2rem 0;
 }
+
+
 
 .spinner {
     position: absolute;

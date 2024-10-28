@@ -7,11 +7,13 @@ import { map, Subject, takeUntil } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MOBILE_BREAKPOINT } from '../../shared/constants';
+import { GetDatePipe } from '../../shared/pipes/getDate.pipe';
+import { GetDateDMYPipe } from '../../shared/pipes/getDateDMY.pipe';
 
 @Component({
   selector: 'app-transaction',
   standalone: true,
-  imports: [NgClass, GetPriceDecimalPipe, NgStyle, NgIf, AsyncPipe],
+  imports: [NgClass, GetPriceDecimalPipe, NgStyle, NgIf, AsyncPipe, GetDateDMYPipe],
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss'
 })
@@ -27,6 +29,7 @@ export class TransactionComponent implements OnDestroy {
   public openEditContainer = false;
 
   @Input({ required: true }) public transaction!: TransactionWithLabel;
+  @Input() public useCase : 'detail' | 'default' = 'default';
   @Output() public transactionEdited: EventEmitter<AddOrEditTransaction> = new EventEmitter();
   @Output() public transactionDeleted: EventEmitter<void> = new EventEmitter();
 

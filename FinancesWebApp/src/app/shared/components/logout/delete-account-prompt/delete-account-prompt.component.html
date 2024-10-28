@@ -5,7 +5,7 @@
     <span *ngIf="showDeletingErrorMessage" class="error-message">{{t('deletingError')}}</span>
 
     <div class="row">
-        <button (click)="deleteAccount()" class="yes">
+        <button (click)="deleteAccount()" class="yes" [disabled]="showDeletingSpinner">
             <span *ngIf="!showDeletingSpinner">{{t('yes')}}</span>
             <app-spinner *ngIf="showDeletingSpinner"></app-spinner>
         </button>
