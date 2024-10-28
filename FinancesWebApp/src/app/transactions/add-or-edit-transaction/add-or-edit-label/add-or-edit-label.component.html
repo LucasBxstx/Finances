@@ -16,7 +16,7 @@
                 <button [(colorPicker)]="editingColor" [cpOutputFormat]="'hex'">{{t('choose')}}</button>
             </div>
 
-            <button class="save" (click)="saveLabel()">
+            <button [disabled]="showSavingSpinner" class="save" (click)="saveLabel()">
                 <span *ngIf="!showSavingSpinner">{{addOrEditData.useCase === 'add' ? t('addLabel') :
                     t('saveChanges')}}</span>
                 <app-spinner *ngIf="showSavingSpinner"></app-spinner>
@@ -46,7 +46,7 @@
             <span *ngIf="showDeletingErrorMessage" class="error-message">{{t('deletingError')}}</span>
 
             <div class="row">
-                <button (click)="deleteLabel()" class="yes">
+                <button [disabled]="showDeletingSpinner" (click)="deleteLabel()" class="yes">
                     <span *ngIf="!showDeletingSpinner">{{t('yes')}}</span>
                     <app-spinner *ngIf="showDeletingSpinner"></app-spinner>
                 </button>

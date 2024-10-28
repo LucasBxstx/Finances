@@ -121,5 +121,16 @@
     "cookies": {
         "consent": "Consent",
         "text": "We use local storage to enable your connection to the server so that you can access your personal data. We also store your financial data to provide you with a clear overview of your income and expenses. This data is used exclusively for the function of the app and is not passed on to third parties."
+    },
+    "importCSV": {
+        "title": "Import Transactions from a CSV file",
+        "info": "Select the CSV file with the File Explorer",
+        "select": "Select File",
+        "importedFile": "Imported File:",
+        "upload": "Upload all Transactions",
+        "error": "Something went wrong",
+        "completed": "Upload Completed",
+        "view": "View Transactions",
+        "uploadedCount": "Transactions have been uploaded yet"
     }
 }

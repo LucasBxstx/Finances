@@ -9,7 +9,7 @@
             [placeholder]="t('password')">
         <span class="center space" [ngClass]="{'red': showErrorPassword}">{{t("passwordError")}}</span>
 
-        <button (click)="createAccount()" [disabled]="emailFormControl.invalid || passwordFormControl.invalid">
+        <button (click)="createAccount()" [disabled]="emailFormControl.invalid || passwordFormControl.invalid || showSpinner">
             <span *ngIf="!showSpinner">{{t('createAccount')}}</span>
             <app-spinner *ngIf="showSpinner" class="spinner"></app-spinner>
         </button>

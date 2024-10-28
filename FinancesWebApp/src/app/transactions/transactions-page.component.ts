@@ -17,13 +17,14 @@ import { TranslocoDirective } from '@ngneat/transloco';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Label } from '../shared/models/label';
 import { LabelService } from '../shared/services/label.service';
+import { ImportCSVFileComponent } from './import-csvfile/import-csvfile.component';
 
 export type pageType = 'transactions' | 'statistics';
 
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, GetPriceDecimalPipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent],
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, GetPriceDecimalPipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
   templateUrl: './transactions-page.component.html',
   styleUrl: './transactions-page.component.scss'
 })
@@ -37,6 +38,7 @@ export class TransactionsPageComponent implements OnDestroy {
   public showLoadingSpinner = true;
   public showNoTransactionsError = false;
   public showLoadingError = false;
+  public showImportCSVWindow = false;
 
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);

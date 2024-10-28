@@ -120,5 +120,16 @@
     "cookies": {
         "consent": "Zustimmen",
         "text": "Wir verwenden Local Storage, um ihre Verbindung mit dem Server zu ermöglichen, damit Sie auf Ihre persönlichen Daten zugreifen können. Zudem speichern wir Ihre Finanzdaten, um Ihnen eine übersichtliche Aufbereitung Ihrer Ein- und Ausgaben zu ermöglichen. Diese Daten werden ausschließlich für die Funktion der App verwendet und nicht an Dritte weitergegeben."
+    },
+    "importCSV": {
+        "title": "Transaktionen aus einer CSV-Datei importieren",
+        "info": "Wählen Sie die CSV-Datei mit dem Datei-Explorer aus",
+        "select": "Datei auswählen",
+        "importedFile": "Importierte Datei:",
+        "upload": "Alle Transaktionen hochladen",
+        "error": "Etwas ist schiefgelaufen",
+        "completed": "Upload abgeschlossen",
+        "view": "Transaktionen anzeigen",
+        "uploadedCount": "Transaktionen wurden bereits hochgeladen"
     }
 }

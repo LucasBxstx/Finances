@@ -1,5 +1,6 @@
 <div class="transaction">
     <span class="title">{{transaction.title}}</span>
+    <span *ngIf="useCase === 'detail'">{{transaction.date | getDateDMY}}</span>
     <div class="label">
         <span *ngIf="transaction.labelId" class="chip" [ngStyle]="{'background-color': transaction.labelColor}">{{transaction.labelName}}</span>
     </div>
@@ -7,11 +8,11 @@
         {{transaction.transactionType === TransactionType.Expense ? '-' : '+'}}
         {{transaction.price | getPriceDecimal}}
     </span>
-    <div *ngIf="(breakpointMobile$ | async) === false" class="edit-container">
+    <div *ngIf="(breakpointMobile$ | async) === false && useCase === 'default'" class="edit-container">
         <img class="edit" (click)="editTransaction()" src="assets/icons/edit.svg">
         <img class="delete" (click)="deleteTransaction()" src="assets/icons/delete.svg">
     </div>
-    <div *ngIf="openEditContainer" class="edit-container-mobile">
+    <div *ngIf="openEditContainer && useCase === 'default'" class="edit-container-mobile">
         <img class="edit" (click)="editTransaction()" src="assets/icons/edit.svg">
         <img class="delete" (click)="deleteTransaction()" src="assets/icons/delete.svg">
     </div>

@@ -22,6 +22,10 @@
         <app-monthly-overview [currentMonth]="selectedMonth$ | async" [keyMetricData]="monthlyKeyMetrics$ |async">
         </app-monthly-overview>
 
+        <button (click)="showImportCSVWindow = true" class="import">Import Transactions from CSV</button>
+
+        <app-import-csvfile *ngIf="showImportCSVWindow" (closedWindow)="showImportCSVWindow = false" (closedWindow)="refreshPage()"></app-import-csvfile>
+
         <div class="button-bar">
             <button (click)="addTransaction(TransactionType.Income)">{{t('addIncome')}}</button>
             <button (click)="addTransaction(TransactionType.Expense)">{{t('addExpense')}}</button>

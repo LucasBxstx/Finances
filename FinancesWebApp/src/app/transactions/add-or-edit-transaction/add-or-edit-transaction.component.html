@@ -47,7 +47,7 @@
                 <span class="euro">€</span>
             </div>
 
-            <button class="save" (click)="saveTransaction()">
+            <button [disabled]="showSavingSpinner" class="save" (click)="saveTransaction()">
                 <span *ngIf="!showSavingSpinner"> {{addOrEditData.useCase === 'add' ? t('addTransaction') :
                     t('saveChanges')}}</span>
                 <app-spinner *ngIf="showSavingSpinner"></app-spinner>
