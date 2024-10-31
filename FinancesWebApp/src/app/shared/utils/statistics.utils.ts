@@ -105,7 +105,7 @@ export function calculateAccountBalanceTimeData(transactions: Transaction[], pri
 
     const date = new Date(transaction.date);
     const day = date.getDate();
-    const month = date.getMonth();
+    const month = date.getMonth() +1;
     const year = date.getFullYear();
 
     timeData.push(`${year}/${month}/${day}`);
