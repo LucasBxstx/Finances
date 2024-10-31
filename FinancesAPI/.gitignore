@@ -1,1 +1,13 @@
+# Visual Studio 2022 cache/options directory
 /.vs
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+/bin/
+/obj/
+/wwwroot/
