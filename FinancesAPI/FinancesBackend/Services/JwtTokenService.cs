@@ -14,7 +14,7 @@
 
     public interface IJwtTokenService
     {
-        TokenResponse GenerateTokens(ApplicationUser user);
+        AccessAndRefreshToken GenerateTokens(ApplicationUser user);
         Guid GetUserObjectIdFromToken();
     }
 
@@ -34,7 +34,7 @@
             _userManager = userManager;
         }
 
-        public TokenResponse GenerateTokens(ApplicationUser user)
+        public AccessAndRefreshToken GenerateTokens(ApplicationUser user)
         {
             var accessToken = GenerateAccessToken(user);
             var refreshToken = GenerateRefreshToken();
@@ -44,7 +44,7 @@
           
             _userManager.UpdateAsync(user).Wait();
 
-            return new TokenResponse
+            return new AccessAndRefreshToken
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken

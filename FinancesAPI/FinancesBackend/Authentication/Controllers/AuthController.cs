@@ -6,6 +6,7 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using System.Threading.Tasks;
+    using FinancesBackend.Authentication.Requests;
 
     [ApiController]
     [Route("api/[controller]")]
