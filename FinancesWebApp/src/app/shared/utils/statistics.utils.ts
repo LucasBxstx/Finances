@@ -490,7 +490,7 @@ export function getTopPricesChatOptions(data: BarChartData, type: TransactionTyp
 }
 
 export function convertToCSV(transactions: Transaction[], labels: Label[]): string {
-  const headers = 'id;title;transactionType;date;price;labelName;labelColor'
+  const headers = 'id;title;transactionType;date;price;labelName;labelColor;\n'
   const rows = transactions.map((transaction) => {
     const label = labels.find((label) => label.id == transaction.labelId);
     const price = transaction.price.toString().replace('.',',');
