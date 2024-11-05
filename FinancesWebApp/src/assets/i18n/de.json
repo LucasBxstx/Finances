@@ -125,6 +125,7 @@
         "title": "Transaktionen aus einer CSV-Datei importieren",
         "info": "Wählen Sie die CSV-Datei mit dem Datei-Explorer aus",
         "select": "Datei auswählen",
+        "selectSplitwise": "Wähle eine Splitwise Datei aus",
         "importedFile": "Importierte Datei:",
         "upload": "Alle Transaktionen hochladen",
         "error": "Etwas ist schiefgelaufen",

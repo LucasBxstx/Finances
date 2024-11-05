@@ -126,6 +126,7 @@
         "title": "Import Transactions from a CSV file",
         "info": "Select the CSV file with the File Explorer",
         "select": "Select File",
+        "selectSplitwise": "Select a Splitwise file",
         "importedFile": "Imported File:",
         "upload": "Upload all Transactions",
         "error": "Something went wrong",

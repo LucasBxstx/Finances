@@ -6,9 +6,13 @@
         <div *ngIf="!fileSelected">
             <span class="info-text">{{t('info')}}</span>
             <div class="row">
-                <button class="select" (click)="selectFile()">{{t('select')}}</button>
-                <input id="file" type="file" (change)="onFileSelected($event)" accept=".csv"/>
+                <button class="select" (click)="selectFile('file')">{{t('select')}}</button>
+                <input id="file" type="file" (change)="onFileSelected($event, false)" accept=".csv"/>
            </div>
+           <div class="row">
+            <button class="select" (click)="selectFile('fileSplitwise')">{{t('selectSplitwise')}}</button>
+            <input id="fileSplitwise" type="file" (change)="onFileSelected($event, true)" accept=".csv"/>
+       </div>
         </div>
 
         <div *ngIf="fileSelected && !uploadCompleted">
