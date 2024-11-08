@@ -52,7 +52,18 @@
             display: flex;
             justify-content: center;
 
- 
+            .chip {
+                cursor: pointer;
+                border-radius: 10px;
+                background-color: rgb(214, 242, 250);
+                color: black;
+                padding: 5px 10px;
+                margin: 5px 10px;
+
+                &.selected {
+                    border: 1px solid white;
+                }
+            }
         }
 
         .select {
@@ -60,13 +71,7 @@
             width: 350px;
         }
 
-        #file {
-            visibility: hidden;
-            height: 0px;
-            width: 0;
-        }
-
-        #fileSplitwise {
+        #file,  #fileSplitwise  {
             visibility: hidden;
             height: 0px;
             width: 0;
@@ -81,7 +86,6 @@
             flex-direction: column;
             overflow-y: auto;
             max-height: 500px;
-            // margin-bottom: 30px;
             border: 1px solid rgb(64, 64, 64);
             border-radius: 5px;
 

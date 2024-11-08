@@ -1,4 +1,4 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, inject, OnDestroy, OnInit, Output } from '@angular/core';
 import { Transaction, TransactionType, TransactionWithLabel } from '../../shared/models/transaction';
 import { LabelService } from '../../shared/services/label.service';
@@ -9,11 +9,12 @@ import { TransactionComponent } from '../transaction/transaction.component';
 import { SpinnerComponent } from '../../shared/components/spinner/spinner.component';
 import { HttpErrorResponse } from '@angular/common/http';
 import { TranslocoDirective } from '@ngneat/transloco';
+import { ImportDataSource, SelectionOptions } from '../../shared/models/importCSV';
 
 @Component({
   selector: 'app-import-csvfile',
   standalone: true,
-  imports: [NgIf, NgFor, TransactionComponent, SpinnerComponent, TranslocoDirective],
+  imports: [NgIf, NgFor, TransactionComponent, SpinnerComponent, TranslocoDirective, NgClass],
   templateUrl: './import-csvfile.component.html',
   styleUrl: './import-csvfile.component.scss'
 })
@@ -26,9 +27,15 @@ export class ImportCSVFileComponent implements OnInit, OnDestroy {
   public showUploadingError = false;
   public uploadingTransactionNumber: number = 0;
   public uploadCompleted = false;
-
+  public selectedPriceOptionIndex: number = 3;
+  public numberOfPersons: number = 0;
+  
   public previewTransactions: TransactionWithLabel[] = [];
   public existingLabels: Label[] = [];
+  public priceSelectionOptions: SelectionOptions[] = [];
+  public dataSource: ImportDataSource = 'default';
+  private csvData: string[][] = [];
+  
 
   @Output() public closedWindow = new EventEmitter<void>();
 
@@ -57,6 +64,8 @@ export class ImportCSVFileComponent implements OnInit, OnDestroy {
   }
 
   public onFileSelected(event: Event, splitwise: boolean): void {
+    this.dataSource = splitwise ? 'splitwise' : 'default';
+
     const input = event.target as HTMLInputElement;
     if (!input.files || input.files.length === 0) return;
 
@@ -67,14 +76,37 @@ export class ImportCSVFileComponent implements OnInit, OnDestroy {
     reader.onload = () => {
       const text = reader.result as string;
       const cellSplitting: ',' | ';' = splitwise ? ',' : ';';
-      const csvData = this.parseCSV(text, cellSplitting);
+      this.csvData = this.parseCSV(text, cellSplitting);
 
-      if (splitwise === true) this.previewTransactions = this.getTransactionsFromSplitwiseCSV(csvData);
-      else this.previewTransactions = this.getTransactionsFromCSV(csvData);
+      const headers = this.csvData[0];
+      this.numberOfPersons = headers.length - 5;
+
+      this.addPriceSelectionOption(3, headers[3]);
+      // Do not add 'Währung'
+      for (let i = 5; i < headers.length; i++) {
+        this.addPriceSelectionOption(i,headers[i]);
+      }
+      
+      if (splitwise === true) this.previewTransactions = this.getTransactionsFromSplitwiseCSV(this.csvData);
+      else this.previewTransactions = this.getTransactionsFromCSV(this.csvData);
     };
 
     reader.readAsText(file);
     this.fileSelected = true;
+  }
+
+  private addPriceSelectionOption(index: number, title: string): void {
+    this.priceSelectionOptions.push({
+      index: index,
+      title: title,
+    });
+  }
+
+  public onPriceOptionChange(index: number): void {
+    if(this.dataSource === 'default') return;
+
+    this.selectedPriceOptionIndex = index;
+    this.previewTransactions = this.getTransactionsFromSplitwiseCSV(this.csvData, index);
   }
 
   // In english CSV files, cells are splitted by comma. In german csv files, cells are splitted by semicolon
@@ -163,15 +195,18 @@ export class ImportCSVFileComponent implements OnInit, OnDestroy {
     });
   }
 
-  private getTransactionsFromSplitwiseCSV(csvData: string[][]): TransactionWithLabel[] {
-    csvData.splice(0, 2);
-    csvData.splice(-4);
+  // The default priceIndex is 3, as this is the total value of a splitwise transaction. 
+  // If the user selected the individual amount for a transaction, another index will be used.
+  private getTransactionsFromSplitwiseCSV(csvData: string[][], priceIndex: number = 3): TransactionWithLabel[] {
+    const filteringData = csvData.slice(); // new array
+    filteringData.splice(0, 2);
+    filteringData.splice(-4);   
 
     const colors = this.getColors()
     let colorIndex = 0;
     const existingLabels: Label[] = [];
 
-    const transactions = csvData.map((transaction) => {
+    const transactions = filteringData.map((transaction) => {
       const title: string = transaction[1];
       const transactionType: TransactionType = TransactionType.Expense;
       const date: Date = new Date(transaction[0]);
@@ -192,7 +227,10 @@ export class ImportCSVFileComponent implements OnInit, OnDestroy {
       let price: number;
 
       try {
-        price = Number(transaction[3]);
+        const eprice = Number(transaction[3]);
+        if(priceIndex !== 3) price = eprice / this.numberOfPersons;
+        else price = eprice;
+        
       } catch (error) {
         price = 0;
       }

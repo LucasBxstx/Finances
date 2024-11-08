@@ -1,36 +1,45 @@
 <div *transloco="let t read 'importCSV'" class="window">
     <img src="assets/icons/close.svg" class="close" (click)="closedWindow.emit()">
-        <div class="title">{{t('title')}}</div>
-        <div class="division"></div>
+    <div class="title">{{t('title')}}</div>
+    <div class="division"></div>
     <div class="container">
         <div *ngIf="!fileSelected">
             <span class="info-text">{{t('info')}}</span>
             <div class="row">
                 <button class="select" (click)="selectFile('file')">{{t('select')}}</button>
-                <input id="file" type="file" (change)="onFileSelected($event, false)" accept=".csv"/>
-           </div>
-           <div class="row">
-            <button class="select" (click)="selectFile('fileSplitwise')">{{t('selectSplitwise')}}</button>
-            <input id="fileSplitwise" type="file" (change)="onFileSelected($event, true)" accept=".csv"/>
-       </div>
+                <input id="file" type="file" (change)="onFileSelected($event, false)" accept=".csv" />
+            </div>
+            <div class="row">
+                <button class="select" (click)="selectFile('fileSplitwise')">{{t('selectSplitwise')}}</button>
+                <input id="fileSplitwise" type="file" (change)="onFileSelected($event, true)" accept=".csv" />
+            </div>
         </div>
 
         <div *ngIf="fileSelected && !uploadCompleted">
             <span>{{t('importedFile')}} {{fileName}}</span>
 
-            <div  class="preview-transactions">
-                <app-transaction *ngFor="let transaction of previewTransactions" [transaction]="transaction" [useCase]="'detail'"></app-transaction>
+            <div *ngIf="dataSource === 'splitwise'" class="row">
+                <div *ngFor="let option of priceSelectionOptions" (click)="onPriceOptionChange(option.index)"
+                    class="chip" [ngClass]="{selected: selectedPriceOptionIndex === option.index}">
+                    {{option.title}}
+                </div>
             </div>
-            
+
+            <div class="preview-transactions">
+                <app-transaction *ngFor="let transaction of previewTransactions" [transaction]="transaction"
+                    [useCase]="'detail'"></app-transaction>
+            </div>
+
             <button [disabled]="showUploadingSpinner" class="upload" (click)="uploadImportedTransactions()">
-                <span *ngIf="!showUploadingSpinner">{{t('upload')}}</span> 
+                <span *ngIf="!showUploadingSpinner">{{t('upload')}}</span>
                 <app-spinner *ngIf="showUploadingSpinner"></app-spinner>
             </button>
 
-            <div class="count" *ngIf="showUploadingSpinner">{{uploadingTransactionNumber}}/{{previewTransactions.length}} {{t('uploadedCount')}}</div>
+            <div class="count" *ngIf="showUploadingSpinner">
+                {{uploadingTransactionNumber}}/{{previewTransactions.length}} {{t('uploadedCount')}}</div>
 
             <span *ngIf="showUploadingError">{{t('error')}}</span>
-            
+
         </div>
 
         <div *ngIf="uploadCompleted" class="completed">
