@@ -27,6 +27,7 @@ export class CreateAccountComponent implements OnDestroy{
   public showErrorPassword = false;
   public showErrorEmail = false;
   public showSpinner = false;
+  public showPassword = false;
 
   public ngOnDestroy(): void {
     this.unsubscribe.next();
