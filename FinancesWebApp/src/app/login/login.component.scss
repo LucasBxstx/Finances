@@ -32,6 +32,25 @@
         letter-spacing: 1px;
     }
 
+    .password-container {
+        position: relative;
+        width: 100%;
+        max-width: 450px;
+
+
+        .show-password {
+            position: absolute;
+            right: 10px;
+            top: 15px;
+
+            img {
+                width: 20px;
+                height: 20px;
+                cursor: pointer;
+            }
+        }
+    }
+
     button {
         margin: 5px 0px;
         max-width: 450px;

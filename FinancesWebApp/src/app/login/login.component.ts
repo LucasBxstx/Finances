@@ -27,6 +27,7 @@ export class LoginComponent implements OnDestroy {
 
   public showError = false;
   public showSpinner = false;
+  public showPassword = false;
 
   ngOnDestroy(): void {
     this.unsubscribe.next();
