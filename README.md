@@ -11,12 +11,12 @@ The application consists of a Angular 17 frontend and a C# ASP.NET 8 CORE Web AP
 ### Requirements
 1. Installation of
 
-    Git 
-    Node.js 18+
-    npm 9+
-    .NET SDK 8.0+
-    SQL Server
-    Microsoft SQL Server Management Studio 18+
+    - Git 
+    - Node.js 18+
+    - npm 9+
+    - .NET SDK 8.0+
+    - SQL Server
+    - Microsoft SQL Server Management Studio 18+
 
 2. Clone the repository
     ```bash
