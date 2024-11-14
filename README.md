@@ -9,7 +9,7 @@ The application consists of a Angular 17 frontend and a C# ASP.NET 8 CORE Web AP
 ## Installation
 
 ### Requirements
-Installation of
+1. Installation of
 
     Git 
     Node.js 18+
@@ -18,7 +18,7 @@ Installation of
     SQL Server
     Microsoft SQL Server Management Studio 18+
 
-Clone the repository
+2. Clone the repository
     ```bash
     https://github.com/LucasBxstx/Finances.git
 
@@ -93,7 +93,7 @@ Contributions only with prior agreement and by following these rules:
 1. Fork the repository.
 2. Create a new branch for your feature:
     ```bash
-    git checkout -b feature/[your-feature]
+    git checkout -b "feature/[your-feature]"
 
 3. Make your changes and commit them:
     ```bash
