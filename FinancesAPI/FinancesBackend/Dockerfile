@@ -1,6 +1,4 @@
-# Basis-Image für .NET Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-# Basis-Image für .NET Runtime
+# Basis-Image fï¿½r .NET Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 EXPOSE 80
@@ -19,11 +17,11 @@ COPY . .
 WORKDIR "/src/FinancesAPI"
 RUN dotnet build "FinancesBackend.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-# Veröffentlichungs-Schritt
+# Verï¿½ffentlichungs-Schritt
 FROM build AS publish
 RUN dotnet publish "FinancesBackend.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Finales Image mit der veröffentlichten Anwendung
+# Finales Image mit der verï¿½ffentlichten Anwendung
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
