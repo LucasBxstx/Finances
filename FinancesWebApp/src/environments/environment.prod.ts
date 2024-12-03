@@ -1,4 +1,4 @@
 export const environment = {
     production: true,
-    apiUrl: 'https://myfinancestats.de'
+    apiUrl: 'https://localhost:5000'
 }

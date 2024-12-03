@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   frontend:
     container_name: finances-web-app
@@ -11,11 +10,11 @@ services:
   backend:
     container_name: finances-api
     build:
-      context: ./FinancesAPI/FinancesBackend
+      context: ./FinancesAPI
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=FinanceDB;User Id=sa;Password=Medium3;
+      - ConnectionStrings__DefaultConnection=Server=finances-sql-server;Database=FinancesDB;User Id=sa;Password=Medium3;encrypt=false;
     depends_on:
       - sqlserver
     ports:
@@ -35,3 +34,4 @@ services:
 
 volumes:
   sqlserver_data:
+    name: finances-sql-data

@@ -22,6 +22,12 @@
             _jwtTokenService = jwtTokenService;
         }
 
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return Ok("Hello World");
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
