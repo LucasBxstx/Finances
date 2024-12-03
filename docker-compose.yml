@@ -14,7 +14,7 @@ services:
       dockerfile: Dockerfile
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Server=finances-sql-server;Database=FinancesDB;User Id=sa;Password=Medium3;encrypt=false;
+      - ConnectionStrings__DefaultConnection=Server=finances-sql-server;Database=FinancesDB;User Id=sa;Password=xXFsRock#19Xx;encrypt=false;
     depends_on:
       - sqlserver
     ports:
@@ -25,7 +25,7 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     environment:
       ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: Medium3
+      MSSQL_SA_PASSWORD: xXFsRock#19Xx
       MSSQL_PID: Express
     ports:
       - "1433:1433"

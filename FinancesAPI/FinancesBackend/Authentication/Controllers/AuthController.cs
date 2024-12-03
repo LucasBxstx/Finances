@@ -28,6 +28,20 @@
             return Ok("Hello World");
         }
 
+        [HttpGet("dbtest")]
+        public IActionResult DbTest()
+        {
+            try
+            {
+                var userCount = _userManager.Users.Count();  // Zählt die Benutzer in der DB
+                return Ok($"Database connection is successful. User count: {userCount}");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Database connection failed: {ex.Message}");
+            }
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest loginRequest)
         {
