@@ -5,8 +5,14 @@
 
         <input type="text" [formControl]="emailFormControl" [placeholder]="t('email')">
         <span *ngIf="showErrorEmail" class="center red" >{{t("emailError")}}</span>
-        <input type="text" (keyup.enter)="createAccount()" [formControl]="passwordFormControl"
+        <div class="password-container">
+            <input [type]="showPassword ? 'text' : 'password'" (keyup.enter)="createAccount()" [formControl]="passwordFormControl"
             [placeholder]="t('password')">
+            <div (click)="showPassword = !showPassword" class="show-password">
+                <img [src]="showPassword ?'assets/icons/eye-crossed.svg' : 'assets/icons/eye.svg'">
+            </div>
+        </div>
+        
         <span class="center space" [ngClass]="{'red': showErrorPassword}">{{t("passwordError")}}</span>
 
         <button (click)="createAccount()" [disabled]="emailFormControl.invalid || passwordFormControl.invalid || showSpinner">
