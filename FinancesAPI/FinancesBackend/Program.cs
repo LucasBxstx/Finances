@@ -28,6 +28,7 @@ ConfigureServices(builder.Services);
 
 var app = builder.Build();
 ConfigureApp(app, app.Configuration);
+SeedDatabase(app);
 
 await app.RunAsync();
 
@@ -45,7 +46,7 @@ static void ConfigureAuthorization(IServiceCollection services, IConfiguration c
 {
     // JWT Authentication configuration
     var jwtSettings = configuration.GetSection("Jwt");
-    var key = Encoding.ASCII.GetBytes(jwtSettings["Key"] ?? Environment.GetEnvironmentVariable("JWT_KEY"));
+    var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]!);
 
     services.AddAuthentication(options =>
     {
@@ -185,6 +186,20 @@ static void ConfigureApp(WebApplication webApplication, IConfiguration configura
     webApplication.UseResponseCaching();
 }
 
+static async void SeedDatabase(WebApplication webApplication)
+{
+    using (var scope = webApplication.Services.CreateScope())
+    {
+        var dbInitializer = scope.ServiceProvider.GetService<IDbInitializer>();
+
+        if(dbInitializer == null)
+        {
+            return;
+        }
+
+        await dbInitializer.InitializeAsync();
+    }
+}
 
 
 
