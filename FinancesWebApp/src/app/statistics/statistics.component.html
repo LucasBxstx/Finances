@@ -34,12 +34,12 @@
             </div>
 
 
-            <div class="row">
-                <app-chart [chartOptions]="labelSharePrice$ |async"
-                    [errorMessage]="t('labelShareError')" [title]="t('labelShareChartTitle')"></app-chart>
-                <app-chart [chartOptions]="labelShareCount$ |async"
-                    [errorMessage]="t('totalLabelShareError')" [title]="t('totalLabelShareChartTitle')"></app-chart>
-            </div>
+
+            <app-chart [chartOptions]="labelSharePrice$ |async"
+                [errorMessage]="t('labelShareError')" [title]="t('labelShareChartTitle')"></app-chart>
+            <app-chart [chartOptions]="labelShareCount$ |async"
+                [errorMessage]="t('totalLabelShareError')" [title]="t('totalLabelShareChartTitle')"></app-chart>
+
 
             <app-chart [chartOptions]="topExpenses$ |async" [errorMessage]="t('incomesError')"></app-chart>
 

@@ -1,20 +1,24 @@
 <div class="table" *ngIf="allMonthCategoryData">
     <div *transloco="let t read 'monthlyCategory'" class="labels">
         <div class="top-row">{{t('labelMonth')}}</div>
-        <div class="cell label" [ngClass]="{selected: label.id === selectedLabelId}" *ngFor="let label of allMonthCategoryData.labels"
-            [ngStyle]="{'background-color': label.color}" (click)="selectedLabelChanged.emit(label.id)">{{label.name}}</div>
+        <div class="cell label" [ngClass]="{selected: label.id === selectedLabelId}"
+            *ngFor="let label of allMonthCategoryData.labels" [ngStyle]="{'background-color': label.color}"
+            (click)="selectedLabelChanged.emit(label.id)">{{label.name}}</div>
         <div class="split invisible"></div>
-        <div class="cell label" [ngClass]="{selected: selectedLabelId === null}" (click)="selectedLabelChanged.emit(null)">{{t('total')}}</div>
+        <div class="cell label" [ngClass]="{selected: selectedLabelId === null}"
+            (click)="selectedLabelChanged.emit(null)">{{t('total')}}</div>
     </div>
 
-    <div class="columns" *ngFor="let monthlyCategoryData of allMonthCategoryData.monthlyValues">
-        <div class="cell">{{monthlyCategoryData.month | getMonth}}</div>
-        <div class="cell" *ngFor="let labelWithValues of monthlyCategoryData.labelsWithValues"
-        [ngClass]="{green: labelWithValues.sumOfTransactionValues > 0, red: labelWithValues.sumOfTransactionValues < 0, grey: labelWithValues.sumOfTransactionValues === 0}">
-            {{labelWithValues.sumOfTransactionValues | getPriceDecimal }}</div>
-        <div class="split"></div>
-        <div class="cell"
-            [ngClass]="{green: monthlyCategoryData.totalBilance > 0, red: monthlyCategoryData.totalBilance < 0, grey: monthlyCategoryData.totalBilance === 0}">
-            {{monthlyCategoryData.totalBilance | getPriceDecimal }}</div>
+    <div class="scroll-box">
+        <div class="columns" *ngFor="let monthlyCategoryData of allMonthCategoryData.monthlyValues">
+            <div class="cell">{{monthlyCategoryData.month | getMonth}}</div>
+            <div class="cell" *ngFor="let labelWithValues of monthlyCategoryData.labelsWithValues"
+                [ngClass]="{green: labelWithValues.sumOfTransactionValues > 0, red: labelWithValues.sumOfTransactionValues < 0, grey: labelWithValues.sumOfTransactionValues === 0}">
+                {{labelWithValues.sumOfTransactionValues | getPriceDecimal }}</div>
+            <div class="split"></div>
+            <div class="cell"
+                [ngClass]="{green: monthlyCategoryData.totalBilance > 0, red: monthlyCategoryData.totalBilance < 0, grey: monthlyCategoryData.totalBilance === 0}">
+                {{monthlyCategoryData.totalBilance | getPriceDecimal }}</div>
+        </div>
     </div>
 </div>
