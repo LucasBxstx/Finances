@@ -62,8 +62,8 @@ app-logout{
     }
 }
 
-.account-balance-time-chart {
-    margin-bottom: 20px;
+app-chart {
+    margin: 20px 0;
 }
 
 app-interactive-table-chart {
@@ -84,21 +84,6 @@ app-interactive-table-chart {
 
 .pie-chart-drop-down-end-month {
     z-index: 11;
-}
-
-.incomes {
-    margin: 20px 0;
-}
-
-.row {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    margin: 20px 0;
-
-    app-chart{
-        flex: 50%;
-    }
 }
 
 .drop-menu-row {

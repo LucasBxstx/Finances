@@ -46,6 +46,12 @@ export interface PieChartData {
     }
 }
 
+export interface HistogramData {
+    lableTitles: string[];
+    lableData: { value: number, itemStyle: { color: string } }[];
+    tooltipData: { lableTitle: string; lablePrice: number; lableCount: number }[];
+}
+
 export interface BarChartData {
     transactionTitles: string[];
     transactionData: { value: number, itemStyle: { color: string } }[];

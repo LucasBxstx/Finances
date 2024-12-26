@@ -9,7 +9,13 @@
 }
 
 .table {
-    display: flex;overflow: auto;
+    display: flex;
+
+    .scroll-box {
+        overflow: auto;
+        display: flex;
+    }
+    
 
     .labels {
         display: flex;
