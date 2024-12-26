@@ -1,6 +1,6 @@
 import { EChartsOption } from "echarts";
 import { Label } from "../models/label";
-import { AccountBalanceTimeData, AllMonthCategoryData, BarChartData, LabelWithData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup, PieChartData } from "../models/statistics";
+import { AccountBalanceTimeData, AllMonthCategoryData, BarChartData, HistogramData, LabelWithData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup, PieChartData } from "../models/statistics";
 import { Transaction, TransactionType, TransactionView } from "../models/transaction";
 import * as echarts from 'echarts';
 
@@ -315,16 +315,27 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
   };
 }
 
-export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWithData[]): EChartsOption {
-  const pieChartData : PieChartData[] = labelWithData.map((labelData) => {
-    return {
-      name: labelData.labelName,
-      value: labelData.transactionsCount,
-      itemStyle: {color: labelData.labelColor},
-    };
-  })
-  
+function cutStringAt(string: string, index: number): string {
+  return string.length > index ? string.substring(0, index) + '...' : string;
+}
+
+export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWithData[]): EChartsOption{
+  const cutIndex = labelWithData.length <= 10 ? 15 : 20 - labelWithData.length;
+
+  const histogramData : HistogramData = {
+    lableTitles: labelWithData.map((labelData) => cutStringAt(labelData.labelName, cutIndex)),
+    lableData: labelWithData.map((labelData) => ({ value: labelData.transactionsCount, itemStyle: { color: labelData.labelColor } })),
+    tooltipData: labelWithData.map((labelData) => ({
+      lableTitle: cutStringAt(labelData.labelName, cutIndex),
+      lablePrice: labelData.sumOfTransactionValues,
+      lableCount: labelData.transactionsCount
+    }))
+  };
   return {
+    grid: {
+      top: '15%',
+      bottom: '15%'
+    },
     title: {
       text: 'Total transactions per label',
       left: 'center',
@@ -333,49 +344,54 @@ export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWi
         color: '#ffffff'
       }
     },
-    tooltip: {
-      trigger: 'item',
-      position: 'top',
-      formatter: ' <strong>{b}</strong> <br/> transactions: {c}  <br/> share: {d}%'
+    xAxis: {
+      type: 'category',
+      axisTick: {
+        show: false,
+        
+      },
+      axisLabel: {
+        color: '#ffffff',
+        rotate: 0,
+        interval: 0,
+      },
+      data: histogramData.lableTitles,
+      animationDuration: 300,
+      animationDurationUpdate: 300,
     },
-    legend: {
-      orient: 'vertical',
-      left: 'left',
-      textStyle: {
-        color: 'white',
-      }  
+    yAxis: {
+      max: 'dataMax',
+      splitLine: {
+        show: false
+      },
+      axisLine: {
+        show: true
+      },
     },
     series: [
       {
-        name: 'Access From',
-        type: 'pie',
-        radius: '60%',
-        label: {
-          show: true,
-          formatter: '{b}',
-          color: 'white',
-          backgroundColor: 'transparent',
-        },
-        data: pieChartData,
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: 'rgba(0, 0, 0, 0.5)'
-          },
-          label: {
-            show: true,
-            fontSize: '16',
-            fontWeight: 'normal',
-            color: 'white',             // Schriftfarbe
-            textBorderColor: 'transparent',  // Umrandungsfarbe auf transparent setzen
-            textBorderWidth: 0,         // Umrandungsbreite auf 0 setzen
-            textShadowColor: 'none',    // Kein Schatten
-            textShadowBlur: 0,           // Schattenunschärfe auf 0 setzen            
-          }
-        }
+        realtimeSort: true,
+        name: 'X',
+        type: 'bar', // Change type from 'bar' to 'bar' for vertical bars
+        data: histogramData.lableData,
       }
-    ]
+    ],
+    tooltip: {
+      trigger: 'item',
+      position: 'top',
+      formatter: (params: any) => {
+        const label = histogramData.tooltipData[params.dataIndex];
+
+        return `
+          <strong>${label.lableTitle}</strong><br/>
+          Count: ${label.lableCount}<br/>
+        `;
+      }
+    },
+    animationDuration: 0,
+    animationDurationUpdate: 3000,
+    animationEasing: 'linear',
+    animationEasingUpdate: 'linear',
   };
 }
 
@@ -391,7 +407,7 @@ export function getTransactionsTopExpenseOrIncome(transactions: Transaction[], l
   const transactionTitles = filteredTransactions.map((transaction) => {
     const title = transaction.title ?? '';
 
-    return title.length > 20 ? title.substring(0, 15) + '...' : title;
+    return cutStringAt(title, 20);
   });
 
   const transactionData = filteredTransactions.map((transaction) => {
@@ -400,7 +416,6 @@ export function getTransactionsTopExpenseOrIncome(transactions: Transaction[], l
     return {value: transaction.price, itemStyle: {color: labelColor ?? 'grey'}}
   });
 
-// { transactionTitle: string; transactionFormattedDate: string; transactionPrice: number; labelName: string}
   const tooltipData = filteredTransactions.map((transaction)=> {
     const transactionTitle = transaction.title ?? 'error';
     const transactionFormattedDate = new Date(transaction.date).toLocaleDateString('de-DE');
