@@ -10,7 +10,7 @@ import { TransactionService } from '../shared/services/transaction.service';
 import { MonthlyCategoryStatisticComponent } from './monthly-category-statistic/monthly-category-statistic.component';
 import { AllMonthCategoryData, ErrorMessages, LabelWithData, MonthTransactionGroup } from '../shared/models/statistics';
 import { LabelService } from '../shared/services/label.service';
-import { calculateAccountBalanceTimeData, calculateLabelShareData, convertToCSV, getAccountBalanceTimeLineChartData, getCategoryDataOfSelectedYearGroupedByMonth, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome } from '../shared/utils/statistics.utils';
+import { calculateAccountBalanceTimeData, calculateExpensesLabelStackTimeData, calculateLabelShareData, convertToCSV, getAccountBalanceTimeLineChartData, getCategoryDataOfSelectedYearGroupedByMonth, getExpensesLabelStackTimeData, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome } from '../shared/utils/statistics.utils';
 import { ChartComponent } from "./chart/chart.component";
 import { EChartsOption } from 'echarts';
 import { GetMonthPipe } from '../shared/pipes/getMonth.pipe';
@@ -81,6 +81,13 @@ export class StatisticsComponent {
 
     return chartData;
   }))
+
+  public readonly expensesLabelStackTimeData$: Observable<EChartsOption> = combineLatest([this.transactionData$, this.labels$]) .pipe(map(([transactionData, labels]) => {
+    const expensesLabelStackTimeData = calculateExpensesLabelStackTimeData(transactionData?.transactions ?? [], labels ?? [], transactionData?.oldestTransactionDate);
+    const chartData = getExpensesLabelStackTimeData(expensesLabelStackTimeData);
+
+    return chartData;
+  }));
 
   private readonly oldestTransactionDate$: Observable<Date | null> = this.transactionData$.pipe(
     map((transactionData) => transactionData?.oldestTransactionDate ?? null));

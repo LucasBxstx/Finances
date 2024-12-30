@@ -1,6 +1,6 @@
 import { EChartsOption } from "echarts";
 import { Label } from "../models/label";
-import { AccountBalanceTimeData, AllMonthCategoryData, BarChartData, HistogramData, LabelWithData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup, PieChartData } from "../models/statistics";
+import { AccountBalanceTimeData, AllMonthCategoryData, BarChartData, HistogramData, LabelStackGraphData, LabelWithData, LabelWithValues, LabelWithYearlyData, MonthlyCategoryValues, MonthTransactionGroup, PieChartData, SumOfExpensePerYearAndMonth, YearsAndMonth } from "../models/statistics";
 import { Transaction, TransactionType, TransactionView } from "../models/transaction";
 import * as echarts from 'echarts';
 
@@ -507,7 +507,7 @@ export function getTopPricesChatOptions(data: BarChartData, type: TransactionTyp
 export function convertToCSV(transactions: Transaction[], labels: Label[]): string {
   const headers = 'id;title;transactionType;date;price;labelName;labelColor;\n'
   const rows = transactions.map((transaction) => {
-    const label = labels.find((label) => label.id == transaction.labelId);
+    const label = labels.find((label) => label.id === transaction.labelId);
     const price = transaction.price.toString().replace('.',',');
 
     return `${transaction.id};${transaction.title};${transaction.transactionType};${transaction.date};${price};${label ? label.name : ''};${label ? label.color : ''}`;
@@ -516,3 +516,132 @@ export function convertToCSV(transactions: Transaction[], labels: Label[]): stri
   return headers + rows;
 }
 
+export function calculateExpensesLabelStackTimeData(transactions: Transaction[], labels: Label[], oldestTransactionDate?: Date | null): LabelStackGraphData {
+  const labelsWithYearlyData: LabelWithYearlyData[] = [];
+  const oldestYear = oldestTransactionDate ? new Date(oldestTransactionDate).getFullYear() : new Date().getFullYear();
+  const oldestMonth = oldestTransactionDate ? new Date(oldestTransactionDate).getMonth() : new Date().getMonth();
+  const thisYear = new Date().getFullYear();
+  const thisMonth = new Date().getMonth();
+  const yearsAndMonths: YearsAndMonth[] = [];
+
+  console.log("oldestYear", oldestYear, "oldestMonth", oldestMonth, "thisyear", thisYear, "thismonth", thisMonth);
+  
+  for (let year = oldestYear; year <= thisYear; year++) {
+    const firstMonth = year === oldestYear ? oldestMonth : 0;
+    const lastMonth = year === thisYear ? thisMonth : 11;
+
+    for (let month = firstMonth; month <= lastMonth; month ++) {
+      yearsAndMonths.push({year, month});
+    }
+  }
+
+  console.log(yearsAndMonths)
+  
+  labels.forEach((label) => {
+    const sumOfExpensePerYearAndMonth: SumOfExpensePerYearAndMonth[] = yearsAndMonths.map((entry) => 
+      ({ year: entry.year, month: entry.month, sumOfExpenses: 0 })
+    );
+
+    const expensesWithThisLabel = transactions.filter((transaction) => (transaction.labelId === label.id && transaction.transactionType === TransactionType.Expense));
+
+    expensesWithThisLabel.forEach((expense) => {
+      const index = sumOfExpensePerYearAndMonth.findIndex((entry) => {
+        const expenseYear = new Date(expense.date).getFullYear();
+        const expenseMonth = new Date(expense.date).getMonth();
+
+        return entry.year === expenseYear && entry.month === expenseMonth;
+      });
+
+      if (index >= 0) sumOfExpensePerYearAndMonth[index].sumOfExpenses += expense.price;
+    });
+
+
+    labelsWithYearlyData.push({
+      sumOfExpensesPerYear: sumOfExpensePerYearAndMonth.map((entry) => Math.round(entry.sumOfExpenses* 100) / 100),
+      color: label.color,
+      name: label.name,
+    });
+  });
+
+  const labelColors: string[] = labelsWithYearlyData.map((label) => label.color);
+  const timeUnits: string[] = yearsAndMonths.map((entry) => {
+    return `${entry.year}/${entry.month + 1}`;
+  })
+
+  return {labelsWithYearlyData, timeUnits: timeUnits, labelColors: labelColors};
+}
+
+export function getExpensesLabelStackTimeData(data: LabelStackGraphData): EChartsOption {
+  const seriesData = data.labelsWithYearlyData.map((label)=> ({
+    name: label.name,
+      type: 'line',
+      stack: 'Total',
+      smooth: true,
+      lineStyle: {
+        width: 0
+      },
+      showSymbol: false,
+      areaStyle: {
+        opacity: 0.8,
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: label.color,
+          },
+          // {
+          //   offset: 1,
+          //   color: 'rgb(1, 191, 236)'
+          // }
+        ])
+      },
+      emphasis: {
+        focus: 'series'
+      },
+      data: label.sumOfExpensesPerYear,
+  }));
+
+  
+
+  return {
+    color: data.labelColors,
+    title: {
+      text: 'Gradient Stacked Area Chart'
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        label: {
+          backgroundColor: '#6a7985'
+        }
+      }
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: [
+      {
+        type: 'category',
+        boundaryGap: false,
+        data: data.timeUnits,
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value'
+      }
+    ],
+    series: seriesData as EChartsOption['series'],
+    dataZoom: [
+      {
+        type: 'inside', 
+        xAxisIndex: 0,
+        start: 0, 
+        end: 100
+      }
+    ]
+  };
+}
