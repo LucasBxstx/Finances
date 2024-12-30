@@ -1,11 +1,11 @@
-import { NgFor, NgIf } from '@angular/common';
+import { NgClass, NgFor, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { GetMonthPipe } from '../../pipes/getMonth.pipe';
 
 @Component({
   selector: 'app-drop-menu',
   standalone: true,
-  imports: [NgIf, NgFor, GetMonthPipe],
+  imports: [NgIf, NgFor, GetMonthPipe, NgClass],
   templateUrl: './drop-menu.component.html',
   styleUrl: './drop-menu.component.scss'
 })
