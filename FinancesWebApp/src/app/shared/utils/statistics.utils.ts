@@ -1,6 +1,6 @@
 import { EChartsOption } from "echarts";
 import { Label } from "../models/label";
-import { AccountBalanceTimeData, AllMonthCategoryData, BarChartData, HistogramData, LabelWithData, LabelWithValues, MonthlyCategoryValues, MonthTransactionGroup, PieChartData } from "../models/statistics";
+import { AccountBalanceTimeData, AllMonthCategoryData, BarChartData, HistogramData, LabelStackGraphData, LabelWithData, LabelWithValues, LabelWithYearlyData, MonthlyCategoryValues, MonthTransactionGroup, PieChartData, SumOfExpensePerYear } from "../models/statistics";
 import { Transaction, TransactionType, TransactionView } from "../models/transaction";
 import * as echarts from 'echarts';
 
@@ -507,7 +507,7 @@ export function getTopPricesChatOptions(data: BarChartData, type: TransactionTyp
 export function convertToCSV(transactions: Transaction[], labels: Label[]): string {
   const headers = 'id;title;transactionType;date;price;labelName;labelColor;\n'
   const rows = transactions.map((transaction) => {
-    const label = labels.find((label) => label.id == transaction.labelId);
+    const label = labels.find((label) => label.id === transaction.labelId);
     const price = transaction.price.toString().replace('.',',');
 
     return `${transaction.id};${transaction.title};${transaction.transactionType};${transaction.date};${price};${label ? label.name : ''};${label ? label.color : ''}`;
@@ -516,3 +516,109 @@ export function convertToCSV(transactions: Transaction[], labels: Label[]): stri
   return headers + rows;
 }
 
+export function calculateExpensesLabelStackTimeData(transactions: Transaction[], labels: Label[], oldestTransactionDate?: Date | null): LabelStackGraphData {
+  const labelsWithYearlyData: LabelWithYearlyData[] = [];
+  const oldestYear = oldestTransactionDate ? new Date(oldestTransactionDate).getFullYear() : new Date().getFullYear();
+  const thisYear = new Date().getFullYear();
+  const years: number[] = [];
+  
+  for (let year = oldestYear; year <= thisYear; year++) {
+    years.push(year);
+  }
+  
+  labels.forEach((label) => {
+    const sumOfExpensePerYear: SumOfExpensePerYear[] = years.map((year) => 
+      ({ year: year, sumOfExpenses: 0 })
+    );
+
+    const expensesWithThisLabel = transactions.filter((transaction) => (transaction.labelId === label.id && transaction.transactionType === TransactionType.Expense));
+
+    expensesWithThisLabel.forEach((expense) => {
+      const index = sumOfExpensePerYear.findIndex((entry) => entry.year === new Date(expense.date).getFullYear());
+      if (index >= 0) sumOfExpensePerYear[index].sumOfExpenses += expense.price;
+    });
+
+    labelsWithYearlyData.push({
+      sumOfExpensesPerYear: sumOfExpensePerYear.map((entry) => entry.sumOfExpenses),
+      color: label.color,
+      name: label.name,
+    });
+  });
+
+  return {labelsWithYearlyData, years};
+}
+
+export function getExpensesLabelStackTimeData(data: LabelStackGraphData): EChartsOption {
+  const seriesData = data.labelsWithYearlyData.map((label)=> ({
+    name: label.name,
+      type: 'line',
+      stack: 'Total',
+      smooth: true,
+      lineStyle: {
+        width: 0
+      },
+      showSymbol: false,
+      areaStyle: {
+        opacity: 0.8,
+        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+          {
+            offset: 0,
+            color: label.color,
+          },
+          // {
+          //   offset: 1,
+          //   color: 'rgb(1, 191, 236)'
+          // }
+        ])
+      },
+      emphasis: {
+        focus: 'series'
+      },
+      data: label.sumOfExpensesPerYear,
+  }));
+
+  
+
+  return {
+    // color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
+    title: {
+      text: 'Gradient Stacked Area Chart'
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'cross',
+        label: {
+          backgroundColor: '#6a7985'
+        }
+      }
+    },
+    // legend: {
+    //    data: ['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5']
+    // },
+    toolbox: {
+      feature: {
+        saveAsImage: {}
+      }
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    xAxis: [
+      {
+        type: 'category',
+        boundaryGap: false,
+        data: data.years,
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value'
+      }
+    ],
+    series: seriesData as EChartsOption['series'],
+  };
+}

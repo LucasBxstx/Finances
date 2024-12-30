@@ -58,6 +58,7 @@
         "expensesError": "Add expenses to see them here",
         "export": "Export transactions to CSV",
         "accountBalanceChartTitle": "Account Balance",
+        "yearlyLabelsStackChartTitle": "Labels per year",
         "labelShareChartTitle": "Prices per label",
         "totalLabelShareChartTitle": "Total transactions per label"
 
