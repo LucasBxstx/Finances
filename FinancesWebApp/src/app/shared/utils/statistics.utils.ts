@@ -538,8 +538,9 @@ export function calculateExpensesLabelStackTimeData(transactions: Transaction[],
       if (index >= 0) sumOfExpensePerYear[index].sumOfExpenses += expense.price;
     });
 
+
     labelsWithYearlyData.push({
-      sumOfExpensesPerYear: sumOfExpensePerYear.map((entry) => entry.sumOfExpenses),
+      sumOfExpensesPerYear: sumOfExpensePerYear.map((entry) => Math.round(entry.sumOfExpenses* 100) / 100),
       color: label.color,
       name: label.name,
     });
