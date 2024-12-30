@@ -1,6 +1,6 @@
 import { EChartsOption } from "echarts";
 import { Label } from "../models/label";
-import { AccountBalanceTimeData, AllMonthCategoryData, BarChartData, HistogramData, LabelStackGraphData, LabelWithData, LabelWithValues, LabelWithYearlyData, MonthlyCategoryValues, MonthTransactionGroup, PieChartData, SumOfExpensePerYear } from "../models/statistics";
+import { AccountBalanceTimeData, AllMonthCategoryData, BarChartData, HistogramData, LabelStackGraphData, LabelWithData, LabelWithValues, LabelWithYearlyData, MonthlyCategoryValues, MonthTransactionGroup, PieChartData, SumOfExpensePerYearAndMonth, YearsAndMonth } from "../models/statistics";
 import { Transaction, TransactionType, TransactionView } from "../models/transaction";
 import * as echarts from 'echarts';
 
@@ -519,34 +519,56 @@ export function convertToCSV(transactions: Transaction[], labels: Label[]): stri
 export function calculateExpensesLabelStackTimeData(transactions: Transaction[], labels: Label[], oldestTransactionDate?: Date | null): LabelStackGraphData {
   const labelsWithYearlyData: LabelWithYearlyData[] = [];
   const oldestYear = oldestTransactionDate ? new Date(oldestTransactionDate).getFullYear() : new Date().getFullYear();
+  const oldestMonth = oldestTransactionDate ? new Date(oldestTransactionDate).getMonth() : new Date().getMonth();
   const thisYear = new Date().getFullYear();
-  const years: number[] = [];
+  const thisMonth = new Date().getMonth();
+  const yearsAndMonths: YearsAndMonth[] = [];
+
+  console.log("oldestYear", oldestYear, "oldestMonth", oldestMonth, "thisyear", thisYear, "thismonth", thisMonth);
   
   for (let year = oldestYear; year <= thisYear; year++) {
-    years.push(year);
+    const firstMonth = year === oldestYear ? oldestMonth : 0;
+    const lastMonth = year === thisYear ? thisMonth : 11;
+
+    for (let month = firstMonth; month <= lastMonth; month ++) {
+      yearsAndMonths.push({year, month});
+    }
   }
+
+  console.log(yearsAndMonths)
   
   labels.forEach((label) => {
-    const sumOfExpensePerYear: SumOfExpensePerYear[] = years.map((year) => 
-      ({ year: year, sumOfExpenses: 0 })
+    const sumOfExpensePerYearAndMonth: SumOfExpensePerYearAndMonth[] = yearsAndMonths.map((entry) => 
+      ({ year: entry.year, month: entry.month, sumOfExpenses: 0 })
     );
 
     const expensesWithThisLabel = transactions.filter((transaction) => (transaction.labelId === label.id && transaction.transactionType === TransactionType.Expense));
 
     expensesWithThisLabel.forEach((expense) => {
-      const index = sumOfExpensePerYear.findIndex((entry) => entry.year === new Date(expense.date).getFullYear());
-      if (index >= 0) sumOfExpensePerYear[index].sumOfExpenses += expense.price;
+      const index = sumOfExpensePerYearAndMonth.findIndex((entry) => {
+        const expenseYear = new Date(expense.date).getFullYear();
+        const expenseMonth = new Date(expense.date).getMonth();
+
+        return entry.year === expenseYear && entry.month === expenseMonth;
+      });
+
+      if (index >= 0) sumOfExpensePerYearAndMonth[index].sumOfExpenses += expense.price;
     });
 
 
     labelsWithYearlyData.push({
-      sumOfExpensesPerYear: sumOfExpensePerYear.map((entry) => Math.round(entry.sumOfExpenses* 100) / 100),
+      sumOfExpensesPerYear: sumOfExpensePerYearAndMonth.map((entry) => Math.round(entry.sumOfExpenses* 100) / 100),
       color: label.color,
       name: label.name,
     });
   });
 
-  return {labelsWithYearlyData, years};
+  const labelColors: string[] = labelsWithYearlyData.map((label) => label.color);
+  const timeUnits: string[] = yearsAndMonths.map((entry) => {
+    return `${entry.year}/${entry.month + 1}`;
+  })
+
+  return {labelsWithYearlyData, timeUnits: timeUnits, labelColors: labelColors};
 }
 
 export function getExpensesLabelStackTimeData(data: LabelStackGraphData): EChartsOption {
@@ -581,7 +603,7 @@ export function getExpensesLabelStackTimeData(data: LabelStackGraphData): EChart
   
 
   return {
-    // color: ['#80FFA5', '#00DDFF', '#37A2FF', '#FF0087', '#FFBF00'],
+    color: data.labelColors,
     title: {
       text: 'Gradient Stacked Area Chart'
     },
@@ -594,14 +616,6 @@ export function getExpensesLabelStackTimeData(data: LabelStackGraphData): EChart
         }
       }
     },
-    // legend: {
-    //    data: ['Line 1', 'Line 2', 'Line 3', 'Line 4', 'Line 5']
-    // },
-    toolbox: {
-      feature: {
-        saveAsImage: {}
-      }
-    },
     grid: {
       left: '3%',
       right: '4%',
@@ -612,7 +626,7 @@ export function getExpensesLabelStackTimeData(data: LabelStackGraphData): EChart
       {
         type: 'category',
         boundaryGap: false,
-        data: data.years,
+        data: data.timeUnits,
       }
     ],
     yAxis: [
@@ -621,5 +635,13 @@ export function getExpensesLabelStackTimeData(data: LabelStackGraphData): EChart
       }
     ],
     series: seriesData as EChartsOption['series'],
+    dataZoom: [
+      {
+        type: 'inside', 
+        xAxisIndex: 0,
+        start: 0, 
+        end: 100
+      }
+    ]
   };
 }

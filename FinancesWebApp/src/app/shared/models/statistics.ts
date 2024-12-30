@@ -64,8 +64,9 @@ export enum ErrorMessages {
      add_labels = 2,
 }
 
-export interface SumOfExpensePerYear {
+export interface SumOfExpensePerYearAndMonth {
     year: number;
+    month: number;
     sumOfExpenses: number;
 }
 
@@ -77,5 +78,11 @@ export interface LabelWithYearlyData {
 
 export interface LabelStackGraphData {
     labelsWithYearlyData: LabelWithYearlyData[];
-    years: number[];
+    timeUnits: string[];
+    labelColors: string [];
+}
+
+export interface YearsAndMonth {
+    year: number;
+    month: number;
 }

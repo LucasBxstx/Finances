@@ -58,7 +58,7 @@
         "expensesError": "Fügen Sie Ausgaben hinzu damit Sie hier Ihre top Ausgaben sehen können",
         "export": "Transaktionen als CSV exportieren",
         "accountBalanceChartTitle": "Kontostand im Laufe der Zeit",
-        "yearlyLabelsStackChartTitle": "Labels über die Jahre",
+        "yearlyLabelsStackChartTitle": "Ausgaben der Labels",
         "labelShareChartTitle": "Anteile der Labels",
         "totalLabelShareChartTitle": "Anzahl der Transaktionen pro Label"
     },
