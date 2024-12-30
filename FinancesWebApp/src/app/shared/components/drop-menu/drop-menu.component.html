@@ -1,4 +1,7 @@
-<button *ngIf="currentValue" (click)="menuOpen = !menuOpen" class="top">{{description}} {{ translateMonth ? (currentValue | getMonth) : currentValue }}</button>
+<button *ngIf="currentValue" (click)="menuOpen = !menuOpen" class="top">
+    <div>{{description}} {{ translateMonth ? (currentValue | getMonth) : currentValue }}</div>
+    <img src="assets/icons/drop-arrow.svg" class="drop-img" [ngClass]="menuOpen ? 'up' : 'down'" />
+</button>
 <div *ngIf="menuOpen && valueList" (click)="menuOpen = false" (mouseleave)="menuOpen = false" class="menu">
     <span *ngFor="let value of valueList" (click)="valueChanged.emit(value)">
         {{ translateMonth ? (value | getMonth) : value }}
