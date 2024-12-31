@@ -59,6 +59,7 @@
         "export": "Export transactions to CSV",
         "accountBalanceChartTitle": "Account Balance",
         "yearlyLabelsStackChartTitle": "Expenses per Label",
+        "yearlyColumnChartTitle": "Yearly incomes and expenses",
         "labelShareChartTitle": "Prices per label",
         "totalLabelShareChartTitle": "Total transactions per label"
 
