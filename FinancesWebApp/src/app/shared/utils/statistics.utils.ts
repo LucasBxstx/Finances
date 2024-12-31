@@ -5,76 +5,76 @@ import { Transaction, TransactionType, TransactionView } from "../models/transac
 import * as echarts from 'echarts';
 
 export function getTransactionsGroupedPerMonth(transactions: Transaction[]): MonthTransactionGroup[] {
-    const transactionsGroupedPerMonth: MonthTransactionGroup[] = []
-      
-      transactions.forEach((transaction) => {
-        const transactionYear = new Date(transaction.date).getFullYear();
-        const transactionMonth =  new Date(transaction.date).getMonth();
-        const group = transactionsGroupedPerMonth.find((group) => group.year === transactionYear && group.month === transactionMonth)
+  const transactionsGroupedPerMonth: MonthTransactionGroup[] = []
 
-        if(!group){
-          transactionsGroupedPerMonth.push({
-            year: transactionYear,
-            month: transactionMonth,
-            transactions: [transaction],
-          });
-        }
+  transactions.forEach((transaction) => {
+    const transactionYear = new Date(transaction.date).getFullYear();
+    const transactionMonth = new Date(transaction.date).getMonth();
+    const group = transactionsGroupedPerMonth.find((group) => group.year === transactionYear && group.month === transactionMonth)
 
-        else group.transactions.push(transaction);
+    if (!group) {
+      transactionsGroupedPerMonth.push({
+        year: transactionYear,
+        month: transactionMonth,
+        transactions: [transaction],
       });
+    }
 
-      return transactionsGroupedPerMonth;
+    else group.transactions.push(transaction);
+  });
+
+  return transactionsGroupedPerMonth;
 }
 
 export function getCategoryDataOfSelectedYearGroupedByMonth(labels: Label[], transactionsGroupedByMonth: MonthTransactionGroup[]) {
-    const monthlyValuesOverTheYear: MonthlyCategoryValues[] =[];
-      // Contains all data for the aggregated label data over all months of the selected year.
+  const monthlyValuesOverTheYear: MonthlyCategoryValues[] = [];
+  // Contains all data for the aggregated label data over all months of the selected year.
 
-      var labelWithValuesConstruct: LabelWithValues[] = [];
-      labels.forEach((label) => labelWithValuesConstruct.push(getLabelWithEmptyValues(label.id)));
+  var labelWithValuesConstruct: LabelWithValues[] = [];
+  labels.forEach((label) => labelWithValuesConstruct.push(getLabelWithEmptyValues(label.id)));
 
-      for(let month = 1 ; month <= 12 ; month++){
-        monthlyValuesOverTheYear.push({
-          month: month,
-          labelsWithValues: labelWithValuesConstruct,
-          totalBilance: 0,
-        });
+  for (let month = 1; month <= 12; month++) {
+    monthlyValuesOverTheYear.push({
+      month: month,
+      labelsWithValues: labelWithValuesConstruct,
+      totalBilance: 0,
+    });
+  }
+
+  transactionsGroupedByMonth.forEach((monthlyCategoryData) => {
+    // Aggregate label data for each month
+    var labelWithValues: LabelWithValues[] = [];
+    labels.forEach((label) => labelWithValues.push(getLabelWithEmptyValues(label.id)));
+
+    monthlyCategoryData.transactions.forEach((transaction) => {
+      // Aggregate prices of the transactions for each label
+      const accordingLabelGroup = labelWithValues.find((label) => label.labelId === transaction.labelId);
+
+      if (accordingLabelGroup) {
+        accordingLabelGroup.sumOfTransactionValues += transaction.price * (transaction.transactionType === TransactionType.Expense ? -1 : 1);
+        accordingLabelGroup.transactionsCount++;
       }
+    });
 
-      transactionsGroupedByMonth.forEach((monthlyCategoryData) => {
-        // Aggregate label data for each month
-        var labelWithValues: LabelWithValues[] = [];
-        labels.forEach((label) => labelWithValues.push(getLabelWithEmptyValues(label.id)));
-        
-        monthlyCategoryData.transactions.forEach((transaction)=>{
-          // Aggregate prices of the transactions for each label
-          const accordingLabelGroup = labelWithValues.find((label) => label.labelId === transaction.labelId);
-          
-          if (accordingLabelGroup) {
-            accordingLabelGroup.sumOfTransactionValues += transaction.price * (transaction.transactionType === TransactionType.Expense ? -1 : 1);
-            accordingLabelGroup.transactionsCount ++;
-          }
-        });
+    var totalBilancePerMonthOverAllLabels = 0;
+    labelWithValues.forEach((label) => {
+      totalBilancePerMonthOverAllLabels += label.sumOfTransactionValues;
+    })
 
-        var totalBilancePerMonthOverAllLabels = 0;
-        labelWithValues.forEach((label)=> {
-          totalBilancePerMonthOverAllLabels += label.sumOfTransactionValues;
-        })
+    var accordingMonthEntry = monthlyValuesOverTheYear.find((month) => month.month === monthlyCategoryData.month + 1);
 
-        var accordingMonthEntry = monthlyValuesOverTheYear.find((month) => month.month === monthlyCategoryData.month + 1);
-        
-        if(accordingMonthEntry){
-          accordingMonthEntry.labelsWithValues = labelWithValues;
-          accordingMonthEntry.totalBilance = totalBilancePerMonthOverAllLabels;
-        }
-      });
+    if (accordingMonthEntry) {
+      accordingMonthEntry.labelsWithValues = labelWithValues;
+      accordingMonthEntry.totalBilance = totalBilancePerMonthOverAllLabels;
+    }
+  });
 
-      const allMonthCategoryData: AllMonthCategoryData = {
-        labels: labels,
-        monthlyValues: monthlyValuesOverTheYear,
-      };
+  const allMonthCategoryData: AllMonthCategoryData = {
+    labels: labels,
+    monthlyValues: monthlyValuesOverTheYear,
+  };
 
-      return allMonthCategoryData;
+  return allMonthCategoryData;
 }
 
 export function getLabelWithEmptyValues(labelId: number) {
@@ -87,9 +87,9 @@ export function getLabelWithEmptyValues(labelId: number) {
 
 export function getMonthString(monthNumeric: number, activeLang: "en" | "de"): string {
   const monthsAlphabetic = {
-    en: ["January", "February", "March", "April","May", "June", "July", "August", "September", "October", "November", "December"],
+    en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
     de: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"]
-};
+  };
   return monthsAlphabetic[activeLang][monthNumeric - 1];
 }
 
@@ -99,13 +99,13 @@ export function calculateAccountBalanceTimeData(transactions: Transaction[], pri
 
   let accountBalance: number = priorBalance ?? 0;
 
-  transactions.forEach((transaction)=> {
+  transactions.forEach((transaction) => {
     const price = (transaction.transactionType === TransactionType.Expense ? -1 : 1) * transaction.price;
     accountBalance += price;
 
     const date = new Date(transaction.date);
     const day = date.getDate();
-    const month = date.getMonth() +1;
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
     timeData.push(`${year}/${month}/${day}`);
@@ -123,9 +123,9 @@ export function getAccountBalanceTimeLineChartData(accountBalanceTimeData: Accou
         return [pt[0], '10%'];
       },
       formatter: function (params: any) {
-        const balance = params[0].data; 
-        const date = params[0].axisValue; 
-        return `<strong>Date:</strong> ${date}<br/><strong>Account Balance:</strong> ${balance.toFixed(2)}€`;  
+        const balance = params[0].data;
+        const date = params[0].axisValue;
+        return `<strong>Date:</strong> ${date}<br/><strong>Account Balance:</strong> ${balance.toFixed(2)}€`;
       }
     },
     title: {
@@ -170,8 +170,8 @@ export function getAccountBalanceTimeLineChartData(accountBalanceTimeData: Accou
         },
         areaStyle: {
           color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            { offset: 0, color: 'rgba(0, 255, 0, 0.6)' }, 
-            { offset: 1, color: 'rgba(0, 150, 0, 0.2)' }    
+            { offset: 0, color: 'rgba(0, 255, 0, 0.6)' },
+            { offset: 1, color: 'rgba(0, 150, 0, 0.2)' }
           ])
         },
         data: accountBalanceTimeData.accountBalanceData,
@@ -183,7 +183,7 @@ export function getAccountBalanceTimeLineChartData(accountBalanceTimeData: Accou
 export function getTransactionBilanceBarChartData(months: string[], bilancePerMonth: number[], labelName?: string): EChartsOption {
   return {
     title: {
-      text: labelName ? `Transaction bilance over the year | Filter: ${labelName}` :'Transaction bilance over the year',
+      text: labelName ? `Transaction bilance over the year | Filter: ${labelName}` : 'Transaction bilance over the year',
       left: 'center',
       top: '10px',
       textStyle: {
@@ -217,21 +217,21 @@ export function getTransactionBilanceBarChartData(months: string[], bilancePerMo
   };
 }
 
-export function calculateLabelShareData(transactions: Transaction[], labels: Label[]){
+export function calculateLabelShareData(transactions: Transaction[], labels: Label[]) {
   const labelsWithValues: LabelWithData[] = []
 
-  transactions.forEach((transaction)=>{
+  transactions.forEach((transaction) => {
     if (transaction.transactionType !== TransactionType.Expense || transaction.labelId === null) return;
 
-    const accordingLabelGroup = labelsWithValues.find((entry)=>entry.labelId === transaction.labelId);
+    const accordingLabelGroup = labelsWithValues.find((entry) => entry.labelId === transaction.labelId);
 
     if (accordingLabelGroup) {
       accordingLabelGroup.sumOfTransactionValues += transaction.price;
-      accordingLabelGroup.transactionsCount ++;
+      accordingLabelGroup.transactionsCount++;
     }
 
     else {
-      const labelData = labels.find((label)=> label.id === transaction.labelId);
+      const labelData = labels.find((label) => label.id === transaction.labelId);
       const labelName = labelData?.name ?? 'error';
       const labelColor = labelData?.color ?? 'grey';
 
@@ -249,14 +249,14 @@ export function calculateLabelShareData(transactions: Transaction[], labels: Lab
 }
 
 export function getTransactionLabelSharePieChartData(labelWithData: LabelWithData[]): EChartsOption {
-  const pieChartData : PieChartData[] = labelWithData.map((labelData) => {
+  const pieChartData: PieChartData[] = labelWithData.map((labelData) => {
     return {
-    name: labelData.labelName,
-    value: labelData.sumOfTransactionValues,
-    itemStyle: {color: labelData.labelColor},
+      name: labelData.labelName,
+      value: labelData.sumOfTransactionValues,
+      itemStyle: { color: labelData.labelColor },
     }
   });
-  
+
   return {
     title: {
       text: 'Total transaction prices per label',
@@ -269,7 +269,7 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
     tooltip: {
       trigger: 'item',
       position: 'top',
-      formatter: function(params: any) {
+      formatter: function (params: any) {
         const roundedPrice = params.value.toFixed(2);
         return `<strong> ${params.name} </strong> <br/> added expenses: ${roundedPrice}€ <br/> share: ${params.percent}%`
       }
@@ -279,7 +279,7 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
       left: 'left',
       textStyle: {
         color: 'white',
-      }  
+      }
     },
     series: [
       {
@@ -302,7 +302,7 @@ export function getTransactionLabelSharePieChartData(labelWithData: LabelWithDat
           label: {
             show: true,
             fontSize: '16',
-            fontWeight: 'normal',   
+            fontWeight: 'normal',
             color: 'white',             // Schriftfarbe
             textBorderColor: 'transparent',  // Umrandungsfarbe auf transparent setzen
             textBorderWidth: 0,         // Umrandungsbreite auf 0 setzen
@@ -319,10 +319,10 @@ function cutStringAt(string: string, index: number): string {
   return string.length > index ? string.substring(0, index) + '...' : string;
 }
 
-export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWithData[]): EChartsOption{
+export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWithData[]): EChartsOption {
   const cutIndex = labelWithData.length <= 10 ? 15 : 20 - labelWithData.length;
 
-  const histogramData : HistogramData = {
+  const histogramData: HistogramData = {
     lableTitles: labelWithData.map((labelData) => cutStringAt(labelData.labelName, cutIndex)),
     lableData: labelWithData.map((labelData) => ({ value: labelData.transactionsCount, itemStyle: { color: labelData.labelColor } })),
     tooltipData: labelWithData.map((labelData) => ({
@@ -348,7 +348,7 @@ export function getTransactionLabelShareCountPieChartData(labelWithData: LabelWi
       type: 'category',
       axisTick: {
         show: false,
-        
+
       },
       axisLabel: {
         color: '#ffffff',
@@ -400,7 +400,7 @@ export function getTransactionsTopExpenseOrIncome(transactions: Transaction[], l
   const sortedTransactions = transactions.sort((a, b) => b.price - a.price);
 
   const filteredTransactions = sortedTransactions.filter((transaction) => {
-    if(filter === TransactionType.Expense) return transaction.transactionType === TransactionType.Expense;
+    if (filter === TransactionType.Expense) return transaction.transactionType === TransactionType.Expense;
     else return transaction.transactionType === TransactionType.Income;
   });
 
@@ -412,32 +412,32 @@ export function getTransactionsTopExpenseOrIncome(transactions: Transaction[], l
 
   const transactionData = filteredTransactions.map((transaction) => {
     const labelColor = labels.find((label) => label.id === transaction.labelId)?.color;
-  
-    return {value: transaction.price, itemStyle: {color: labelColor ?? 'grey'}}
+
+    return { value: transaction.price, itemStyle: { color: labelColor ?? 'grey' } }
   });
 
-  const tooltipData = filteredTransactions.map((transaction)=> {
+  const tooltipData = filteredTransactions.map((transaction) => {
     const transactionTitle = transaction.title ?? 'error';
     const transactionFormattedDate = new Date(transaction.date).toLocaleDateString('de-DE');
     const transactionPrice = transaction.price;
-    const labelName = labels.find((label)=> label.id === transaction.labelId)?.name ?? 'error';
+    const labelName = labels.find((label) => label.id === transaction.labelId)?.name ?? 'error';
 
-    return { transactionTitle: transactionTitle, transactionFormattedDate: transactionFormattedDate, transactionPrice: transactionPrice, labelName: labelName}
+    return { transactionTitle: transactionTitle, transactionFormattedDate: transactionFormattedDate, transactionPrice: transactionPrice, labelName: labelName }
   })
 
-  return {transactionTitles: transactionTitles, transactionData: transactionData, tooltipData: tooltipData}
+  return { transactionTitles: transactionTitles, transactionData: transactionData, tooltipData: tooltipData }
 }
 
-export function getTopPricesChatOptions(data: BarChartData, type: TransactionType): EChartsOption{
+export function getTopPricesChatOptions(data: BarChartData, type: TransactionType): EChartsOption {
   const maxValues = data.transactionData.length < 10 ? data.transactionData.length : 10;
 
-  return  {
+  return {
     grid: {
       left: '15%',
       right: '15%'
     },
     title: {
-      text: type === TransactionType. Expense ? `Top ${maxValues} Expenses` : `Top ${maxValues} Incomes`,
+      text: type === TransactionType.Expense ? `Top ${maxValues} Expenses` : `Top ${maxValues} Incomes`,
       left: 'center',
       top: '10px',
       textStyle: {
@@ -447,11 +447,11 @@ export function getTopPricesChatOptions(data: BarChartData, type: TransactionTyp
     xAxis: {
       max: 'dataMax',
       splitLine: {
-        show: false 
+        show: false
       },
       axisLine: {
-        show: true 
-    },
+        show: true
+      },
     },
     yAxis: {
       type: 'category',
@@ -459,7 +459,7 @@ export function getTopPricesChatOptions(data: BarChartData, type: TransactionTyp
         show: false
       },
       axisLabel: {
-        color: '#ffffff' 
+        color: '#ffffff'
       },
       data: data.transactionTitles,
       inverse: true,
@@ -488,7 +488,7 @@ export function getTopPricesChatOptions(data: BarChartData, type: TransactionTyp
       position: 'top',
       formatter: (params: any) => {
         const transaction = data.tooltipData[params.dataIndex];
-        
+
         return `
           <strong>${transaction.transactionTitle}</strong><br/>
           Date: ${transaction.transactionFormattedDate}<br/>
@@ -508,7 +508,7 @@ export function convertToCSV(transactions: Transaction[], labels: Label[]): stri
   const headers = 'id;title;transactionType;date;price;labelName;labelColor;\n'
   const rows = transactions.map((transaction) => {
     const label = labels.find((label) => label.id === transaction.labelId);
-    const price = transaction.price.toString().replace('.',',');
+    const price = transaction.price.toString().replace('.', ',');
 
     return `${transaction.id};${transaction.title};${transaction.transactionType};${transaction.date};${price};${label ? label.name : ''};${label ? label.color : ''}`;
   }).join('\n');
@@ -524,21 +524,17 @@ export function calculateExpensesLabelStackTimeData(transactions: Transaction[],
   const thisMonth = new Date().getMonth();
   const yearsAndMonths: YearsAndMonth[] = [];
 
-  console.log("oldestYear", oldestYear, "oldestMonth", oldestMonth, "thisyear", thisYear, "thismonth", thisMonth);
-  
   for (let year = oldestYear; year <= thisYear; year++) {
     const firstMonth = year === oldestYear ? oldestMonth : 0;
     const lastMonth = year === thisYear ? thisMonth : 11;
 
-    for (let month = firstMonth; month <= lastMonth; month ++) {
-      yearsAndMonths.push({year, month});
+    for (let month = firstMonth; month <= lastMonth; month++) {
+      yearsAndMonths.push({ year, month });
     }
   }
 
-  console.log(yearsAndMonths)
-  
   labels.forEach((label) => {
-    const sumOfExpensePerYearAndMonth: SumOfExpensePerYearAndMonth[] = yearsAndMonths.map((entry) => 
+    const sumOfExpensePerYearAndMonth: SumOfExpensePerYearAndMonth[] = yearsAndMonths.map((entry) =>
       ({ year: entry.year, month: entry.month, sumOfExpenses: 0 })
     );
 
@@ -557,7 +553,7 @@ export function calculateExpensesLabelStackTimeData(transactions: Transaction[],
 
 
     labelsWithYearlyData.push({
-      sumOfExpensesPerYear: sumOfExpensePerYearAndMonth.map((entry) => Math.round(entry.sumOfExpenses* 100) / 100),
+      sumOfExpensesPerYear: sumOfExpensePerYearAndMonth.map((entry) => Math.round(entry.sumOfExpenses * 100) / 100),
       color: label.color,
       name: label.name,
     });
@@ -568,44 +564,40 @@ export function calculateExpensesLabelStackTimeData(transactions: Transaction[],
     return `${entry.year}/${entry.month + 1}`;
   })
 
-  return {labelsWithYearlyData, timeUnits: timeUnits, labelColors: labelColors};
+  return { labelsWithYearlyData, timeUnits: timeUnits, labelColors: labelColors };
 }
 
 export function getExpensesLabelStackTimeData(data: LabelStackGraphData): EChartsOption {
-  const seriesData = data.labelsWithYearlyData.map((label)=> ({
+  const seriesData = data.labelsWithYearlyData.map((label) => ({
     name: label.name,
-      type: 'line',
-      stack: 'Total',
-      smooth: true,
-      lineStyle: {
-        width: 0
-      },
-      showSymbol: false,
-      areaStyle: {
-        opacity: 0.8,
-        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-          {
-            offset: 0,
-            color: label.color,
-          },
-          // {
-          //   offset: 1,
-          //   color: 'rgb(1, 191, 236)'
-          // }
-        ])
-      },
-      emphasis: {
-        focus: 'series'
-      },
-      data: label.sumOfExpensesPerYear,
+    type: 'line',
+    stack: 'Total',
+    smooth: true,
+    lineStyle: {
+      width: 0
+    },
+    showSymbol: false,
+    areaStyle: {
+      opacity: 0.8,
+      color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+        {
+          offset: 0,
+          color: label.color,
+        },
+      ])
+    },
+    emphasis: {
+      focus: 'series'
+    },
+    data: label.sumOfExpensesPerYear,
   }));
 
-  
+
 
   return {
     color: data.labelColors,
     title: {
-      text: 'Gradient Stacked Area Chart'
+      text: 'Yearly label shares'
     },
     tooltip: {
       trigger: 'axis',
@@ -615,12 +607,6 @@ export function getExpensesLabelStackTimeData(data: LabelStackGraphData): EChart
           backgroundColor: '#6a7985'
         }
       }
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true
     },
     xAxis: [
       {
@@ -637,11 +623,96 @@ export function getExpensesLabelStackTimeData(data: LabelStackGraphData): EChart
     series: seriesData as EChartsOption['series'],
     dataZoom: [
       {
-        type: 'inside', 
+        type: 'inside',
         xAxisIndex: 0,
-        start: 0, 
+        start: 0,
         end: 100
       }
     ]
   };
+}
+
+export function calculateYearlyColumnChartData(transactions: Transaction[], oldestTransactionDate?: Date | null) {
+  const oldestYear = oldestTransactionDate ? new Date(oldestTransactionDate).getFullYear() : new Date().getFullYear();
+  const thisYear = new Date().getFullYear();
+  const yearlyExpenses: number[] = [];
+  const yearlyIncomes: number[] = [];
+  const years: number[] = [];
+
+  for (let year = oldestYear; year <= thisYear; year++) {
+    years.push(year);
+  }
+
+  years.forEach((year) => {
+    const transactionsOfYear = transactions.filter((transaction) => new Date(transaction.date).getFullYear() === year);
+    const expensesOfYear = transactionsOfYear.filter((transaction) => transaction.transactionType === TransactionType.Expense);
+    const incomesOfYear = transactionsOfYear.filter((transaction) => transaction.transactionType === TransactionType.Income);
+    const totalExpenses = expensesOfYear.reduce((sum, transaction) => sum + transaction.price, 0);
+    const totalIncomes = incomesOfYear.reduce((sum, transaction) => sum + transaction.price, 0);
+
+    yearlyExpenses.push(Math.round(totalExpenses * 100) / 100);
+    yearlyIncomes.push(Math.round(totalIncomes* 100) / 100);
+  });
+
+  return { years, yearlyExpenses, yearlyIncomes };
+}
+
+export function getYearlyColumnChartData(data: {
+  years: number[];
+  yearlyExpenses: number[];
+  yearlyIncomes: number[];
+}): EChartsOption {
+  return {
+    title: {
+      text: 'Yearly incomes and expenes'
+    },
+    tooltip: {
+      trigger: 'axis',
+      axisPointer: {
+        type: 'shadow'
+      }
+    },
+    legend: {
+      orient: 'vertical',
+      right: '10%',      
+      top: 'top',    
+    },
+    xAxis: [
+      {
+        type: 'category',
+        axisTick: { show: false },
+        data: data.years,
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value'
+      }
+    ],
+    series: [
+      {
+        name: 'Income',
+        type: 'bar',
+        barGap: 0,
+        emphasis: {
+          focus: 'series'
+        },
+        itemStyle: {
+          color: 'rgb(8, 82, 151)',
+        },
+        data: data.yearlyIncomes,
+      },
+      {
+        name: 'Expenses',
+        type: 'bar',
+        emphasis: {
+          focus: 'series'
+        },
+        itemStyle: {
+          color: 'rgb(143, 1, 1)' 
+        },
+        data: data.yearlyExpenses,
+      }
+    ]
+  }
 }

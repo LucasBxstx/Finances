@@ -16,7 +16,9 @@
         <div *ngIf="!showLoadingError">
             <app-chart [chartOptions]="accountBalanceTimeData$ | async" [title]="t('accountBalanceChartTitle')" [errorMessage]="t('expensesError')" class="account-balance-time-chart"></app-chart>
 
-            <app-chart [chartOptions]="expensesLabelStackTimeData$ | async" [title]="t('yearlyLabelsStackChartTitle')"></app-chart>
+            <app-chart [chartOptions]="expensesLabelStackTimeData$ | async" [title]="t('yearlyLabelsStackChartTitle')" [errorMessage]="t('expensesError')"></app-chart>
+
+            <app-chart [chartOptions]="yearlyColumnChartData$ | async"  [title]="t('yearlyColumnChartTitle')" [errorMessage]="t('expensesError')"></app-chart>
 
             <app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
                 [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
