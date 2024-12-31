@@ -23,13 +23,11 @@ export function getListOfAvailableMonthsPerYear(selectedYear: number, oldestDate
   const currentYear = new Date().getFullYear();
   const currentMonth = new Date().getMonth() + 1;
 
-  if(selectedYear.toString() !== currentYear.toString() && oldestYear.toString() !== selectedYear.toString()) return [];
-
-  const startMonth = selectedYear == oldestYear ? oldestMonth : 1;
-  const endMonth = selectedYear == currentYear ? currentMonth : 12;
+  const startMonth = selectedYear === oldestYear ? oldestMonth : 1;
+  const endMonth = selectedYear === currentYear ? currentMonth : 12;
   const allMonths: number[] = [];
 
-  for (let month = endMonth; month >= startMonth; month--) allMonths.push(month);
+  for (let month = startMonth; month <= endMonth; month++) allMonths.push(month);
 
   return allMonths;
 }
