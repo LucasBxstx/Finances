@@ -19,12 +19,10 @@
         <app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async"
             [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)"></app-drop-menu>
 
-     
-
         <app-monthly-overview [currentMonth]="selectedMonth$ | async" [keyMetricData]="monthlyKeyMetrics$ |async">
         </app-monthly-overview>
 
-        <button (click)="showImportCSVWindow = true" class="import">Import Transactions from CSV</button>
+        <button (click)="showImportCSVWindow = true" class="import">{{t('importCSV')}}</button>
 
         <app-import-csvfile *ngIf="showImportCSVWindow" (closedWindow)="showImportCSVWindow = false" (closedWindow)="refreshPage()"></app-import-csvfile>
 
@@ -34,9 +32,16 @@
         </div>
 
         <div class="select-transactions">
-            <span *ngIf="transactionsSelectable">{{numberOfSelectedTransactions$ | async}} transactions are currently selected</span>
-            <button (click)="handleSelectableButton()" class="selectable-button">{{transactionsSelectable ? 'cancel' : 'select transactions'}}</button>
-            <button *ngIf="transactionsSelectable" (click)="onSelectAll()" class="select-button">{{selectAll ? 'deselect all' : 'select all'}}</button>
+            <span *ngIf="transactionsSelectable" class="selected-count">{{numberOfSelectedTransactions$ | async}} {{t('numberOfSelectedTransactions')}}</span>
+            <button *ngIf="transactionsSelectable" (click)="deleteSelectedTransactions()" [disabled]="showDeletingSpinner || (numberOfSelectedTransactions$ | async) === 0" class="delete-selected">
+                <span *ngIf="!showDeletingSpinner">{{t('delete')}}</span>
+                <img  *ngIf="!showDeletingSpinner" src="assets/icons/delete.svg">
+                <app-spinner *ngIf="showDeletingSpinner" class="spinner"></app-spinner>
+            </button>
+            <button (click)="handleSelectableButton()" class="selectable-button" [ngStyle]="{ width: transactionsSelectable ? '120px' : '200px'}">
+                {{transactionsSelectable ? t('cancel') : t('selectTransactions')}}
+            </button>
+            <button *ngIf="transactionsSelectable" (click)="onSelectAll()" class="select-button">{{selectAll ? t('deselectAll') : t('selectAll')}}</button>
         </div>
 
         <app-add-or-edit-transaction *ngIf="(currentAddedOrEditedTransaction$ | async) !== null"

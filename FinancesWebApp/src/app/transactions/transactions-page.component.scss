@@ -44,8 +44,12 @@ app-logout {
     display: flex;
     align-items: center;
     justify-content: end;
-    gap: 2rem;
+    gap: 1rem;
     margin-top: 2rem;
+
+    .selected-count {
+        font-weight: lighter;
+    }
 
     .selectable-button{
         display: flex;
@@ -54,8 +58,29 @@ app-logout {
 
     .select-button{
         display: flex;
-        width: 200px;
+        width: 120px;
     }
+
+    .delete-selected {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 5px;
+        width: 120px;
+        height: 30px;
+
+        img{
+            width: 20px;
+        }
+        
+        app-spinner {
+            transform: scale(0.3);
+            max-width: 1rem;
+        }
+        
+    }
+
+    
 }
 
 .bottom {

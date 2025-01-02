@@ -29,7 +29,9 @@
 
     .price {
         flex: 15%;
-        text-align: right;
+        display: flex;
+        justify-content: end;
+        align-items: center;
         white-space: nowrap;
 
         &.green{
@@ -93,8 +95,18 @@
     }
 
     .select {
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 30px;
         margin-left: 20px;
+        background-color: transparent;
+
+        img {
+            width: 20px;
+            height: 20px;
+            color: white;
+        }
     }
 }
 

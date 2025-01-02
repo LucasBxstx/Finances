@@ -1,8 +1,8 @@
 import { Component, OnDestroy, inject } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, catchError, combineLatest, map, of, shareReplay, switchMap, takeUntil, } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, combineLatest, concatMap, map, of, shareReplay, switchMap, takeUntil, } from 'rxjs';
 import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
 import { AddOrEditTransaction, GroupedTransaction, TransactionType, TransactionView, keyMetricData } from '../shared/models/transaction';
 import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, getListOfAvailableMonthsPerYear, getListOfAvailableYears, mapTrasactionsWithLabelsToDateGroups } from '../shared/utils/transactions.utils';
@@ -23,7 +23,7 @@ export type pageType = 'transactions' | 'statistics';
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgStyle, NgIf, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
   templateUrl: './transactions-page.component.html',
   styleUrl: './transactions-page.component.scss'
 })
@@ -40,6 +40,7 @@ export class TransactionsPageComponent implements OnDestroy {
   public showLoadingError = false;
   public showImportCSVWindow = false;
   public transactionsSelectable = false;
+  public showDeletingSpinner = false;
   public selectAll = false;
 
   private readonly transactionService = inject(TransactionService);
@@ -181,9 +182,9 @@ export class TransactionsPageComponent implements OnDestroy {
   }
 
   private stopSelectionMode(): void {
+    this.selectAll = false;
     this.transactionsSelectable = false;
     this.selectedTransactionsIds$.next([]);
-    this.selectAll = false;
   }
 
   public onSelectChanged(transactionId: number, isSelected: boolean): void {
@@ -192,13 +193,12 @@ export class TransactionsPageComponent implements OnDestroy {
     if (isSelected) {
       selectedIds.push(transactionId);
       this.selectedTransactionsIds$.next(selectedIds);
-      console.log(this.selectedTransactionsIds$.getValue(), selectedIds, "current list")
 
       return;
     }
 
     const filteredIds = selectedIds.filter((id) => id !== transactionId);
-    this.selectedTransactionsIds$.next(filteredIds); console.log(this.selectedTransactionsIds$.getValue(), "current list")
+    this.selectedTransactionsIds$.next(filteredIds);
   }
 
   public onSelectAll(): void {
@@ -215,6 +215,29 @@ export class TransactionsPageComponent implements OnDestroy {
       this.selectedTransactionsIds$.next(transactionIds ?? []);
     });
 
+  }
+
+  public deleteSelectedTransactions(): void {
+    this.showDeletingSpinner = true;
+  
+    const deleteObservables = this.selectedTransactionsIds$.getValue().map(id => 
+      this.transactionService.deleteTransaction(id)
+    );
+  
+    combineLatest(deleteObservables)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        next: () => {
+          this.refreshTransactions$.next(null);
+          this.showDeletingSpinner = false;
+          this.stopSelectionMode();
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error while deleting transactions:', error);
+          this.showDeletingSpinner = false;
+          this.stopSelectionMode();
+        }
+      });
   }
 
   public refreshPage(): void {

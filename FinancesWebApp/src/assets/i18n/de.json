@@ -112,7 +112,14 @@
         "noTransactions": "Für diesen Monat wurden noch keine Transaktionen hinzugefügt",
         "errorOccured": "Ein Fehler ist aufgetreten",
         "refreshPls": "Bitte aktualisieren Sie die Seite",
-        "refresh" : "Aktualisieren"
+        "refresh" : "Aktualisieren",
+        "importCSV": "Importiere Transactionen aus einer CSV Datei",
+        "numberOfSelectedTransactions": "Transactions sind gerade ausgewählt",
+        "delete": "löschen",
+        "cancel": "abbrechen",
+        "selectTransactions": "Auswählen", 
+        "selectAll": "alle auswählen",
+        "deselectAll": "aus Auswahl entfernen"
     },
     "sessionExpired": {
         "sessionExpired": "Sorry, Ihre Session ist abgelaufen",

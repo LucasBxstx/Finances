@@ -17,7 +17,7 @@
         <img class="delete" (click)="deleteTransaction()" src="assets/icons/delete.svg">
     </div>
     <button *ngIf="isSelectable" (click)="onSelectChange()" class="select">
-        <div *ngIf="isSelected">x</div>
-        <div *ngIf="!isSelected">o</div>
+        <div *ngIf="isSelected"><img src="assets/icons/select.svg"></div>
+        <div *ngIf="!isSelected"><img src="assets/icons/select-empty.svg"></div>
     </button>
 </div>
