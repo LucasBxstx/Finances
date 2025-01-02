@@ -8,7 +8,6 @@ import { AddOrEditTransaction, GroupedTransaction, TransactionType, TransactionV
 import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, getListOfAvailableMonthsPerYear, getListOfAvailableYears, mapTrasactionsWithLabelsToDateGroups } from '../shared/utils/transactions.utils';
 import { MonthlyOverviewComponent } from './monthly-overview/monthly-overview.component';
 import { GetDatePipe } from '../shared/pipes/getDate.pipe';
-import { GetPriceDecimalPipe } from '../shared/pipes/getPriceDecimal.pipe';
 import { TransactionComponent } from './transaction/transaction.component';
 import { AddOrEditTransactionComponent } from './add-or-edit-transaction/add-or-edit-transaction.component';
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
@@ -24,7 +23,7 @@ export type pageType = 'transactions' | 'statistics';
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, GetPriceDecimalPipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
   templateUrl: './transactions-page.component.html',
   styleUrl: './transactions-page.component.scss'
 })
@@ -34,11 +33,14 @@ export class TransactionsPageComponent implements OnDestroy {
   private unsubscribe = new Subject<void>();
   public refreshTransactions$ = new BehaviorSubject<null>(null);
   public currentAddedOrEditedTransaction$ = new BehaviorSubject<AddOrEditTransaction | null>(null);
+  public selectedTransactionsIds$ = new BehaviorSubject<number[]>([]);
 
   public showLoadingSpinner = true;
   public showNoTransactionsError = false;
   public showLoadingError = false;
   public showImportCSVWindow = false;
+  public transactionsSelectable = false;
+  public selectAll = false;
 
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);
@@ -55,7 +57,7 @@ export class TransactionsPageComponent implements OnDestroy {
     .pipe(
       switchMap(([refresh, { firstDayOfMonth, lastDayOfMonth }]) => {
         return this.transactionService.getTransactions(firstDayOfMonth, lastDayOfMonth).pipe(
-          map((transactionData)=> {
+          map((transactionData) => {
             this.showNoTransactionsError = transactionData?.transactions.length === 0;
 
             return transactionData;
@@ -69,20 +71,20 @@ export class TransactionsPageComponent implements OnDestroy {
       shareReplay(1)
     );
 
-  private readonly labels$ : Observable<Label[] | null>= this.refreshTransactions$.pipe(switchMap(()=> {
-      return this.labelService.getLabels().pipe(
-        catchError((error: HttpErrorResponse) => {
-          this.showLoadingError = true;
-          
-          return of(null);
-        }
-      ));
-    }));
+  private readonly labels$: Observable<Label[] | null> = this.refreshTransactions$.pipe(switchMap(() => {
+    return this.labelService.getLabels().pipe(
+      catchError((error: HttpErrorResponse) => {
+        this.showLoadingError = true;
 
-  public readonly transactionsWithLabels$ : Observable<GroupedTransaction[] | null> = combineLatest([this.transactionData$, this.labels$]).pipe((
+        return of(null);
+      }
+      ));
+  }));
+
+  public readonly transactionsWithLabels$: Observable<GroupedTransaction[] | null> = combineLatest([this.transactionData$, this.labels$]).pipe((
     map(([transactionData, labels]) => {
       this.showLoadingSpinner = false;
-      if(!transactionData || !labels) return null;
+      if (!transactionData || !labels) return null;
 
       return mapTrasactionsWithLabelsToDateGroups(transactionData.transactions, labels);
     })));
@@ -97,14 +99,16 @@ export class TransactionsPageComponent implements OnDestroy {
     map(([selectedYear, oldestDate]) => getListOfAvailableMonthsPerYear(selectedYear, oldestDate))
   );
 
+  public readonly numberOfSelectedTransactions$: Observable<number> = this.selectedTransactionsIds$.pipe(map((selected) => selected.length));
+
   public readonly monthlyKeyMetrics$: Observable<keyMetricData | null> = this.transactionData$.pipe(
     map((transactionData) => {
-      if(!transactionData) return null;
+      if (!transactionData) return null;
 
       return calculateMonthlyKeyMetricData(transactionData.transactions, transactionData.priorBalance)
 
     }));
-    
+
   public ngOnDestroy(): void {
     this.unsubscribe.next();
     this.unsubscribe.complete();
@@ -127,6 +131,8 @@ export class TransactionsPageComponent implements OnDestroy {
           year: year, month: selectedMonth,
         }
       });
+
+      this.stopSelectionMode();
     })
   }
 
@@ -137,6 +143,8 @@ export class TransactionsPageComponent implements OnDestroy {
           year: selectedYear, month: month,
         }
       });
+
+      this.stopSelectionMode();
     })
   }
 
@@ -160,6 +168,53 @@ export class TransactionsPageComponent implements OnDestroy {
     this.currentAddedOrEditedTransaction$.next(null);
     this.refreshTransactions$.next(null);
     this.showLoadingSpinner = true;
+  }
+
+  public handleSelectableButton(): void {
+    this.transactionsSelectable = !this.transactionsSelectable;
+
+    if (this.transactionsSelectable) {
+      return
+    };
+
+    this.stopSelectionMode();
+  }
+
+  private stopSelectionMode(): void {
+    this.transactionsSelectable = false;
+    this.selectedTransactionsIds$.next([]);
+    this.selectAll = false;
+  }
+
+  public onSelectChanged(transactionId: number, isSelected: boolean): void {
+    const selectedIds = this.selectedTransactionsIds$.getValue();
+
+    if (isSelected) {
+      selectedIds.push(transactionId);
+      this.selectedTransactionsIds$.next(selectedIds);
+      console.log(this.selectedTransactionsIds$.getValue(), selectedIds, "current list")
+
+      return;
+    }
+
+    const filteredIds = selectedIds.filter((id) => id !== transactionId);
+    this.selectedTransactionsIds$.next(filteredIds); console.log(this.selectedTransactionsIds$.getValue(), "current list")
+  }
+
+  public onSelectAll(): void {
+    this.selectAll = !this.selectAll;
+
+    if (!this.selectAll) {
+      this.selectedTransactionsIds$.next([]);
+      return;
+    }
+
+    this.transactionData$.pipe(takeUntil(this.unsubscribe), map((transactionData) =>
+      (transactionData?.transactions.map((transaction) => transaction.id))
+    )).subscribe((transactionIds) => {
+      this.selectedTransactionsIds$.next(transactionIds ?? []);
+    });
+
   }
 
   public refreshPage(): void {

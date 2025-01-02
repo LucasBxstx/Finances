@@ -19,6 +19,8 @@
         <app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async"
             [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)"></app-drop-menu>
 
+     
+
         <app-monthly-overview [currentMonth]="selectedMonth$ | async" [keyMetricData]="monthlyKeyMetrics$ |async">
         </app-monthly-overview>
 
@@ -31,14 +33,20 @@
             <button (click)="addTransaction(TransactionType.Expense)">{{t('addExpense')}}</button>
         </div>
 
+        <div class="select-transactions">
+            <span *ngIf="transactionsSelectable">{{numberOfSelectedTransactions$ | async}} transactions are currently selected</span>
+            <button (click)="handleSelectableButton()" class="selectable-button">{{transactionsSelectable ? 'cancel' : 'select transactions'}}</button>
+            <button *ngIf="transactionsSelectable" (click)="onSelectAll()" class="select-button">{{selectAll ? 'deselect all' : 'select all'}}</button>
+        </div>
+
         <app-add-or-edit-transaction *ngIf="(currentAddedOrEditedTransaction$ | async) !== null"
             [addOrEditData]="(currentAddedOrEditedTransaction$ |async)!"
             (closedWindow)="closeAddOrEditWindow()"></app-add-or-edit-transaction>
 
         <div *ngFor="let transaction of transactionsWithLabels$ | async" class="date-group">
             <div class="date">{{transaction.date | getDate }}</div>
-            <app-transaction *ngFor="let transaction of transaction.transactions" [transaction]="transaction"
-                (transactionEdited)="editTransaction($event)" (transactionDeleted)="transactionDeleted()">
+            <app-transaction *ngFor="let transaction of transaction.transactions" [transaction]="transaction" [isSelectable]="transactionsSelectable" [isSelected]="selectAll"
+                (transactionEdited)="editTransaction($event)" (transactionDeleted)="transactionDeleted()" (selectedChanged)="onSelectChanged(transaction.id, $event)">
             </app-transaction>
         </div>
     </div>

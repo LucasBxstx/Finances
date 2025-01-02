@@ -40,6 +40,24 @@ app-logout {
     margin-bottom: 3rem;
 }
 
+.select-transactions {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+    gap: 2rem;
+    margin-top: 2rem;
+
+    .selectable-button{
+        display: flex;
+        width: 200px;
+    }
+
+    .select-button{
+        display: flex;
+        width: 200px;
+    }
+}
+
 .bottom {
     height: 3rem;
 }

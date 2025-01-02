@@ -8,12 +8,16 @@
         {{transaction.transactionType === TransactionType.Expense ? '-' : '+'}}
         {{transaction.price | getPriceDecimal}}
     </span>
-    <div *ngIf="(breakpointMobile$ | async) === false && useCase === 'default'" class="edit-container">
+    <div *ngIf="(breakpointMobile$ | async) === false && useCase === 'default' && !isSelectable" class="edit-container">
         <img class="edit" (click)="editTransaction()" src="assets/icons/edit.svg">
         <img class="delete" (click)="deleteTransaction()" src="assets/icons/delete.svg">
     </div>
-    <div *ngIf="openEditContainer && useCase === 'default'" class="edit-container-mobile">
+    <div *ngIf="openEditContainer && useCase === 'default' && !isSelectable" class="edit-container-mobile">
         <img class="edit" (click)="editTransaction()" src="assets/icons/edit.svg">
         <img class="delete" (click)="deleteTransaction()" src="assets/icons/delete.svg">
     </div>
+    <button *ngIf="isSelectable" (click)="onSelectChange()" class="select">
+        <div *ngIf="isSelected">x</div>
+        <div *ngIf="!isSelected">o</div>
+    </button>
 </div>
