@@ -40,48 +40,7 @@ app-logout {
     margin-bottom: 3rem;
 }
 
-.select-transactions {
-    display: flex;
-    align-items: center;
-    justify-content: end;
-    gap: 1rem;
-    margin-top: 2rem;
 
-    .selected-count {
-        font-weight: lighter;
-    }
-
-    .selectable-button{
-        display: flex;
-        width: 200px;
-    }
-
-    .select-button{
-        display: flex;
-        width: 120px;
-    }
-
-    .delete-selected {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 5px;
-        width: 120px;
-        height: 30px;
-
-        img{
-            width: 20px;
-        }
-        
-        app-spinner {
-            transform: scale(0.3);
-            max-width: 1rem;
-        }
-        
-    }
-
-    
-}
 
 .bottom {
     height: 3rem;
@@ -119,8 +78,44 @@ app-monthly-overview {
     gap: 0.5rem;
 }
 
-.import {
+.selection-bar {
     margin-bottom: 10px;
+    border: 1px solid rgb(64, 64, 64);
+    border-radius: 5px;
+    padding: 5px 10px;
+
+    display: flex;
+    gap: 10px;
+
+    button {
+        width: 120px;
+        font-size: 15px;
+    }
+
+    .delete-selected {
+        img{
+            width: 15px;
+        }
+
+        app-spinner {
+            transform: scale(0.3);
+            max-width: 1rem;
+        }
+    }
+
+    .select-transactions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        gap: 1rem;
+    
+        .selected-count {
+            font-weight: lighter;
+            display: flex;
+            gap: 3px;
+        }
+    }
 }
 
 .date-group {

@@ -22,27 +22,31 @@
         <app-monthly-overview [currentMonth]="selectedMonth$ | async" [keyMetricData]="monthlyKeyMetrics$ |async">
         </app-monthly-overview>
 
-        <button (click)="showImportCSVWindow = true" class="import">{{t('importCSV')}}</button>
+        <div class="selection-bar">
+            <button (click)="addTransaction(TransactionType.Expense)">{{t('add')}}</button>
+            <button (click)="showImportCSVWindow = true" class="import">{{t('importCSV')}}</button>
+            <button>Export</button>
 
-        <app-import-csvfile *ngIf="showImportCSVWindow" (closedWindow)="showImportCSVWindow = false" (closedWindow)="refreshPage()"></app-import-csvfile>
-
-        <div class="button-bar">
-            <button (click)="addTransaction(TransactionType.Income)">{{t('addIncome')}}</button>
-            <button (click)="addTransaction(TransactionType.Expense)">{{t('addExpense')}}</button>
-        </div>
-
-        <div class="select-transactions">
-            <span *ngIf="transactionsSelectable" class="selected-count">{{numberOfSelectedTransactions$ | async}} {{t('numberOfSelectedTransactions')}}</span>
-            <button *ngIf="transactionsSelectable" (click)="deleteSelectedTransactions()" [disabled]="showDeletingSpinner || (numberOfSelectedTransactions$ | async) === 0" class="delete-selected">
+            <button class="delete-selected" (click)="deleteSelectedTransactions()" [disabled]="showDeletingSpinner || (numberOfSelectedTransactions$ | async) === 0">
                 <span *ngIf="!showDeletingSpinner">{{t('delete')}}</span>
-                <img  *ngIf="!showDeletingSpinner" src="assets/icons/delete.svg">
+                <!-- <img *ngIf="!showDeletingSpinner" src="assets/icons/delete.svg" [ngStyle]="{opacity: (numberOfSelectedTransactions$ | async) === 0 ? 0.3 : 1}"> -->
                 <app-spinner *ngIf="showDeletingSpinner" class="spinner"></app-spinner>
             </button>
-            <button (click)="handleSelectableButton()" class="selectable-button" [ngStyle]="{ width: transactionsSelectable ? '120px' : '200px'}">
-                {{transactionsSelectable ? t('cancel') : t('selectTransactions')}}
-            </button>
-            <button *ngIf="transactionsSelectable" (click)="onSelectAll()" class="select-button">{{selectAll ? t('deselectAll') : t('selectAll')}}</button>
+
+            <div class="select-transactions">
+                <span *ngIf="transactionsSelectable" class="selected-count">
+                    <span>{{numberOfSelectedTransactions$ | async}}</span>
+                    <span *ngIf="(numberOfSelectedTransactions$ | async)! != 1">{{t('numberOfSelectedTransactions')}}</span>
+                    <span *ngIf="(numberOfSelectedTransactions$ | async)! == 1">{{t('oneSelectedTransaction')}}</span>
+                </span>
+                <button (click)="handleSelectableButton()" class="selectable-button">
+                    {{transactionsSelectable ? t('cancel') : t('selectTransactions')}}
+                </button>
+                <button *ngIf="transactionsSelectable" (click)="onSelectAll()">{{selectAll ? t('deselectAll') : t('selectAll')}}</button>
+            </div>
         </div>
+
+        <app-import-csvfile *ngIf="showImportCSVWindow" (closedWindow)="showImportCSVWindow = false" (closedWindow)="refreshPage()"></app-import-csvfile>
 
         <app-add-or-edit-transaction *ngIf="(currentAddedOrEditedTransaction$ | async) !== null"
             [addOrEditData]="(currentAddedOrEditedTransaction$ |async)!"

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, inject } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, catchError, combineLatest, concatMap, map, of, shareReplay, switchMap, takeUntil, } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, combineLatest, concatMap, map, of, shareReplay, switchMap, take, takeUntil, } from 'rxjs';
 import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
@@ -23,7 +23,7 @@ export type pageType = 'transactions' | 'statistics';
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgStyle, NgIf, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
   templateUrl: './transactions-page.component.html',
   styleUrl: './transactions-page.component.scss'
 })
@@ -174,11 +174,7 @@ export class TransactionsPageComponent implements OnDestroy {
   public handleSelectableButton(): void {
     this.transactionsSelectable = !this.transactionsSelectable;
 
-    if (this.transactionsSelectable) {
-      return
-    };
-
-    this.stopSelectionMode();
+    if (!this.transactionsSelectable) this.stopSelectionMode();
   }
 
   private stopSelectionMode(): void {
@@ -209,21 +205,23 @@ export class TransactionsPageComponent implements OnDestroy {
       return;
     }
 
-    this.transactionData$.pipe(takeUntil(this.unsubscribe), map((transactionData) =>
-      (transactionData?.transactions.map((transaction) => transaction.id))
-    )).subscribe((transactionIds) => {
-      this.selectedTransactionsIds$.next(transactionIds ?? []);
-    });
+    this.transactionData$.pipe(
+      take(1),
+      map((transactionData) => (transactionData?.transactions.map((transaction) => transaction.id)))
+    )
+      .subscribe((transactionIds) => {
+        this.selectedTransactionsIds$.next(transactionIds ?? []);
+      });
 
   }
 
   public deleteSelectedTransactions(): void {
     this.showDeletingSpinner = true;
-  
-    const deleteObservables = this.selectedTransactionsIds$.getValue().map(id => 
+
+    const deleteObservables = this.selectedTransactionsIds$.getValue().map(id =>
       this.transactionService.deleteTransaction(id)
     );
-  
+
     combineLatest(deleteObservables)
       .pipe(takeUntil(this.unsubscribe))
       .subscribe({
