@@ -21,6 +21,7 @@ import { BreakpointObserver } from '@angular/cdk/layout';
 import { MOBILE_BREAKPOINT_SELECTION_BAR } from '../shared/constants';
 
 export type pageType = 'transactions' | 'statistics';
+export type dropMenuType = 'year' | 'month';
 
 @Component({
   selector: 'app-transactions-page',
@@ -44,6 +45,7 @@ export class TransactionsPageComponent implements OnDestroy {
   public transactionsSelectable = false;
   public showDeletingSpinner = false;
   public selectAll = false;
+  public openDropMenu: dropMenuType | null = null;
 
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);
@@ -138,6 +140,7 @@ export class TransactionsPageComponent implements OnDestroy {
         }
       });
 
+      this.openDropMenu = null;
       this.stopSelectionMode();
     })
   }
@@ -150,6 +153,7 @@ export class TransactionsPageComponent implements OnDestroy {
         }
       });
 
+      this.openDropMenu = null;
       this.stopSelectionMode();
     })
   }

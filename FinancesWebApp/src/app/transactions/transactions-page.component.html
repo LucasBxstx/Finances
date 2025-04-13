@@ -14,10 +14,10 @@
 
     <div [ngClass]="{hidden: showLoadingSpinner || showLoadingError}">
         <app-drop-menu class="year" [description]="t('year')" [currentValue]="selectedYear$ | async"
-            [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
+            [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)" (menuOpened)="openDropMenu = 'year'" (menuClosed)="openDropMenu = null" [menuOpen]="openDropMenu === 'year'" ></app-drop-menu>
 
         <app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async"
-            [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)"></app-drop-menu>
+            [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)" (menuOpened)="openDropMenu = 'month'" (menuClosed)="openDropMenu = null" [menuOpen]="openDropMenu === 'month'"></app-drop-menu>
 
         <app-monthly-overview [currentMonth]="selectedMonth$ | async" [keyMetricData]="monthlyKeyMetrics$ |async">
         </app-monthly-overview>
