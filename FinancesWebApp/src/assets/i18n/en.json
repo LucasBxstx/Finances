@@ -114,6 +114,7 @@
         "refreshPls": "Please refresh the page",
         "refresh" : "Refresh",
         "importCSV": "Import",
+        "exportCSV": "Export",
         "numberOfSelectedTransactions": "Transactions are selected",
         "oneSelectedTransaction": "Transaction is selected",
         "delete": "Delete",

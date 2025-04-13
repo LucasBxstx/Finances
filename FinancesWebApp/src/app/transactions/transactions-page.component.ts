@@ -17,13 +17,15 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Label } from '../shared/models/label';
 import { LabelService } from '../shared/services/label.service';
 import { ImportCSVFileComponent } from './import-csvfile/import-csvfile.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { MOBILE_BREAKPOINT_SELECTION_BAR } from '../shared/constants';
 
 export type pageType = 'transactions' | 'statistics';
 
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, NgStyle, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
   templateUrl: './transactions-page.component.html',
   styleUrl: './transactions-page.component.scss'
 })
@@ -47,6 +49,9 @@ export class TransactionsPageComponent implements OnDestroy {
   private readonly labelService = inject(LabelService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  
+  public readonly breakpointMobile$ = this.breakpointObserver.observe([MOBILE_BREAKPOINT_SELECTION_BAR]).pipe(map((state)=> state.matches));
 
   public readonly selectedYear$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['year']));
   public readonly selectedMonth$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['month']));
