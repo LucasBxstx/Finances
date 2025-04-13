@@ -1,22 +1,27 @@
 <div class="transaction">
     <span class="title">{{transaction.title}}</span>
     <span *ngIf="useCase === 'detail'">{{transaction.date | getDateDMY}}</span>
+
     <div class="label">
         <span *ngIf="transaction.labelId" class="chip" [ngStyle]="{'background-color': transaction.labelColor}">{{transaction.labelName}}</span>
     </div>
-    <span [ngClass]="transaction.transactionType === TransactionType.Expense? 'red': 'green'" class="price">
+
+    <span class="price" [ngClass]="transaction.transactionType === TransactionType.Expense? 'red': 'green'" >
         {{transaction.transactionType === TransactionType.Expense ? '-' : '+'}}
         {{transaction.price | getPriceDecimal}}
     </span>
-    <div *ngIf="(breakpointMobile$ | async) === false && useCase === 'default' && !isSelectable" class="edit-container">
+
+    <div class="edit-container" *ngIf="(breakpointMobile$ | async) === false && useCase === 'default' && !isSelectable">
         <img class="edit" (click)="editTransaction()" src="assets/icons/edit.svg">
         <img class="delete" (click)="deleteTransaction()" src="assets/icons/delete.svg">
     </div>
-    <div *ngIf="openEditContainer && useCase === 'default' && !isSelectable" class="edit-container-mobile">
+
+    <div class="edit-container-mobile" *ngIf="openEditContainer && useCase === 'default' && !isSelectable" >
         <img class="edit" (click)="editTransaction()" src="assets/icons/edit.svg">
         <img class="delete" (click)="deleteTransaction()" src="assets/icons/delete.svg">
     </div>
-    <button *ngIf="isSelectable" (click)="onSelectChange()" class="select">
+    
+    <button class="select" *ngIf="isSelectable" (click)="onSelectChange()" >
         <div *ngIf="isSelected"><img src="assets/icons/select.svg"></div>
         <div *ngIf="!isSelected"><img src="assets/icons/select-empty.svg"></div>
     </button>

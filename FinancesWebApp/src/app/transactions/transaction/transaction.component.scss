@@ -56,7 +56,7 @@
             transition: width 1s;
             width: 0rem;
             height: 0rem;
-            background-color: rgb(187, 190, 199);
+            background-color:  rgb(224, 224, 224);
             border-radius: 2px;
         }
 
@@ -71,14 +71,14 @@
     }
 
     .edit-container-mobile {
-        padding-top: 10px;
+        // padding-top: 10px;
 
         .edit {
             cursor: pointer;
             transition: width 1s;
             width: 1.3rem;
             height: 1.3rem;
-            background-color: rgb(55, 95, 202);
+            background-color:  rgb(224, 224, 224);
             border-radius: 2px;
             margin-right: 10px;
         }
@@ -141,7 +141,19 @@
         .price {
             position: absolute;
             bottom: 5px;
-            right: 10px;
+            right: 20px;
+        }
+
+        .select {
+            position: absolute;
+            top: 5px;
+            right: 18px;
+        }
+
+        .edit-container-mobile {
+            position: absolute;
+            top: 10px;
+            right: 20px;
         }
     }
 }
