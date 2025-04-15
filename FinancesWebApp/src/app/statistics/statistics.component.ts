@@ -1,19 +1,16 @@
 import { AsyncPipe, NgClass, NgIf } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { pageType } from '../transactions/transactions-page.component';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
 import { BehaviorSubject, Observable, Subject, catchError, combineLatest, map, of, shareReplay, startWith, takeUntil } from 'rxjs';
 import { getListOfAvailableMonthsPerYear, getListOfAvailableYears } from '../shared/utils/transactions.utils';
-import { Transaction, TransactionType, TransactionView } from '../shared/models/transaction';
+import { pageType, Transaction, TransactionType, TransactionView } from '../shared/models/transaction';
 import { TransactionService } from '../shared/services/transaction.service';
-import { MonthlyCategoryStatisticComponent } from './monthly-category-statistic/monthly-category-statistic.component';
-import { AllMonthCategoryData, ErrorMessages, LabelWithData, MonthTransactionGroup } from '../shared/models/statistics';
+import { AllMonthCategoryData, dropMenuType, ErrorMessages, LabelWithData, MonthTransactionGroup } from '../shared/models/statistics';
 import { LabelService } from '../shared/services/label.service';
 import { calculateAccountBalanceTimeData, calculateExpensesLabelStackTimeData, calculateLabelShareData, calculateYearlyColumnChartData, convertToCSV, getAccountBalanceTimeLineChartData, getCategoryDataOfSelectedYearGroupedByMonth, getExpensesLabelStackTimeData, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome, getYearlyColumnChartData } from '../shared/utils/statistics.utils';
 import { ChartComponent } from "./chart/chart.component";
 import { EChartsOption } from 'echarts';
-import { GetMonthPipe } from '../shared/pipes/getMonth.pipe';
 import { InteractiveTableChartComponent } from "./interactive-table-chart/interactive-table-chart.component";
 import { Label } from '../shared/models/label';
 import { LogoutComponent } from "../shared/components/logout/logout.component";
@@ -24,7 +21,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   selector: 'app-statistics',
   standalone: true,
-  imports: [NgClass, DropMenuComponent, AsyncPipe, MonthlyCategoryStatisticComponent, ChartComponent, GetMonthPipe, InteractiveTableChartComponent, LogoutComponent, NgIf, SpinnerComponent, TranslocoDirective],
+  imports: [NgClass, DropMenuComponent, AsyncPipe, ChartComponent, InteractiveTableChartComponent, LogoutComponent, NgIf, SpinnerComponent, TranslocoDirective],
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.scss'
 })
@@ -38,6 +35,7 @@ export class StatisticsComponent {
   public showLoadingError = false;
   public showNoTransactionsError = false;
   public showNoLabelsError = false;
+  public openDropMenu: dropMenuType | null = null;
 
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
@@ -182,6 +180,7 @@ export class StatisticsComponent {
   }
 
   public changeYear(year: number): void {
+    this.openDropMenu = null;
     this.selectedMonth$.pipe(takeUntil(this.unsubscribe)).subscribe((selectedMonth) => {
       this.router.navigate([], {
         queryParams: {
@@ -191,22 +190,14 @@ export class StatisticsComponent {
     })
   }
 
-  public changeMonth(month: number): void {
-    this.selectedYear$.pipe(takeUntil(this.unsubscribe)).subscribe((selectedYear) => {
-      this.router.navigate([], {
-        queryParams: {
-          year: selectedYear, month: month,
-        }
-      });
-    })
-  }
-
   public changePieChartSelectedStartMonth(month:number): void {
     this.filterStartMonth$.next(month);
+    this.openDropMenu = null;
   }
 
   public changePieChartSelectedEndMonth(month:number): void {
     this.filterEndMonth$.next(month);
+    this.openDropMenu = null;
   }
 
   public exportTransactionToCSV(): void {

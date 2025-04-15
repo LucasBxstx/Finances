@@ -21,7 +21,6 @@ export class DropMenuComponent {
   @Output() public menuClosed: EventEmitter<void> = new EventEmitter<void>();
 
   public toggleMenu(): void {
-    
     if (this.menuOpen) this.menuClosed.emit();
     else this.menuOpened.emit();
   }

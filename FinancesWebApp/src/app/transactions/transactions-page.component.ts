@@ -4,7 +4,7 @@ import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
-import { AddOrEditTransaction, GroupedTransaction, TransactionType, TransactionView, keyMetricData } from '../shared/models/transaction';
+import { AddOrEditTransaction, GroupedTransaction, TransactionType, TransactionView, dropMenuType, keyMetricData, pageType } from '../shared/models/transaction';
 import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, getListOfAvailableMonthsPerYear, getListOfAvailableYears, mapTrasactionsWithLabelsToDateGroups } from '../shared/utils/transactions.utils';
 import { MonthlyOverviewComponent } from './monthly-overview/monthly-overview.component';
 import { GetDatePipe } from '../shared/pipes/getDate.pipe';
@@ -20,8 +20,6 @@ import { ImportCSVFileComponent } from './import-csvfile/import-csvfile.componen
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { MOBILE_BREAKPOINT_SELECTION_BAR } from '../shared/constants';
 
-export type pageType = 'transactions' | 'statistics';
-export type dropMenuType = 'year' | 'month';
 
 @Component({
   selector: 'app-transactions-page',
