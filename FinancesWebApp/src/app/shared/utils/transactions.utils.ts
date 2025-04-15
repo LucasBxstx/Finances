@@ -104,3 +104,15 @@ export function mapTrasactionsWithLabelsToDateGroups(transactions: Transaction[]
 
   return groupedTransactions;
 }
+
+export function convertToCSV(transactions: Transaction[], labels: Label[]): string {
+  const headers = 'id;title;transactionType;date;price;labelName;labelColor;\n'
+  const rows = transactions.map((transaction) => {
+    const label = labels.find((label) => label.id === transaction.labelId);
+    const price = transaction.price.toString().replace('.', ',');
+
+    return `${transaction.id};${transaction.title};${transaction.transactionType};${transaction.date};${price};${label ? label.name : ''};${label ? label.color : ''}`;
+  }).join('\n');
+
+  return headers + rows;
+}

@@ -5,7 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
 import { AddOrEditTransaction, GroupedTransaction, TransactionType, TransactionView, dropMenuType, keyMetricData, pageType } from '../shared/models/transaction';
-import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, getListOfAvailableMonthsPerYear, getListOfAvailableYears, mapTrasactionsWithLabelsToDateGroups } from '../shared/utils/transactions.utils';
+import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, convertToCSV, getListOfAvailableMonthsPerYear, getListOfAvailableYears, mapTrasactionsWithLabelsToDateGroups } from '../shared/utils/transactions.utils';
 import { MonthlyOverviewComponent } from './monthly-overview/monthly-overview.component';
 import { GetDatePipe } from '../shared/pipes/getDate.pipe';
 import { TransactionComponent } from './transaction/transaction.component';
@@ -243,6 +243,30 @@ export class TransactionsPageComponent implements OnDestroy {
           this.stopSelectionMode();
         }
       });
+  }
+
+  public exportTransactionToCSV(): void {
+    combineLatest([this.transactionService.getTransactions(), this.labelService.getLabels()])
+    .pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe(([transactionData, labels]) => {
+        if(!transactionData?.transactions) return;
+        
+        const csvData = convertToCSV(transactionData.transactions, labels ?? []);
+        this.downloadCSV(csvData);
+      })
+  }
+
+  private downloadCSV(csv: string): void {
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const date = new Date();
+    const today = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
+    a.setAttribute('href', url);
+    a.setAttribute('download', `MyFinanceStats Transactions ${today}.csv`);
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 
   public refreshPage(): void {

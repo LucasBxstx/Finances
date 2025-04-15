@@ -8,7 +8,7 @@ import { pageType, Transaction, TransactionType, TransactionView } from '../shar
 import { TransactionService } from '../shared/services/transaction.service';
 import { AllMonthCategoryData, dropMenuType, ErrorMessages, LabelWithData, MonthTransactionGroup } from '../shared/models/statistics';
 import { LabelService } from '../shared/services/label.service';
-import { calculateAccountBalanceTimeData, calculateExpensesLabelStackTimeData, calculateLabelShareData, calculateYearlyColumnChartData, convertToCSV, getAccountBalanceTimeLineChartData, getCategoryDataOfSelectedYearGroupedByMonth, getExpensesLabelStackTimeData, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome, getYearlyColumnChartData } from '../shared/utils/statistics.utils';
+import { calculateAccountBalanceTimeData, calculateExpensesLabelStackTimeData, calculateLabelShareData, calculateYearlyColumnChartData, getAccountBalanceTimeLineChartData, getCategoryDataOfSelectedYearGroupedByMonth, getExpensesLabelStackTimeData, getTopPricesChatOptions, getTransactionLabelShareCountPieChartData, getTransactionLabelSharePieChartData, getTransactionsGroupedPerMonth, getTransactionsTopExpenseOrIncome, getYearlyColumnChartData } from '../shared/utils/statistics.utils';
 import { ChartComponent } from "./chart/chart.component";
 import { EChartsOption } from 'echarts';
 import { InteractiveTableChartComponent } from "./interactive-table-chart/interactive-table-chart.component";
@@ -198,30 +198,6 @@ export class StatisticsComponent {
   public changePieChartSelectedEndMonth(month:number): void {
     this.filterEndMonth$.next(month);
     this.openDropMenu = null;
-  }
-
-  public exportTransactionToCSV(): void {
-    combineLatest([this.transactionData$, this.labels$])
-    .pipe(
-      takeUntil(this.unsubscribe)
-    ).subscribe(([transactionData, labels]) => {
-        if(!transactionData?.transactions) return;
-        
-        const csvData = convertToCSV(transactionData.transactions, labels ?? []);
-        this.downloadCSV(csvData);
-      })
-  }
-
-  private downloadCSV(csv: string): void {
-    const blob = new Blob([csv], {type: 'text/csv'});
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    const date = new Date();
-    const today = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
-    a.setAttribute('href', url);
-    a.setAttribute('download', `MyFinanceStats Transactions ${today}.csv`);
-    a.click();
-    window.URL.revokeObjectURL(url);
   }
 
   public refreshPage(): void {

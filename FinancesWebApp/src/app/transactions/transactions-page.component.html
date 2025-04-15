@@ -34,7 +34,7 @@
                     <img *ngIf="(breakpointMobile$ | async) === true" src="assets/icons/import.svg"  class="import">
                 </button>
 
-                <button class="item">
+                <button (click)="exportTransactionToCSV()" class="item">
                     <span *ngIf="(breakpointMobile$ | async) === false">{{t('exportCSV')}}</span>
                     <img *ngIf="(breakpointMobile$ | async) === true" src="assets/icons/export.svg"  class="export">
                 </button>
