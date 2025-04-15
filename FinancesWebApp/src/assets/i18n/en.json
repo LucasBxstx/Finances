@@ -108,12 +108,20 @@
     "transactions": {
         "heading": "My Finances",
         "year": "Year",
-        "addIncome": "Add Income",
-        "addExpense": "Add Expense",
+        "add": "Add",
         "noTransactions": "No transactions have been added for this month.",
         "errorOccured": "Something went wrong.",
         "refreshPls": "Please refresh the page",
-        "refresh" : "Refresh"
+        "refresh" : "Refresh",
+        "importCSV": "Import",
+        "exportCSV": "Export",
+        "numberOfSelectedTransactions": "Transactions are selected",
+        "oneSelectedTransaction": "Transaction is selected",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "selectTransactions": "Select", 
+        "selectAll": "Select all",
+        "deselectAll": "Deselect all"
     },
     "sessionExpired": {
         "sessionExpired": "Sorry, your session expired.",

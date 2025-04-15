@@ -21,7 +21,7 @@
             <app-chart [chartOptions]="yearlyColumnChartData$ | async"  [title]="t('yearlyColumnChartTitle')" [errorMessage]="t('expensesError')"></app-chart>
 
             <app-drop-menu class="year" [description]="'Year'" [currentValue]="selectedYear$ | async"
-                [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
+                [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)" (menuOpened)="openDropMenu = 'filter-year'" (menuClosed)="openDropMenu = null" [menuOpen]="openDropMenu === 'filter-year'"></app-drop-menu>
 
             <app-interactive-table-chart
                 [allMonthCategoryData]="categoryDataOfSelectedYearGroupedByMonth$ | async" ></app-interactive-table-chart>
@@ -30,11 +30,13 @@
                 <app-drop-menu class="pie-chart-drop-down-start-month" [description]="t('filterFrom')"
                     [translateMonth]="true" [currentValue]="filterStartMonth$ | async"
                     [valueList]="availableMonths$ | async"
-                    (valueChanged)="changePieChartSelectedStartMonth($event)"></app-drop-menu>
+                    (valueChanged)="changePieChartSelectedStartMonth($event)"
+                    (menuOpened)="openDropMenu = 'filter-start-month'" (menuClosed)="openDropMenu = null" [menuOpen]="openDropMenu === 'filter-start-month'"></app-drop-menu>
 
                 <app-drop-menu class="pie-chart-drop-down-end-month" [description]="t('filterTo')" [translateMonth]="true"
                     [currentValue]="filterEndMonth$ | async" [valueList]="availableMonths$ | async"
-                    (valueChanged)="changePieChartSelectedEndMonth($event)"></app-drop-menu>
+                    (valueChanged)="changePieChartSelectedEndMonth($event)"
+                    (menuOpened)="openDropMenu = 'filter-end-month'" (menuClosed)="openDropMenu = null" [menuOpen]="openDropMenu === 'filter-end-month'"></app-drop-menu>
             </div>
 
 
@@ -49,8 +51,6 @@
 
             <app-chart class="incomes" [chartOptions]="topIncomes$ |async"
                 [errorMessage]="t('expensesError')"></app-chart>
-
-            <button (click)="exportTransactionToCSV()" class="export">{{t('export')}}</button>
         </div>
 
         <div *ngIf="showNoTransactionsError" class="error-message">

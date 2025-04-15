@@ -40,6 +40,8 @@ app-logout {
     margin-bottom: 3rem;
 }
 
+
+
 .bottom {
     height: 3rem;
 }
@@ -71,13 +73,75 @@ app-monthly-overview {
     margin: 2rem 0;
 }
 
-.button-bar {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.import {
+.selection-bar {
     margin-bottom: 10px;
+    border: 1px solid rgb(64, 64, 64);
+    border-radius: 5px;
+    padding: 5px 20px;
+
+    display: flex;
+    gap: 10px;
+
+    button {
+        width: 120px;
+        font-size: 15px;
+    }
+
+    .item-section {
+        display: flex;
+        gap: 10px;
+
+        .item{
+            display: flex;
+
+            .add {
+                width: 30px;
+            }
+
+            .import {
+                width: 25px;
+            }
+
+            .export {
+                width: 33px;
+            }
+
+            .delete {
+                width: 28px;
+            }
+
+            app-spinner {
+                transform: scale(0.3);
+                max-width: 1rem;
+            }
+        }
+    }
+
+    .select-transactions {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+        gap: 10px;
+    
+        .selected-count {
+            font-weight: lighter;
+            display: flex;
+            gap: 3px;
+        }
+
+        .select {
+            width: 25px;
+        }
+    }
+
+    @media screen and (max-width: 1450px) {
+
+         button {
+            width: 35px;
+            height: 35px;
+        }
+    }
 }
 
 .date-group {

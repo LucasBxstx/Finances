@@ -14,22 +14,56 @@
 
     <div [ngClass]="{hidden: showLoadingSpinner || showLoadingError}">
         <app-drop-menu class="year" [description]="t('year')" [currentValue]="selectedYear$ | async"
-            [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)"></app-drop-menu>
+            [valueList]="availableYears$ |async" (valueChanged)="changeYear($event)" (menuOpened)="openDropMenu = 'year'" (menuClosed)="openDropMenu = null" [menuOpen]="openDropMenu === 'year'" ></app-drop-menu>
 
         <app-drop-menu [translateMonth]="true" [currentValue]="selectedMonth$ | async"
-            [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)"></app-drop-menu>
+            [valueList]="availableMonths$ |async" (valueChanged)="changeMonth($event)" (menuOpened)="openDropMenu = 'month'" (menuClosed)="openDropMenu = null" [menuOpen]="openDropMenu === 'month'"></app-drop-menu>
 
         <app-monthly-overview [currentMonth]="selectedMonth$ | async" [keyMetricData]="monthlyKeyMetrics$ |async">
         </app-monthly-overview>
 
-        <button (click)="showImportCSVWindow = true" class="import">Import Transactions from CSV</button>
+        <div class="selection-bar">
+            <div class="item-section">
+                <button (click)="addTransaction(TransactionType.Expense)" class="item">
+                    <span *ngIf="(breakpointMobile$ | async) === false">{{t('add')}}</span>
+                    <img *ngIf="(breakpointMobile$ | async) === true" src="assets/icons/add.svg" class="add">
+                </button>
+
+                <button (click)="showImportCSVWindow = true" class="item">
+                    <span *ngIf="(breakpointMobile$ | async) === false">{{t('importCSV')}}</span>
+                    <img *ngIf="(breakpointMobile$ | async) === true" src="assets/icons/import.svg"  class="import">
+                </button>
+
+                <button (click)="exportTransactionToCSV()" class="item">
+                    <span *ngIf="(breakpointMobile$ | async) === false">{{t('exportCSV')}}</span>
+                    <img *ngIf="(breakpointMobile$ | async) === true" src="assets/icons/export.svg"  class="export">
+                </button>
+
+                <button class="item" (click)="deleteSelectedTransactions()" [disabled]="showDeletingSpinner || (numberOfSelectedTransactions$ | async) === 0">
+                    <span *ngIf="(breakpointMobile$ | async) === false && !showDeletingSpinner">{{t('delete')}}</span>
+                    <img *ngIf="(breakpointMobile$ | async) === true && !showDeletingSpinner" src="assets/icons/delete.svg"  class="delete" [ngStyle]="{opacity: (numberOfSelectedTransactions$ | async) === 0 ? 0.3 : 1}">
+                    <app-spinner *ngIf="showDeletingSpinner" class="spinner"></app-spinner>
+                </button>
+            </div>
+
+            <div class="select-transactions">
+                <span *ngIf="transactionsSelectable && (breakpointMobile$ | async) === false" class="selected-count">
+                    <span >{{numberOfSelectedTransactions$ | async}}</span>
+                    <span *ngIf="(numberOfSelectedTransactions$ | async)! != 1">{{t('numberOfSelectedTransactions')}}</span>
+                    <span *ngIf="(numberOfSelectedTransactions$ | async)! == 1">{{t('oneSelectedTransaction')}}</span>
+                </span>
+                <button (click)="handleSelectableButton()" class="selectable-button">
+                    <span *ngIf="(breakpointMobile$ | async) === false">{{transactionsSelectable ? t('cancel') : t('selectTransactions')}}</span>
+                    <img *ngIf="(breakpointMobile$ | async) === true" [src]="'assets/icons/' + (transactionsSelectable ? 'cancel' : 'select-multiple') + '.svg'" class="select">
+                </button>
+                <button *ngIf="transactionsSelectable" (click)="onSelectAll()">
+                    <span *ngIf="(breakpointMobile$ | async) === false">{{selectAll ? t('deselectAll') : t('selectAll')}}</span>
+                    <img *ngIf="(breakpointMobile$ | async) === true" [src]="'assets/icons/' + (selectAll ? 'select-black' : 'select-empty-black') + '.svg'" class="select">
+                </button>
+            </div>
+        </div>
 
         <app-import-csvfile *ngIf="showImportCSVWindow" (closedWindow)="showImportCSVWindow = false" (closedWindow)="refreshPage()"></app-import-csvfile>
-
-        <div class="button-bar">
-            <button (click)="addTransaction(TransactionType.Income)">{{t('addIncome')}}</button>
-            <button (click)="addTransaction(TransactionType.Expense)">{{t('addExpense')}}</button>
-        </div>
 
         <app-add-or-edit-transaction *ngIf="(currentAddedOrEditedTransaction$ | async) !== null"
             [addOrEditData]="(currentAddedOrEditedTransaction$ |async)!"
@@ -37,8 +71,8 @@
 
         <div *ngFor="let transaction of transactionsWithLabels$ | async" class="date-group">
             <div class="date">{{transaction.date | getDate }}</div>
-            <app-transaction *ngFor="let transaction of transaction.transactions" [transaction]="transaction"
-                (transactionEdited)="editTransaction($event)" (transactionDeleted)="transactionDeleted()">
+            <app-transaction *ngFor="let transaction of transaction.transactions" [transaction]="transaction" [isSelectable]="transactionsSelectable" [isSelected]="selectAll"
+                (transactionEdited)="editTransaction($event)" (transactionDeleted)="transactionDeleted()" (selectedChanged)="onSelectChanged(transaction.id, $event)">
             </app-transaction>
         </div>
     </div>

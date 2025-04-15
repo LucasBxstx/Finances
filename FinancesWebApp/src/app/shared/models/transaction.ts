@@ -41,3 +41,7 @@ export interface AddOrEditTransaction {
     transactionId: number | null; // Is null if useCase = 'add'
     transactionType: TransactionType;
 }
+
+export type pageType = 'transactions' | 'statistics';
+
+export type dropMenuType = 'year' | 'month';

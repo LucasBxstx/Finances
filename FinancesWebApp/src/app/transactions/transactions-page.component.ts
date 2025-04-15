@@ -1,14 +1,13 @@
 import { Component, OnDestroy, inject } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, catchError, combineLatest, map, of, shareReplay, switchMap, takeUntil, } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, catchError, combineLatest, concatMap, map, of, shareReplay, switchMap, take, takeUntil, } from 'rxjs';
 import { TransactionService } from '../shared/services/transaction.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AsyncPipe, NgClass, NgFor, NgIf } from '@angular/common';
+import { AsyncPipe, NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { DropMenuComponent } from '../shared/components/drop-menu/drop-menu.component';
-import { AddOrEditTransaction, GroupedTransaction, TransactionType, TransactionView, keyMetricData } from '../shared/models/transaction';
-import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, getListOfAvailableMonthsPerYear, getListOfAvailableYears, mapTrasactionsWithLabelsToDateGroups } from '../shared/utils/transactions.utils';
+import { AddOrEditTransaction, GroupedTransaction, TransactionType, TransactionView, dropMenuType, keyMetricData, pageType } from '../shared/models/transaction';
+import { calculateFirstAndLastDayOfMonth, calculateMonthlyKeyMetricData, convertToCSV, getListOfAvailableMonthsPerYear, getListOfAvailableYears, mapTrasactionsWithLabelsToDateGroups } from '../shared/utils/transactions.utils';
 import { MonthlyOverviewComponent } from './monthly-overview/monthly-overview.component';
 import { GetDatePipe } from '../shared/pipes/getDate.pipe';
-import { GetPriceDecimalPipe } from '../shared/pipes/getPriceDecimal.pipe';
 import { TransactionComponent } from './transaction/transaction.component';
 import { AddOrEditTransactionComponent } from './add-or-edit-transaction/add-or-edit-transaction.component';
 import { SpinnerComponent } from '../shared/components/spinner/spinner.component';
@@ -18,13 +17,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Label } from '../shared/models/label';
 import { LabelService } from '../shared/services/label.service';
 import { ImportCSVFileComponent } from './import-csvfile/import-csvfile.component';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { MOBILE_BREAKPOINT_SELECTION_BAR } from '../shared/constants';
 
-export type pageType = 'transactions' | 'statistics';
 
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, GetPriceDecimalPipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
+  imports: [NgClass, AsyncPipe, DropMenuComponent, NgFor, NgIf, NgStyle, MonthlyOverviewComponent, TranslocoDirective, GetDatePipe, TransactionComponent, AddOrEditTransactionComponent, SpinnerComponent, LogoutComponent, ImportCSVFileComponent],
   templateUrl: './transactions-page.component.html',
   styleUrl: './transactions-page.component.scss'
 })
@@ -34,16 +34,24 @@ export class TransactionsPageComponent implements OnDestroy {
   private unsubscribe = new Subject<void>();
   public refreshTransactions$ = new BehaviorSubject<null>(null);
   public currentAddedOrEditedTransaction$ = new BehaviorSubject<AddOrEditTransaction | null>(null);
+  public selectedTransactionsIds$ = new BehaviorSubject<number[]>([]);
 
   public showLoadingSpinner = true;
   public showNoTransactionsError = false;
   public showLoadingError = false;
   public showImportCSVWindow = false;
+  public transactionsSelectable = false;
+  public showDeletingSpinner = false;
+  public selectAll = false;
+  public openDropMenu: dropMenuType | null = null;
 
   private readonly transactionService = inject(TransactionService);
   private readonly labelService = inject(LabelService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  
+  public readonly breakpointMobile$ = this.breakpointObserver.observe([MOBILE_BREAKPOINT_SELECTION_BAR]).pipe(map((state)=> state.matches));
 
   public readonly selectedYear$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['year']));
   public readonly selectedMonth$: Observable<number> = this.activatedRoute.queryParams.pipe(map((params) => params['month']));
@@ -55,7 +63,7 @@ export class TransactionsPageComponent implements OnDestroy {
     .pipe(
       switchMap(([refresh, { firstDayOfMonth, lastDayOfMonth }]) => {
         return this.transactionService.getTransactions(firstDayOfMonth, lastDayOfMonth).pipe(
-          map((transactionData)=> {
+          map((transactionData) => {
             this.showNoTransactionsError = transactionData?.transactions.length === 0;
 
             return transactionData;
@@ -69,20 +77,20 @@ export class TransactionsPageComponent implements OnDestroy {
       shareReplay(1)
     );
 
-  private readonly labels$ : Observable<Label[] | null>= this.refreshTransactions$.pipe(switchMap(()=> {
-      return this.labelService.getLabels().pipe(
-        catchError((error: HttpErrorResponse) => {
-          this.showLoadingError = true;
-          
-          return of(null);
-        }
-      ));
-    }));
+  private readonly labels$: Observable<Label[] | null> = this.refreshTransactions$.pipe(switchMap(() => {
+    return this.labelService.getLabels().pipe(
+      catchError((error: HttpErrorResponse) => {
+        this.showLoadingError = true;
 
-  public readonly transactionsWithLabels$ : Observable<GroupedTransaction[] | null> = combineLatest([this.transactionData$, this.labels$]).pipe((
+        return of(null);
+      }
+      ));
+  }));
+
+  public readonly transactionsWithLabels$: Observable<GroupedTransaction[] | null> = combineLatest([this.transactionData$, this.labels$]).pipe((
     map(([transactionData, labels]) => {
       this.showLoadingSpinner = false;
-      if(!transactionData || !labels) return null;
+      if (!transactionData || !labels) return null;
 
       return mapTrasactionsWithLabelsToDateGroups(transactionData.transactions, labels);
     })));
@@ -97,14 +105,16 @@ export class TransactionsPageComponent implements OnDestroy {
     map(([selectedYear, oldestDate]) => getListOfAvailableMonthsPerYear(selectedYear, oldestDate))
   );
 
+  public readonly numberOfSelectedTransactions$: Observable<number> = this.selectedTransactionsIds$.pipe(map((selected) => selected.length));
+
   public readonly monthlyKeyMetrics$: Observable<keyMetricData | null> = this.transactionData$.pipe(
     map((transactionData) => {
-      if(!transactionData) return null;
+      if (!transactionData) return null;
 
       return calculateMonthlyKeyMetricData(transactionData.transactions, transactionData.priorBalance)
 
     }));
-    
+
   public ngOnDestroy(): void {
     this.unsubscribe.next();
     this.unsubscribe.complete();
@@ -127,6 +137,9 @@ export class TransactionsPageComponent implements OnDestroy {
           year: year, month: selectedMonth,
         }
       });
+
+      this.openDropMenu = null;
+      this.stopSelectionMode();
     })
   }
 
@@ -137,6 +150,9 @@ export class TransactionsPageComponent implements OnDestroy {
           year: selectedYear, month: month,
         }
       });
+
+      this.openDropMenu = null;
+      this.stopSelectionMode();
     })
   }
 
@@ -160,6 +176,97 @@ export class TransactionsPageComponent implements OnDestroy {
     this.currentAddedOrEditedTransaction$.next(null);
     this.refreshTransactions$.next(null);
     this.showLoadingSpinner = true;
+  }
+
+  public handleSelectableButton(): void {
+    this.transactionsSelectable = !this.transactionsSelectable;
+
+    if (!this.transactionsSelectable) this.stopSelectionMode();
+  }
+
+  private stopSelectionMode(): void {
+    this.selectAll = false;
+    this.transactionsSelectable = false;
+    this.selectedTransactionsIds$.next([]);
+  }
+
+  public onSelectChanged(transactionId: number, isSelected: boolean): void {
+    const selectedIds = this.selectedTransactionsIds$.getValue();
+
+    if (isSelected) {
+      selectedIds.push(transactionId);
+      this.selectedTransactionsIds$.next(selectedIds);
+
+      return;
+    }
+
+    const filteredIds = selectedIds.filter((id) => id !== transactionId);
+    this.selectedTransactionsIds$.next(filteredIds);
+  }
+
+  public onSelectAll(): void {
+    this.selectAll = !this.selectAll;
+
+    if (!this.selectAll) {
+      this.selectedTransactionsIds$.next([]);
+      return;
+    }
+
+    this.transactionData$.pipe(
+      take(1),
+      map((transactionData) => (transactionData?.transactions.map((transaction) => transaction.id)))
+    )
+      .subscribe((transactionIds) => {
+        this.selectedTransactionsIds$.next(transactionIds ?? []);
+      });
+
+  }
+
+  public deleteSelectedTransactions(): void {
+    this.showDeletingSpinner = true;
+
+    const deleteObservables = this.selectedTransactionsIds$.getValue().map(id =>
+      this.transactionService.deleteTransaction(id)
+    );
+
+    combineLatest(deleteObservables)
+      .pipe(takeUntil(this.unsubscribe))
+      .subscribe({
+        next: () => {
+          this.refreshTransactions$.next(null);
+          this.showDeletingSpinner = false;
+          this.stopSelectionMode();
+        },
+        error: (error: HttpErrorResponse) => {
+          console.error('Error while deleting transactions:', error);
+          this.showDeletingSpinner = false;
+          this.stopSelectionMode();
+        }
+      });
+  }
+
+  public exportTransactionToCSV(): void {
+    combineLatest([this.transactionService.getTransactions(), this.labelService.getLabels()])
+    .pipe(
+      takeUntil(this.unsubscribe)
+    ).subscribe(([transactionData, labels]) => {
+        if(!transactionData?.transactions) return;
+        
+        const csvData = convertToCSV(transactionData.transactions, labels ?? []);
+        this.downloadCSV(csvData);
+      })
+  }
+
+  private downloadCSV(csv: string): void {
+    const blob = new Blob([csv], {type: 'text/csv'});
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const date = new Date();
+    const today = `${date.getDate()}-${date.getMonth()}-${date.getFullYear()}`
+    a.setAttribute('href', url);
+    a.setAttribute('download', `MyFinanceStats Transactions ${today}.csv`);
+    a.click();
+    window.URL.revokeObjectURL(url);
   }
 
   public refreshPage(): void {

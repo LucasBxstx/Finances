@@ -1,4 +1,4 @@
-import { Component, EventEmitter, HostListener, Input, OnDestroy, Output, inject } from '@angular/core';
+import { Component, EventEmitter, HostListener, Input, OnChanges, OnDestroy, Output, SimpleChanges, inject } from '@angular/core';
 import { AddOrEditTransaction, TransactionType, TransactionWithLabel } from '../../shared/models/transaction';
 import { AsyncPipe, NgClass, NgIf, NgStyle } from '@angular/common';
 import { GetPriceDecimalPipe } from '../../shared/pipes/getPriceDecimal.pipe';
@@ -17,7 +17,7 @@ import { GetDateDMYPipe } from '../../shared/pipes/getDateDMY.pipe';
   templateUrl: './transaction.component.html',
   styleUrl: './transaction.component.scss'
 })
-export class TransactionComponent implements OnDestroy {
+export class TransactionComponent implements OnDestroy, OnChanges {
   public TransactionType = TransactionType;
   private unsubscribe = new Subject<void>();
 
@@ -27,17 +27,27 @@ export class TransactionComponent implements OnDestroy {
   public readonly breakpointMobile$ = this.breakpointObserver.observe([MOBILE_BREAKPOINT]).pipe(map((state)=> state.matches));
 
   public openEditContainer = false;
-
+  
   @Input({ required: true }) public transaction!: TransactionWithLabel;
   @Input() public useCase : 'detail' | 'default' = 'default';
+  @Input() public isSelectable: boolean = false;
+  @Input() public isSelected: boolean = false;
+  
   @Output() public transactionEdited: EventEmitter<AddOrEditTransaction> = new EventEmitter();
   @Output() public transactionDeleted: EventEmitter<void> = new EventEmitter();
+  @Output() public selectedChanged: EventEmitter<boolean> = new EventEmitter();
 
   @HostListener('click')
   public onClick(): void {
     if(!this.isMobile()) return;
 
     this.openEditContainer = !this.openEditContainer;
+  }
+
+  public ngOnChanges(changes: SimpleChanges): void {
+    if('isSelectable' in changes){
+      if (!this.isSelectable) this.isSelected = false;
+    }
   }
 
   public ngOnDestroy(): void {
@@ -51,6 +61,11 @@ export class TransactionComponent implements OnDestroy {
       transactionId: this.transaction.id,
       transactionType: this.transaction.transactionType,
     })
+  }
+
+  public onSelectChange(): void {
+    this.isSelected = !this.isSelected;
+    this.selectedChanged.emit(this.isSelected);
   }
 
   public deleteTransaction(): void {

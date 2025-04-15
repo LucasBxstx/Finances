@@ -86,3 +86,5 @@ export interface YearsAndMonth {
     year: number;
     month: number;
 }
+
+export type dropMenuType = 'filter-year' | 'filter-start-month' | 'filter-end-month';
