@@ -14,7 +14,8 @@ The application consists of a Angular 17 frontend and a C# ASP.NET 8 CORE Web AP
 - **ECharts + ngx-echarts** – Interactive data visualization   
 
 ### Backend
-- **C# / ASP.NET Core 8 Web API** – RESTful backend services  
+- **C# / ASP.NET Core 8 Web API** – RESTful backend services
+- **Layered Architecture** implementing the **CQRS** pattern with **MediatR** for decoupled, maintainable logic.
 - **Entity Framework** – ORM for database interaction  
 - **SQL Server Express** – Relational database
 
@@ -23,7 +24,11 @@ The application consists of a Angular 17 frontend and a C# ASP.NET 8 CORE Web AP
 - **ASP.NET Core Identity** for user management and password hashing  
 - **JWT Authentication** (Access & Refresh Tokens)  
 - Token-based session management with secure refresh flow  
-- Protected API endpoints using authentication middleware  
+- Protected API endpoints using authentication middleware
+
+
+## Architecture
+
 
 ## Installation
 
