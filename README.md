@@ -1,10 +1,29 @@
-# MyFinances
+# MyFinanceStats
 
-## Purpose
 **MyFinances** is a web application that enables users to manage their financial transactions and to get insights into their yearly, monthly, and daily expenses.
 
-## Technical Infrastructure
+<img width="2486" height="1446" alt="image" src="https://github.com/user-attachments/assets/8b589db5-e049-4fed-91aa-d4c9f5a566bd" />
+
+## Tech Stack
 The application consists of a Angular 17 frontend and a C# ASP.NET 8 CORE Web API as backend including a SQL Express database
+
+### Frontend
+- **Angular 17**
+- **Angular Material & CDK** – UI components
+- **RxJS** – Reactive programming for state and data handling  
+- **ECharts + ngx-echarts** – Interactive data visualization   
+
+### Backend
+- **C# / ASP.NET Core 8 Web API** – RESTful backend services  
+- **Entity Framework** – ORM for database interaction  
+- **SQL Server Express** – Relational database
+
+### Authentication & Security
+
+- **ASP.NET Core Identity** for user management and password hashing  
+- **JWT Authentication** (Access & Refresh Tokens)  
+- Token-based session management with secure refresh flow  
+- Protected API endpoints using authentication middleware  
 
 ## Installation
 
@@ -76,8 +95,7 @@ Users of MyFinances can create their own accounts and login to the app. The web 
     - Delete Account
 
 #### Transaction Page
-    - Add / Edit / Delete Incomes
-    - Add / Edit / Delete Expenses
+    - Add / Edit / Delete Transactions
     - Add / Edit / Delete Labels
     - View monthly Transactions (select year and month)
     - Import CSV file (from MyFinances app or Splitwise)
