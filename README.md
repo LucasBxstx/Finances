@@ -15,7 +15,7 @@ The application consists of a Angular 17 frontend and a C# ASP.NET 8 CORE Web AP
 
 ### Backend
 - **C# / ASP.NET Core 8 Web API** – RESTful backend services
-- **Layered Architecture** implementing the **CQRS** pattern with **MediatR** for decoupled, maintainable logic.
+- **Feature-based Clean Architecture** implementing the **CQRS** pattern with **MediatR** for decoupled and maintainable business logic
 - **Entity Framework** – ORM for database interaction  
 - **SQL Server Express** – Relational database
 
